@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "outDir": "./public/js/",
+      "noImplicitAny": true,
+      "sourceMap": true,
+      "allowJs": true,
+      "module": "es6",
+      "target": "es5",
+      "jsx": "react",
+      "moduleResolution": "node",
+      "allowSyntheticDefaultImports": true
+    }
+  }

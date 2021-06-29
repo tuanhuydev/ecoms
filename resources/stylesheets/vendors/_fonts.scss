@@ -1,0 +1,47 @@
+@import '../commons/variables';
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-Regular.ttf') format('ttf');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-Light.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-LightItalic.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-Bold.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-BoldItalic.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-SemiBold.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-SemiBoldItalic.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-ExtraBold.ttf') format('ttf');
+}
+
+@font-face {
+    font-family: $font__sanSerif;
+    src: url($path__openSans + 'OpenSans-ExtraBoldItalic.ttf') format('ttf');
+}

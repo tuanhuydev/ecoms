@@ -1,0 +1,10 @@
+@import '../commons/variables';
+
+// All boostrap variables set to !default tag override here
+$font-family-sans-serif: $font__sanSerif;
+
+$primary: $color-primary;
+
+
+// Make sure to keep Boostrap import as the last line
+@import "~bootstrap/scss/bootstrap";

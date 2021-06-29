@@ -1,0 +1,24 @@
+@import '../commons/mixins';
+
+body {
+    @include flexColumn;
+    min-height: 100vh;
+    background-color: $color-primary--bg;
+    
+    main {
+        @include flexColumn;
+        flex-grow: 1;
+    }
+
+    a {
+        &:link,
+        &:visited,
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    ul {
+        list-style-type: none;
+    }
+}
