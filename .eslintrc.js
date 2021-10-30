@@ -14,10 +14,13 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
-    semi: ['error', 'always'],
-    'no-console': ['error', { allow: ['warn', 'error'] }],
+    'no-use-before-define': 'off',
     'no-var': 1, // warning
     'eslint no-path-concat': 0, // off
-    'max-len': ['error', { code: 120 }]
+    'no-undef': 'off',
+    'space-before-function-paren': 'never',
+    'max-len': ['error', { code: 120 }],
+    'no-console': ['error', { allow: ['warn', 'error'] }],
+    semi: ['error', 'always']
   }
 };
