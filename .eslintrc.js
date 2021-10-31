@@ -18,8 +18,9 @@ module.exports = {
     'no-var': 1, // warning
     'eslint no-path-concat': 0, // off
     'no-undef': 'off',
-    'space-before-function-paren': 'never',
+    'space-before-function-paren': 0, // off
     'max-len': ['error', { code: 120 }],
+    'comma-dangle': ['error', 'never'],
     'no-console': ['error', { allow: ['warn', 'error'] }],
     semi: ['error', 'always']
   }

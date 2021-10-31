@@ -29,10 +29,10 @@ class Request {
         ...restConfig,
         headers: {
           Accept: 'application/json',
-          ...headers,
+          ...headers
         },
         url,
-        method,
+        method
       });
       if (isFunction(onCallback)) {
         onCallback(res);

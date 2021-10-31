@@ -40,8 +40,8 @@ class Login extends Auth {
         method: 'POST',
         data: {
           email: this.email,
-          password: this.password,
-        },
+          password: this.password
+        }
       },
       ({ data }: AxiosResponse) => {
         const { user, access_token: accessToken } = data;

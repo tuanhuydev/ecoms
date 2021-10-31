@@ -89,10 +89,11 @@ const config = {
         test: /\.(png|jpe?g|svg|gif)$/i,
         use: [
           {
-            loader: 'file-loader',
+            loader: 'url-loader',
             options: {
-              name: fileLoaderName,
-              outputPath: '/images'
+              limit: false,
+              fallback: 'file-loader',
+              name: `images/${fileLoaderName()}`
             }
           }
         ]
@@ -104,7 +105,8 @@ const config = {
     alias: {
       '@assets': path.resolve(__dirname, 'resources/assets'),
       '@components': path.resolve(__dirname, 'resources/scripts/components'),
-      '@containers': path.resolve(__dirname, 'resources/scripts/containers')
+      '@containers': path.resolve(__dirname, 'resources/scripts/containers'),
+      '@common-styles': path.resolve(__dirname, 'resources/stylesheets/commons')
     }
   },
   plugins: [

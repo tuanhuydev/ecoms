@@ -1,0 +1,32 @@
+@import '../../../stylesheets/commons/mixins';
+
+.container {
+  padding: 0.5rem;
+  position: relative;
+  width: max-content;
+  background-color: transparent;
+  transition: background-color 0.25s;
+
+  &::after {
+    @include absoluteCenter;
+    @include circle;
+    content: '';
+    z-index: 1;
+    width: 36px;
+    height: 36px;
+    transition: background-color 0.25s;
+  }
+
+  &:hover {
+    &::after {
+      background-color: #e5e5e5;
+    }
+  }
+
+  .img {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    z-index: 2;
+  }
+}
