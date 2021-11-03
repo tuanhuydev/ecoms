@@ -2,12 +2,12 @@
 @import '../commons/mixins';
 
 .blogs {
-    padding: 1rem;
-    background-color: white;
-    border-radius: $container-border;
+  padding: 1rem;
+  background-color: white;
+  border-radius: $container-border;
 
-    &__toolbar {
-        @include middle;
-        justify-content: flex-end;
-    }
+  &__toolbar {
+    @include middle;
+    justify-content: flex-end;
+  }
 }

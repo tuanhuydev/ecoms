@@ -18,7 +18,7 @@ window.onload = () => {
     loginBtn.textContent = loading ? 'Submitting...' : 'Login';
   };
 
-  const handleLoginSuccess = (data: { user: any, accessToken: string }) => {
+  const handleLoginSuccess = (data: { user: any; accessToken: string }) => {
     const { user, accessToken } = data;
     if (user && accessToken) {
       localStorage.setItem('user', JSON.stringify(user));

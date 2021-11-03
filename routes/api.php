@@ -18,8 +18,6 @@ Route::group(['prefix' => 'auth'], function() {
     Route::post('/{type}', [AuthController::class, 'auth']);
 });
 
-
-
 Route::get('/test', function() {
     return "ok";
 });

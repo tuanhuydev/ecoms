@@ -6,7 +6,4 @@ const URLS = {
   api: `${APP_URL}/api`
 };
 
-export {
-  IS_DEV,
-  URLS
-};
+export { IS_DEV, URLS };
