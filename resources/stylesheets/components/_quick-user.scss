@@ -2,86 +2,85 @@
 @import '../commons/variables';
 
 .quick-user__panel {
-    position: absolute;
-    top: 0;
-    right: -100%;
-    z-index: 10;
-    min-width: 20rem;
-    min-height: 100vh;
-    background-color: white;
-    transition: all 0.55s;
-    
-    &--active {
-        right: 0;
+  position: absolute;
+  top: 0;
+  right: -100%;
+  z-index: 10;
+  min-width: 20rem;
+  min-height: 100vh;
+  background-color: white;
+  transition: all 0.55s;
+
+  &--active {
+    right: 0;
+  }
+  .panel-header {
+    @include middle;
+    justify-content: space-between;
+    padding: 2rem 1.5rem;
+
+    &__title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      line-height: 1;
     }
-    .panel-header {
-        @include middle;
-        justify-content: space-between;
-        padding: 2rem 1.5rem;
 
-        &__title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            line-height: 1;
-        }
+    &__close {
+      @include center;
+      border-radius: 0.25rem;
+      width: 1.2rem;
+      height: 1.2rem;
 
-        &__close {
-            @include center;
-            border-radius: 0.25rem;
-            width: 1.2rem;
-            height: 1.2rem;
-            
-            &:hover {
-                background-color: #dee2e6;
-            }
+      &:hover {
+        background-color: #dee2e6;
+      }
 
-            .close-icon {
-                width: 1rem;
-                height: 1rem;
-            }
-        }
+      .close-icon {
+        width: 1rem;
+        height: 1rem;
+      }
     }
-    .panel-account {
-        @include middle;
-        padding: 0 1.5rem;
+  }
+  .panel-account {
+    @include middle;
+    padding: 0 1.5rem;
 
-        &__avatar {
-            @include center;
-            position: relative;
-            width: 5rem;
-            height: 5rem;
-            background-color: #dee2e6;
-            border-radius: 10%;
-            font-size: 1.2rem;
-            line-height: 1;
-            margin-right: 1rem;
+    &__avatar {
+      @include center;
+      position: relative;
+      width: 5rem;
+      height: 5rem;
+      background-color: #dee2e6;
+      border-radius: 10%;
+      font-size: 1.2rem;
+      line-height: 1;
+      margin-right: 1rem;
 
-            .avatar-status {
-                position: absolute;
-                top: -5px;
-                right: -5px;
-                width: 16px;
-                height: 16px;
-                border-radius: 50%;
-                background-color: green;
-                border: 2px solid #FFF;
-            }
-        }
-
-        &__info {
-
-            .info-name {
-                font-size: 1.2rem;
-                font-weight: bold;
-                margin-bottom: 0.25rem;
-            }
-
-            .info-email {
-                font-weight: lighter;
-            }
-        }
-        &__sign-out {
-            border: none;
-        }
+      .avatar-status {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: green;
+        border: 2px solid #fff;
+      }
     }
+
+    &__info {
+      .info-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+      }
+
+      .info-email {
+        font-weight: lighter;
+      }
+    }
+    &__sign-out {
+      border: none;
+    }
+  }
 }

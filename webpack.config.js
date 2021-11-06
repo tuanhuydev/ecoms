@@ -22,11 +22,36 @@ const config = {
     rules: [
       {
         test: /\.ts(x)?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        use: 'ts-loader'
       },
       {
-        test: /\.s[ac]ss?$/,
+        test: /\.module\.s(a|c)ss$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              sourceMap: isDevelopment
+            }
+          },
+          {
+            loader: 'resolve-url-loader'
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: isDevelopment
+            }
+          }
+        ]
+      },
+      {
+        test: /\.s(a|c)ss?$/,
+        exclude: [/\.module\.s(a|c)ss?$/, /node_modules/],
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -43,7 +68,7 @@ const config = {
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: true
+              sourceMap: isDevelopment
             }
           }
         ]
@@ -64,10 +89,11 @@ const config = {
         test: /\.(png|jpe?g|svg|gif)$/i,
         use: [
           {
-            loader: 'file-loader',
+            loader: 'url-loader',
             options: {
-              name: fileLoaderName,
-              outputPath: '/images'
+              limit: false,
+              fallback: 'file-loader',
+              name: `images/${fileLoaderName()}`
             }
           }
         ]
@@ -77,7 +103,10 @@ const config = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
-      '@assets': path.resolve(__dirname, 'resources/assets')
+      '@assets': path.resolve(__dirname, 'resources/assets'),
+      '@components': path.resolve(__dirname, 'resources/scripts/components'),
+      '@containers': path.resolve(__dirname, 'resources/scripts/containers'),
+      '@common-styles': path.resolve(__dirname, 'resources/stylesheets/commons')
     }
   },
   plugins: [

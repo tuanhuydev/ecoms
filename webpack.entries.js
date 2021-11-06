@@ -3,55 +3,64 @@ const path = require('path');
 
 const SCRIPT_PATH = path.join(__dirname, '/resources/scripts');
 const STYLESHEET_PATH = path.join(__dirname, '/resources/stylesheets');
-
+const ALLOW_SCANING_DIRS = ['pages'];
 /**
- * Split file name if it's directory then it doesn't contain extension
+ * Extract file name in file string
  *
  * @param {string} fileName
- * @returns {boolean}
+ * @returns {string}
  */
-const extractFileName = (fileName) => {
-  const nameParts = fileName.split('.');
-  const hasExtension = nameParts.length === 1;
-  return {
-    fileName: nameParts[0],
-    extension: hasExtension ? false : nameParts[nameParts.length - 1]
-  };
+const extractFileName = (file) => {
+  return file.split('.').shift();
 };
-const ALLOW_SCANING_DIRS = ['pages'];
 
 /**
- * Scan resources files return mapped entries from resources to public
+ * Scan resources items return mapped entries from resources to public
  * -> Scanned file is directory, filter with defined filter then recursive scan sub-directory
  * -> Otherwise, make new entry
  *
- * @param {string} path
+ * @param {string} currentPath
  * @param {string} distDir
- * @param {string} parentDir
+ * @param {string} parentDirectory
  * @param {object} entries
  * @returns {object}
  */
-const scanEntries = (path, distDir = 'js', parentDir = '', entries = {}) => {
-  const files = fs.readdirSync(path);
-  files.length && files.forEach(file => {
-    const { fileName, extension } = extractFileName(file);
-    if (!extension) {
-      const subPath = `${path}/${fileName}`;
-      let subEntries = [];
+const scanEntries = (currentPath, distDir = 'js', parentDirectory = '', entries = {}) => {
+  const entities = fs.readdirSync(currentPath);
 
-      if (ALLOW_SCANING_DIRS.includes(fileName)) {
-        subEntries = scanEntries(subPath, distDir, fileName, entries);
-      } else if (ALLOW_SCANING_DIRS.includes(parentDir)) {
-        subEntries = scanEntries(subPath, `${distDir}/${parentDir}`, fileName, entries);
+  const directories = [];
+  const files = [];
+
+  // Filter and classify directory's entities
+  entities.length && entities.forEach((entity) => {
+    const pathToItem = `${currentPath}/${entity}`;
+    const isDirectory = fs.statSync(pathToItem).isDirectory();
+
+    if (isDirectory) {
+      if (ALLOW_SCANING_DIRS.includes(entity) || ALLOW_SCANING_DIRS.includes(parentDirectory)) {
+        directories.push(entity);
       }
-
-      entries = { ...entries, ...subEntries };
-    } else if (extension && parentDir) {
-      entries[`${distDir}/${parentDir}/${fileName}`] = `${path}/${file}`;
     } else {
-      entries[`${distDir}/${fileName}`] = `${path}/${file}`;
+      files.push(entity);
     }
   });
+
+  // Scan sub directories
+  directories.forEach((directory) => {
+    const subPath = `${currentPath}/${directory}`;
+    const subDistDirectory = parentDirectory ? `${distDir}/${parentDirectory}` : distDir;
+    const subEntries = scanEntries(subPath, subDistDirectory, directory, entries);
+
+    entries = { ...entries, ...subEntries };
+  });
+
+  // Handle files
+  files.forEach((file) => {
+    const fileName = extractFileName(file);
+    const distPath = parentDirectory ? `${distDir}/${parentDirectory}` : distDir;
+    entries[`${distPath}/${fileName}`] = `${currentPath}/${file}`;
+  });
+
   return entries;
 };
 
