@@ -29,3 +29,9 @@
 @mixin circle {
   border-radius: 50%;
 }
+
+// PADDING
+@mixin px($value) {
+  padding-left: $value * 1px;
+  padding-right: $value * 1px;
+}
