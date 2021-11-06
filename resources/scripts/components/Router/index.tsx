@@ -1,16 +1,15 @@
 import React, { FC } from 'react';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { APP_URL } from '../../configs/constants';
 import { adminRoutes } from '../../configs/routes';
 import { RouteType } from '../../interfaces/Meta';
 
-const HOME_PATH = '/';
+const navigateNoMatch = () => {
+  window.location.href = APP_URL;
+  return <></>;
+};
 
-const Router: FC = ({ children }): JSX.Element => {
-  const navigateNoMatch = () => {
-    window.location.href = HOME_PATH;
-    return <></>;
-  };
-
+export const makeRouteElements = () => {
   const routeElements: Array<JSX.Element> = Object.keys(adminRoutes).map((key: string) => {
     const route: RouteType = adminRoutes[key];
     return (
@@ -28,13 +27,9 @@ const Router: FC = ({ children }): JSX.Element => {
   );
   // Redirect home when no match route
   routeElements.push(<Route path="*" key={'no-match-route'} render={navigateNoMatch}></Route>);
-
-  return (
-    <BrowserRouter>
-      {children}
-      <Switch>{routeElements}</Switch>
-    </BrowserRouter>
-  );
+  return routeElements;
 };
+
+const Router: FC = ({ children }): JSX.Element => <BrowserRouter>{children}</BrowserRouter>;
 
 export default Router;

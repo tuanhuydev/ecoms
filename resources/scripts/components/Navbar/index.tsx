@@ -1,27 +1,48 @@
-import React from 'react';
-import styles from './styles.module.scss';
-import MenuIcon from '@assets/icons/list.svg'; // TODO: Built URL not beautiful
-import BootstrapIcon from '@components/BootstrapIcon';
+import React, { ReactNode } from 'react';
+import { styled } from '@mui/material/styles';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
 
-export interface NavbarClassesType {
-  root: string;
-  logo?: string;
-}
 export interface NavbarProps {
-  logo?: any;
-  classes?: NavbarClassesType;
+  AppBarProps?: AppBarProps;
+  ToolbarProps?: ToolbarProps;
+  children?: ReactNode;
 }
 
-const Navbar = (props: NavbarProps) => {
-  const { logo = 'Let build something amazing here' } = props;
-  return (
-    <div className={styles.container}>
-      <div className={styles.toggle}>
-        <BootstrapIcon icon={MenuIcon} name="menu" />
-      </div>
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}
 
-      <span className={styles.logo}>{logo}</span>
-    </div>
+const drawerWidth = 240;
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open'
+})<AppBarProps>(({ theme, open }) => {
+  const { zIndex, shadows, palette, transitions } = theme;
+  return {
+    zIndex: zIndex.drawer + 1,
+    backgroundColor: palette.background.paper,
+    boxShadow: shadows[0], // none
+    transition: transitions.create(['width', 'margin'], {
+      easing: transitions.easing.sharp,
+      duration: transitions.duration.leavingScreen
+    }),
+    ...(open && {
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`,
+      transition: transitions.create(['width', 'margin'], {
+        easing: transitions.easing.sharp,
+        duration: transitions.duration.enteringScreen
+      })
+    })
+  };
+});
+
+const Navbar = (props: AppBarProps) => {
+  return (
+    <AppBar open={props.open}>
+      <Toolbar>{props?.children}</Toolbar>
+    </AppBar>
   );
 };
 
