@@ -1,28 +1,31 @@
-import React, { ReactNode } from 'react';
-import { styled } from '@mui/material/styles';
+import React from 'react';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
+import Toolbar from '@mui/material/Toolbar';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/system/Box';
+import styles from './styles.module.scss';
+import IconButton from '@mui/material/IconButton';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import MenuIcon from '@mui/icons-material/Menu';
+import { setOpenSidebar } from '../../slices/metaSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
-export interface NavbarProps {
-  AppBarProps?: AppBarProps;
-  ToolbarProps?: ToolbarProps;
-  children?: ReactNode;
-}
-
-interface AppBarProps extends MuiAppBarProps {
+export interface NavbarProps extends MuiAppBarProps {
   open?: boolean;
-}
+  onToggle?: any;
+};
 
-const drawerWidth = 240;
+export const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open'
-})<AppBarProps>(({ theme, open }) => {
-  const { zIndex, shadows, palette, transitions } = theme;
+})<NavbarProps>(({ theme, open }) => {
+  const { zIndex, palette, shadows, transitions } = theme;
   return {
     zIndex: zIndex.drawer + 1,
-    backgroundColor: palette.background.paper,
-    boxShadow: shadows[0], // none
+    background: palette.background.paper,
+    boxShadow: shadows[0], // None
     transition: transitions.create(['width', 'margin'], {
       easing: transitions.easing.sharp,
       duration: transitions.duration.leavingScreen
@@ -38,11 +41,38 @@ const AppBar = styled(MuiAppBar, {
   };
 });
 
-const Navbar = (props: AppBarProps) => {
+const boxStyles = {
+  display: 'flex'
+};
+
+const toggleStyles = {
+  marginRight: '32px'
+};
+
+const Navbar = (props: NavbarProps) => {
+  const openSidebar = useSelector((state: RootState) => state.meta.openSidebar);
+  const dispatch = useDispatch();
+
+  const handleIconClick = () => {
+    dispatch(setOpenSidebar({ openSidebar: !openSidebar }));
+  };
+
   return (
-    <AppBar open={props.open}>
-      <Toolbar>{props?.children}</Toolbar>
-    </AppBar>
+    <Box sx={boxStyles}>
+      <AppBar position="fixed" open={openSidebar}>
+        <Toolbar classes={{ root: styles.toolbar }}>
+          <IconButton
+            aria-label="open drawer"
+            onClick={handleIconClick}
+            edge="start"
+            sx={toggleStyles}
+          >
+            {openSidebar ? <ChevronLeftIcon /> : <MenuIcon />}
+          </IconButton>
+          {props?.children}
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 };
 

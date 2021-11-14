@@ -10,3 +10,7 @@ export interface RouteType {
 export interface DefaultClassType {
   [key: string]: string;
 }
+
+export interface Meta {
+  openSidebar: boolean;
+}

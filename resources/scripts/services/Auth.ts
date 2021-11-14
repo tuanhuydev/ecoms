@@ -13,6 +13,11 @@ abstract class Auth {
     }
     return false;
   }
+
+  static clearAuth() {
+    localStorage.removeItem('user');
+    Cookie.remove('securityId');
+  }
 }
 
 class Login extends Auth {

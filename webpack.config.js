@@ -2,6 +2,7 @@ const entries = require('./webpack.entries.js');
 const path = require('path');
 const WebpackBar = require('webpackbar');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const DotEnv = require('dotenv-webpack');
 
 /**
@@ -118,10 +119,15 @@ const config = {
     new MiniCssExtractPlugin({
       filename: isDevelopment ? '[name].css' : '[name].[contenthash].css',
       chunkFilename: isDevelopment ? '[id].css' : '[id].[contenthash].css'
+    }),
+    new BundleAnalyzerPlugin({
+      openAnalyzer: false
     })
   ],
   optimization: {
-    removeEmptyChunks: true
+    removeEmptyChunks: true,
+    mergeDuplicateChunks: true,
+    sideEffects: true
   },
   output: {
     path: path.resolve(__dirname, 'public')
