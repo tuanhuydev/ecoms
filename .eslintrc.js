@@ -22,6 +22,7 @@ module.exports = {
     'max-len': ['error', { code: 120 }],
     'comma-dangle': ['error', 'never'],
     'no-console': ['error', { allow: ['warn', 'error'] }],
-    semi: ['error', 'always']
+    semi: ['error', 'always'],
+    'no-unused-vars': ['warn', { vars: 'all' }]
   }
 };

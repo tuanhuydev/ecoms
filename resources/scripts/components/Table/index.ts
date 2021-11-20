@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { TableConfig, ColumnConfig, TableInstance } from './types';
 import cloneDeep from 'lodash/cloneDeep';
 import { makeRandomString } from '../../utils/helpers';
-import { EmptyObject } from '../../types/global';
+import { EmptyObject } from '../../types/custom';
 
 class Table {
   private config: TableConfig;

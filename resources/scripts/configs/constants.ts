@@ -5,3 +5,7 @@ export const URLS = {
   app: APP_URL,
   api: `${APP_URL}/api`
 };
+
+export enum TASK_STATUS {
+  PENDING = 'PENDING',
+}
