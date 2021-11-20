@@ -1,4 +1,4 @@
-@import '../../../stylesheets/commons/mixins';
+@import '@common-styles/mixins';
 
 .toolbar {
   @include px(20);
