@@ -16,8 +16,6 @@ const isDevelopment = process.env.NODE_ENV === 'local';
 
 const fileLoaderName = () => isDevelopment ? '[name].[ext]' : '[contenthash].[ext]';
 
-const styleLoader = isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader;
-
 const config = {
   entry: entries,
   mode: isDevelopment ? 'development' : 'production',
@@ -50,7 +48,7 @@ const config = {
         exclude: [/node_modules/],
         use: [
           {
-            loader: styleLoader
+            loader: MiniCssExtractPlugin.loader
           },
           {
             loader: 'css-loader',
@@ -75,10 +73,14 @@ const config = {
         exclude: [/\.module\.scss?$/, /node_modules/],
         use: [
           {
-            loader: styleLoader
+            loader: MiniCssExtractPlugin.loader
           },
           {
-            loader: 'css-loader'
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              sourceMap: isDevelopment
+            }
           },
           {
             loader: 'resolve-url-loader'

@@ -63,7 +63,6 @@ const scanEntries = (currentPath, distDir = 'js', parentDirectory = '', entries 
 
   return entries;
 };
-
 module.exports = {
   ...scanEntries(SCRIPT_PATH),
   ...scanEntries(STYLESHEET_PATH, 'css')
