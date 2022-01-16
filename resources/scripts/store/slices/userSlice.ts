@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../interfaces/User';
+import { User } from '../../interfaces/User';
 
 const EMPTY_USER = {};
 
