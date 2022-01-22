@@ -1,10 +1,10 @@
 import { Login } from '../services/Auth';
-import { URLS } from '../configs/constants';
+import { APP_URL } from '../configs/constants';
 import Cookie from 'js-cookie';
 
 // TODO: Handle smoother transition betweeen auth page to admin page
 if (localStorage.getItem('user') && Cookie.get('accessToken')) {
-  window.location.href = `${URLS.app}/admin`;
+  window.location.href = `${APP_URL}/admin`;
 }
 
 window.onload = () => {
@@ -23,7 +23,7 @@ window.onload = () => {
     if (user && accessToken) {
       localStorage.setItem('user', JSON.stringify(user));
       Cookie.set('securityId', accessToken, { expires: 7, sameSite: 'strict' });
-      window.location.href = `${URLS.app}/admin`;
+      window.location.href = `${APP_URL}/admin`;
     }
     loadingForm(false);
   };
