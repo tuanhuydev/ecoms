@@ -15,7 +15,7 @@ import styles from './styles.module.scss';
 import { adminRoutes } from '../../configs/routes';
 import { NavLink, Switch } from 'react-router-dom';
 import { makeRouteElements } from '@components/Router';
-import { URLS } from '../../configs/constants';
+import { APP_URL } from '../../configs/constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import Navbar from '@components/Navbar';
@@ -75,7 +75,7 @@ const Admin = () => {
 
   const handleLogout = () => {
     Login.clearAuth();
-    window.location.href = URLS.app;
+    window.location.href = APP_URL;
   };
 
   return (

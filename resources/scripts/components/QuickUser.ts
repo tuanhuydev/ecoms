@@ -1,5 +1,5 @@
 import Cookie from 'js-cookie';
-import { URLS } from '../configs/constants';
+import { APP_URL } from '../configs/constants';
 
 class QuickUser {
   private panel: HTMLElement;
@@ -23,7 +23,7 @@ class QuickUser {
 
   private signOutUser() {
     Cookie.remove('securityId');
-    window.location.href = `${URLS.app}/auth/login`;
+    window.location.href = `${APP_URL}/auth/login`;
   }
 
   private applyBind() {
