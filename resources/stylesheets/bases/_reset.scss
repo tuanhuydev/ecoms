@@ -1,9 +1,15 @@
 @import '../commons/mixins';
 
+html {
+  font-size: 62.5%;
+}
+
 body {
   @include flexColumn;
   min-height: 100vh;
+  margin: 0;
   background-color: $color-primary--bg;
+  font-size: inherit;
 
   main {
     @include flexColumn;
@@ -20,5 +26,19 @@ body {
 
   ul {
     list-style-type: none;
+  }
+
+  input {
+    border: none;
+    box-shadow: none;
+    outline: none;
+    display: block;
+  }
+
+  button {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
   }
 }
