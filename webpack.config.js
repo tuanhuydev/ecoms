@@ -78,7 +78,7 @@ const config = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: false,
               sourceMap: isDevelopment
             }
           },
@@ -138,8 +138,8 @@ const config = {
       path: '.env'
     }),
     new MiniCssExtractPlugin({
-      filename: isDevelopment ? '[name].css' : '[name].[contenthash].css',
-      chunkFilename: isDevelopment ? '[id].css' : '[id].[contenthash].css'
+      filename: isDevelopment ? '[name].css' : '[name].[contenthash].css'
+      // chunkFilename: isDevelopment ? '[id].css' : '[id].[contenthash].css'
     })
   ],
   optimization: {

@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios';
 import { API_URL } from '../configs/constants';
 import Cookie from 'js-cookie';
 import httpClient from '../configs/httpClient';
-import { isEmpty } from 'lodash';
+import { DefaultObjectType } from '../interfaces/Meta';
 
 abstract class Auth {
   static getAuth() {
@@ -18,6 +18,11 @@ abstract class Auth {
     localStorage.removeItem('user');
     Cookie.remove('securityId');
   }
+
+  static setAuth(user: DefaultObjectType, accessToken: string) {
+    localStorage.setItem('user', JSON.stringify(user));
+    Cookie.set('securityId', accessToken, { expires: 7, sameSite: 'strict' });
+  }
 }
 
 class Login extends Auth {
@@ -30,26 +35,18 @@ class Login extends Auth {
     this.password = password;
   }
 
-  private validate(): boolean {
-    // TODO: Validate here
-    return true;
-  }
-
   async makeAuth(onDone: Function, onError?: Function) {
     try {
-      if (!this.validate()) {
-        throw new Error('Validate failed');
-      }
       const { data }: AxiosResponse = await httpClient.post(
         `${API_URL}/auth/login`,
         { email: this.email, password: this.password }
       );
       const { user, access_token: accessToken } = data;
-      if (user && accessToken) {
-        onDone({ user, accessToken });
-      }
+      if (user && accessToken) Login.setAuth(user, accessToken);
+
+      if (onDone) onDone();
     } catch (err) {
-      isEmpty(onError) && onError();
+      if (onError) onError(err);
     }
   }
 }
