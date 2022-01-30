@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { APP_URL } from '../configs/constants';
-import { Login } from '../services/Auth';
+import { Login } from '../services/AuthService';
 
 const withAuth = (Component: FC): JSX.Element => {
   const auth = Login.getAuth();

@@ -1,9 +1,5 @@
 @import '../commons/mixins';
 
-html {
-  font-size: 62.5%;
-}
-
 body {
   @include flexColumn;
   min-height: 100vh;
