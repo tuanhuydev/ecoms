@@ -13,7 +13,7 @@ const PageContainer = ({ children, title = '', ToolbarProps }: PageContainerProp
   return (
     <Box>
       <Toolbar {...ToolbarProps} sx={{ background: 'white', mb: 1 }}>
-        <Typography variant="h5" component="h5" sx={{ fontWeight: 'bold' }} >{title}</Typography>
+        <Typography variant="h6" component="h6" sx={{ fontWeight: 'bold' }} >{title}</Typography>
       </Toolbar>
       <Box sx={{ px: 1 }}>
         {children}
