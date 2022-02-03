@@ -12,6 +12,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
+import Typography from '@mui/material/Typography';
 
 const ContainerProps = {
   container: true,
@@ -55,8 +56,15 @@ const AdminLayout = () => {
     <Grid {...ContainerProps}>
       <Grid item xs="auto" zeroMinWidth>
         <SideNav open={openSidebar}>
-          <Box sx={{ display: 'flex' }}>
-            <IconButton onClick={handleIconClick} sx={{ mx: 1, mt: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '12px', marginBottom: '12px' }}>
+            { openSidebar && (
+              <Typography
+                variant="h5"
+                component="h5"
+                sx={{ flexGrow: 1, mx: 2, fontWeight: 'bold' }}
+              >Sidehand</Typography>
+            )}
+            <IconButton onClick={handleIconClick} sx={{ mx: 1 }}>
               {openSidebar ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
           </Box>
