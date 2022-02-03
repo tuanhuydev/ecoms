@@ -1,11 +1,12 @@
+import React, { FC } from 'react';
 import AdminLayout from '@components/layouts/AdminLayout';
 import BaseLayout from '@components/layouts/Base';
 import Overview from '@containers/Overview';
 import Setting from '@containers/Setting';
 import Tasks from '@containers/Tasks';
-import React, { FC } from 'react';
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import { EMPTY_STRING, ROUTE_PATHS } from '../../configs/constants';
+import PrivateRoute from './PrivateRoute';
 
 const routes: RouteObject[] = [
   {
@@ -14,7 +15,7 @@ const routes: RouteObject[] = [
     children: [
       {
         path: EMPTY_STRING,
-        element: (<AdminLayout />),
+        element: (<PrivateRoute><AdminLayout /></PrivateRoute>),
         children: [
           { index: true, element: <Navigate to={ROUTE_PATHS.OVERVIEW} /> },
           { path: ROUTE_PATHS.OVERVIEW, element: <Overview /> },
