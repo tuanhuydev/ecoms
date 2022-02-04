@@ -1,6 +1,6 @@
-import React from 'react';
+import { CSSObject, Theme, styled } from '@mui/material/styles';
 import MuiDrawer, { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer';
-import { styled, Theme, CSSObject } from '@mui/material/styles';
+import React from 'react';
 
 const DRAWER_WIDTH = 240;
 

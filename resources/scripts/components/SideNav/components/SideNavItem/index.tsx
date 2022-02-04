@@ -1,9 +1,9 @@
+import { LinkProps, NavLink, useMatch, useResolvedPath } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import clsx from 'clsx';
 import React, { ReactNode } from 'react';
-import { LinkProps, NavLink, useMatch, useResolvedPath } from 'react-router-dom';
+import clsx from 'clsx';
 import styles from './styles.module.scss';
 
 export interface SideNavItemProps {

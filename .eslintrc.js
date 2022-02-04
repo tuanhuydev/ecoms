@@ -11,7 +11,8 @@ module.exports = {
     ecmaVersion: 12
   },
   plugins: [
-    '@typescript-eslint'
+    '@typescript-eslint',
+    'sort-imports-es6-autofix'
   ],
   rules: {
     semi: ['error', 'always'],
@@ -25,6 +26,11 @@ module.exports = {
     'max-len': ['error', { code: 120 }],
     'comma-dangle': ['error', 'never'],
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'no-unused-vars': ['warn', { vars: 'all' }]
+    'no-unused-vars': ['warn', { vars: 'all' }],
+    'sort-imports-es6-autofix/sort-imports-es6': [2, {
+      ignoreCase: false,
+      ignoreMemberSort: false,
+      memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single']
+    }]
   }
 };

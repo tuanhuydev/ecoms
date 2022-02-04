@@ -1,6 +1,6 @@
+import './vendors/images';
 import $ from 'jquery';
 import Loading from './components/Loading';
-import './vendors/images';
 
 (function () {
   const loading = Loading.getInstance();

@@ -1,8 +1,8 @@
-import { AxiosResponse } from 'axios';
 import { API_URL } from '../configs/constants';
+import { AxiosResponse } from 'axios';
+import { DefaultObjectType } from '../interfaces/Meta';
 import Cookie from 'js-cookie';
 import httpClient from '../configs/httpClient';
-import { DefaultObjectType } from '../interfaces/Meta';
 
 abstract class Auth {
   static getAuth() {

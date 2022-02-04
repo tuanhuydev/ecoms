@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
+import { EMPTY_STRING, ROUTE_PATHS } from '../../configs/constants';
+import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import AdminLayout from '@components/layouts/AdminLayout';
 import BaseLayout from '@components/layouts/Base';
 import Overview from '@containers/Overview';
+import PrivateRoute from './PrivateRoute';
+import React, { FC } from 'react';
 import Setting from '@containers/Setting';
 import Tasks from '@containers/Tasks';
-import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
-import { EMPTY_STRING, ROUTE_PATHS } from '../../configs/constants';
-import PrivateRoute from './PrivateRoute';
 
 const routes: RouteObject[] = [
   {

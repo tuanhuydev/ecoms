@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
-import { Task } from '../../interfaces/Task';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { TASK_STATUS } from '../../configs/constants';
+import { Task } from '../../interfaces/Task';
+import { useSelector } from 'react-redux';
 
 export interface TaskSliceType {
   tasks: Task[];

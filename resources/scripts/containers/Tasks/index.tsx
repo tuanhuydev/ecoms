@@ -1,22 +1,23 @@
-import PageContainer from '@components/PageContainer';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import TextField from '@mui/material/TextField';
-import React, { useEffect } from 'react';
+import { AppDispatch } from '@store/index';
+import { AxiosResponse } from 'axios';
 import { Controller, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import { TASK_STATUS } from '../../configs/constants';
 import { Task } from '../../interfaces/Task';
-import { AppDispatch } from '../../store';
-import { selectAllTasks, taskActions } from '@store/slices/taskSlice';
 import { newTaskSchema } from './schemas';
+import { selectAllTasks, taskActions } from '@store/slices/taskSlice';
+import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AxiosResponse } from 'axios';
-import TaskService from '../../services/TaskService';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import Radio from '@mui/material/Radio';
 import ListItemButton from '@mui/material/ListItemButton';
+import PageContainer from '@components/base/PageContainer';
+import Radio from '@mui/material/Radio';
+import React, { useEffect, useState } from 'react';
+import TaskDetail from '@components/pages/Tasks/TaskDetail';
+import TaskService from '../../services/TaskService';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 const INITIAL_FORM_VALUES = {
@@ -27,6 +28,8 @@ const INITIAL_FORM_VALUES = {
 const Tasks = () => {
   const dispatch: AppDispatch = useDispatch();
   const tasks: Task[] = selectAllTasks();
+
+  const [selectedTask, setSelectedTask] = useState<Task>();
 
   // Form
   const { control, getValues, resetField, formState: { errors } } = useForm({
@@ -65,6 +68,9 @@ const Tasks = () => {
       console.log(err);
     }
   };
+
+  const handleOpenTask = (task: Task) => () => setSelectedTask(task);
+  const handleCloseTask = () => setSelectedTask(null);
 
   useEffect(() => {
     dispatch(taskActions.fetchTasks());
@@ -111,7 +117,7 @@ const Tasks = () => {
                     />
                   )}
                 >
-                  <ListItemButton>
+                  <ListItemButton onClick={handleOpenTask(task)}>
                     <Typography noWrap>{task.title}</Typography>
                   </ListItemButton>
                 </ListItem>
@@ -120,6 +126,7 @@ const Tasks = () => {
           </List>
         </Box>
       </Card>
+      <TaskDetail open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />
     </PageContainer>
   );
 };

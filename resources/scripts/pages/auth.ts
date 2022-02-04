@@ -1,7 +1,7 @@
-import { Login } from '../services/AuthService';
 import { APP_URL } from '../configs/constants';
-import Cookie from 'js-cookie';
 import { AxiosError } from 'axios';
+import { Login } from '../services/AuthService';
+import Cookie from 'js-cookie';
 
 // Auto navigate to admin page if user already logged in
 if (localStorage.getItem('user') && Cookie.get('accessToken')) {

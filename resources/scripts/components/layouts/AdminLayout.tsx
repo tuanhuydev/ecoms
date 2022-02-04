@@ -1,17 +1,17 @@
-import React from 'react';
-import SideNav from '@components/SideNav';
-import Grid from '@mui/material/Grid';
-import List from '@mui/material/List';
+import { AppDispatch } from '@store/index';
 import { Outlet } from 'react-router-dom';
 import { adminRoutes } from '../../configs/routes';
-import SideNavItem from '@components/SideNav/components/SideNavItem';
 import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import MenuIcon from '@mui/icons-material/Menu';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@store/index';
+import Box from '@mui/material/Box';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import MenuIcon from '@mui/icons-material/Menu';
+import React from 'react';
+import SideNav from '@components/SideNav';
+import SideNavItem from '@components/SideNav/components/SideNavItem';
 import Typography from '@mui/material/Typography';
 
 const ContainerProps = {
