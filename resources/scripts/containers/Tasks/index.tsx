@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { TASK_STATUS } from '../../configs/constants';
 import { Task } from '../../interfaces/Task';
 import { AppDispatch } from '../../store';
-import { selectAllTasks, taskActions } from '../../store/slices/taskSlice';
+import { selectAllTasks, taskActions } from '@store/slices/taskSlice';
 import { newTaskSchema } from './schemas';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { AxiosResponse } from 'axios';

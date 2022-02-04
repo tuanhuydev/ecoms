@@ -1,12 +1,15 @@
 import React, { FC } from 'react';
 import CssBaseline from '@mui/material/CssBaseline'; // Reset CSS
-import { StyledEngineProvider } from '@mui/material/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import mainTheme from '../configs/themes';
 
 const withMuiStyles = (Component: FC): JSX.Element => {
   return (
     <StyledEngineProvider injectFirst>
-      <CssBaseline />
-      <Component />
+      <ThemeProvider theme={mainTheme}>
+        <CssBaseline />
+        <Component />
+      </ThemeProvider>
     </StyledEngineProvider>
   );
 };

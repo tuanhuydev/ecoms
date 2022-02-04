@@ -5,13 +5,13 @@ import List from '@mui/material/List';
 import { Outlet } from 'react-router-dom';
 import { adminRoutes } from '../../configs/routes';
 import SideNavItem from '@components/SideNav/components/SideNavItem';
-import { selectOpenSidebar, setOpenSidebar } from '../../store/slices/metaSlice';
+import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store';
+import { AppDispatch } from '@store/index';
 import Typography from '@mui/material/Typography';
 
 const ContainerProps = {
@@ -48,9 +48,7 @@ const AdminLayout = () => {
     );
   });
 
-  const handleIconClick = () => {
-    dispatch(setOpenSidebar({ openSidebar: !openSidebar }));
-  };
+  const handleIconClick = () => dispatch(setOpenSidebar({ openSidebar: !openSidebar }));
 
   return (
     <Grid {...ContainerProps}>

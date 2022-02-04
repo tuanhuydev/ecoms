@@ -122,10 +122,12 @@ const config = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    mainFiles: ['index'],
     alias: {
       '@assets': path.resolve(__dirname, 'resources/assets'),
       '@components': path.resolve(__dirname, 'resources/scripts/components'),
       '@containers': path.resolve(__dirname, 'resources/scripts/containers'),
+      '@store': path.resolve(__dirname, 'resources/scripts/store'),
       '@common-styles': path.resolve(__dirname, 'resources/stylesheets/commons')
     }
   },
