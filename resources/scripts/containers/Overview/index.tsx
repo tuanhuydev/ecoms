@@ -10,7 +10,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton/ListItemButton';
 import { useDispatch } from 'react-redux';
-import { selectBacklogTasks, taskActions } from '../../store/slices/taskSlice';
+import { selectBacklogTasks, taskActions } from '@store/slices/taskSlice';
 import { Task } from '../../interfaces/Task';
 import { EMPTY_STRING, TASK_STATUS } from '../../configs/constants';
 import TaskService from '../../services/TaskService';

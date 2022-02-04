@@ -6,9 +6,9 @@ import styles from './styles.module.scss';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
-import { selectOpenSidebar, setOpenSidebar } from '../../store/slices/metaSlice';
+import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store';
+import { AppDispatch } from '@store/index';
 
 export interface NavbarProps extends MuiAppBarProps {
   open?: boolean;
