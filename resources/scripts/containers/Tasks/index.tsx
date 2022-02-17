@@ -9,11 +9,11 @@ import { useDispatch } from 'react-redux';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Checkbox from '@mui/material/Checkbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import PageContainer from '@components/base/PageContainer';
-import Radio from '@mui/material/Radio';
 import React, { useEffect, useState } from 'react';
 import TaskDetail from '@components/pages/Tasks/TaskDetail';
 import TaskService from '../../services/TaskService';
@@ -22,6 +22,7 @@ import Typography from '@mui/material/Typography';
 
 const INITIAL_FORM_VALUES = {
   title: '',
+  description: '',
   status: TASK_STATUS.BACKLOG
 };
 
@@ -32,7 +33,7 @@ const Tasks = () => {
   const [selectedTask, setSelectedTask] = useState<Task>();
 
   // Form
-  const { control, getValues, resetField, formState: { errors } } = useForm({
+  const { control, getValues, reset, formState: { errors } } = useForm({
     defaultValues: INITIAL_FORM_VALUES,
     resolver: yupResolver(newTaskSchema)
   });
@@ -42,8 +43,8 @@ const Tasks = () => {
       const title = getValues('title');
       const newTask = { title, status: TASK_STATUS.BACKLOG };
       const { data }: AxiosResponse = await TaskService.createTask(newTask);
-      dispatch(taskActions.addTask({ taskId: data?.taskId, ...newTask } as Task));
-      resetField('title');
+      dispatch(taskActions.addTask({ id: data?.id, ...newTask } as Task));
+      reset();
     } catch (err) {
       console.log(err);
     }
@@ -55,15 +56,11 @@ const Tasks = () => {
     }
   };
 
-  const handleCompleteTask = (task: Task) => async (e: any) => {
+  const handleCompleteTask = (task: Task) => async () => {
     try {
-      const { data }: AxiosResponse = await TaskService.updateTask({ task_id: task.taskId, status: TASK_STATUS.DONE });
-      if (data?.success) {
-        dispatch(taskActions.updateTask({
-          ...task,
-          status: TASK_STATUS.DONE
-        }));
-      }
+      const taskStatus = task.status === TASK_STATUS.DONE ? TASK_STATUS.BACKLOG : TASK_STATUS.DONE;
+      const { data }: AxiosResponse = await TaskService.updateTask({ id: task.id, status: taskStatus });
+      if (data?.success) dispatch(taskActions.updateTask({ ...task, status: taskStatus }));
     } catch (err) {
       console.log(err);
     }
@@ -107,17 +104,15 @@ const Tasks = () => {
             {tasks.map((task) => {
               return (
                 <ListItem
-                  key={task.taskId}
-                  disabled={task.status === TASK_STATUS.DONE}
+                  key={task.id}
                   secondaryAction={(
-                    <Radio
-                      edge="end"
+                    <Checkbox
                       onChange={handleCompleteTask(task)}
                       checked={task.status === TASK_STATUS.DONE}
                     />
                   )}
                 >
-                  <ListItemButton onClick={handleOpenTask(task)}>
+                  <ListItemButton onClick={handleOpenTask(task)} disabled={task.status === TASK_STATUS.DONE}>
                     <Typography noWrap>{task.title}</Typography>
                   </ListItemButton>
                 </ListItem>
@@ -126,7 +121,7 @@ const Tasks = () => {
           </List>
         </Box>
       </Card>
-      <TaskDetail open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />
+      {selectedTask && (<TaskDetail open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />)}
     </PageContainer>
   );
 };

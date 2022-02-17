@@ -10,7 +10,7 @@
   &__form {
     @include flexColumn;
     align-items: center;
-    background-color: var(--color-light);
+    background-color: var(--white);
     border-radius: 6px;
     padding: 2rem;
     min-width: 26.25rem;

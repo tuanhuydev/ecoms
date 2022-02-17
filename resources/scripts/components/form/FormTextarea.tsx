@@ -9,10 +9,12 @@ export interface FormTextareaProps extends Partial<ControllerProps> {
   placeholder?: string;
   name: string;
   disabled?: boolean;
+  onBlur?: (event: any) => void
 }
 
 const FormTextarea = (props: FormTextareaProps) => {
-  const { control, className, placeholder, disabled = false, ...restProps } = props;
+  const { control, className, placeholder, disabled = false, onBlur: handleBlur, ...restProps } = props;
+
   return (
     <Controller
       {...restProps}
@@ -23,7 +25,7 @@ const FormTextarea = (props: FormTextareaProps) => {
         return (
           <>
             <Textarea
-              onBlur={onBlur}
+              onBlur={(e) => { onBlur(); handleBlur(e); }}
               onChange={onChange}
               className={className}
               placeholder={placeholder}

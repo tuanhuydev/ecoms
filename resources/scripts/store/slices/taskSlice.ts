@@ -26,11 +26,11 @@ export const taskSlice = createSlice({
       state.tasks.unshift(action.payload);
     },
     updateTask(state, action: PayloadAction<Task>) {
-      const index = state.tasks.findIndex((task) => task.taskId === action.payload.taskId);
+      const index = state.tasks.findIndex((task) => task.id === action.payload.id);
       state.tasks[index] = action.payload;
     },
     completeTask(state, action: PayloadAction<string>) {
-      state.tasks = state.tasks.filter((task) => task.taskId !== action.payload);
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     }
   }
 });

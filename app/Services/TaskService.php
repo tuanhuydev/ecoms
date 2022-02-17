@@ -29,7 +29,7 @@ class TaskService
     /**
      * Create new task
      * @param Task data
-     * @return string newTaskId
+     * @return string taskId
      * 
      */
     public function create($data)
@@ -45,7 +45,7 @@ class TaskService
      */
     public function update($data)
     {
-        $task = Task::find($data['task_id']);
+        $task = Task::find($data['id']);
         if ($task) {
             if (!empty($data['title'])) {
                 $task->title = $data['title'];

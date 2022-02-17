@@ -38,8 +38,8 @@ export default function Overview() {
       if (taskTitle) {
         const newTask: Partial<Task> = { title: taskTitle, status: TASK_STATUS.BACKLOG };
         const { data }: AxiosResponse = await TaskService.createTask(newTask);
-        if (data?.taskId) {
-          dispatch(taskActions.addTask({ taskId: data?.taskId, ...newTask } as Task));
+        if (data?.id) {
+          dispatch(taskActions.addTask({ id: data?.id, ...newTask } as Task));
           setTitle(EMPTY_STRING);
         }
       }
@@ -49,11 +49,11 @@ export default function Overview() {
     }
   };
 
-  const handleConpleteTask = (taskId: string) => async () => {
+  const handleConpleteTask = (id: string) => async () => {
     try {
-      const { data }: AxiosResponse = await TaskService.deleteTask(taskId);
+      const { data }: AxiosResponse = await TaskService.deleteTask(id);
       if (data?.success) {
-        dispatch(taskActions.completeTask(taskId));
+        dispatch(taskActions.completeTask(id));
       }
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -81,11 +81,11 @@ export default function Overview() {
               <List>
                 {tasks.map((task: Task) => (
                   <ListItem
-                    key={task.taskId}
+                    key={task.id}
 
                   >
                     <ListItemButton
-                      onClick={handleConpleteTask(task.taskId)}
+                      onClick={handleConpleteTask(task.id)}
                       dense
                       sx={{ justifyContent: 'space-between' }}
                     >

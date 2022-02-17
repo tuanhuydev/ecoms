@@ -25,6 +25,10 @@ const Textarea = (props: TextareaProps) => {
     }
   };
 
+  useEffect(() => {
+    onInputFitSize();
+  }, []);
+
   return (
     <textarea
       {...restProps}

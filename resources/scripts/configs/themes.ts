@@ -8,6 +8,7 @@ export default createTheme({
   // palette: {
   //   mode: 'dark'
   // },
+  spacing: 16,
   components: {
     MuiCssBaseline: {
       styleOverrides: `
