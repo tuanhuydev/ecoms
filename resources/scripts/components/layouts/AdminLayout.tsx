@@ -62,7 +62,7 @@ const AdminLayout = () => {
                 sx={{ flexGrow: 1, mx: 2, fontWeight: 'bold' }}
               >Sidehand</Typography>
             )}
-            <IconButton onClick={handleIconClick} sx={{ mx: 1 }}>
+            <IconButton onClick={handleIconClick} sx={{ mx: 0.5 }}>
               {openSidebar ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
           </Box>
