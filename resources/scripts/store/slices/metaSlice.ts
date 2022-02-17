@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
-import { RootState } from '..';
 import { Meta } from '../../interfaces/Meta';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '..';
+import { useSelector } from 'react-redux';
 
 const initialState: Meta = {
   openSidebar: true

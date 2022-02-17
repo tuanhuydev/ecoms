@@ -1,9 +1,9 @@
-import React from 'react';
 import { DefaultObjectType } from '../interfaces/Meta';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ListAltIcon from '@mui/icons-material/ListAlt';
 import { ROUTE_PATHS } from './constants';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import React from 'react';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export const adminRoutes = {
   overview: {

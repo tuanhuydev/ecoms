@@ -25,7 +25,7 @@ class TaskController extends Controller
      */
     public function getAllTasks(Request $request) 
     {
-        return response()->json(['tasks' => $taskId = $this->taskService->getAll()]);
+        return response()->json(['tasks' => $this->taskService->getAll()]);
     }
 
     /**
@@ -52,7 +52,7 @@ class TaskController extends Controller
             'title' => 'required|max:255',
         ]);
         $newTask = $this->taskService->create($validatedData);
-        return response()->json(['taskId' => $newTask->task_id]);
+        return response()->json(['id' => $newTask->id]);
     }
 
     /**
@@ -76,7 +76,7 @@ class TaskController extends Controller
     {
         // TODO: handle validation fail
         $validatedData = $request->validate([
-            'task_id' => 'required',
+            'id' => 'required',
             'title' => 'nullable',
             'description' => 'nullable',
             'status' => "in:BACKLOG,PROGRESS,DONE",

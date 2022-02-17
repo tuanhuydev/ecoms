@@ -10,12 +10,7 @@ use Illuminate\Support\Str;
 
 class Task extends Model
 {
-    use HasFactory, SoftDeletes, HasUuid;
-
-    protected $primaryKey = 'task_id';
-    protected $keyType = 'string';
-    // Prevent save as uuid but return 0
-    public $incrementing = false;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

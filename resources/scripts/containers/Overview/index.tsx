@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import Card from '@mui/material/Card';
+import { AxiosResponse } from 'axios';
+import { EMPTY_STRING, TASK_STATUS } from '../../configs/constants';
+import { Task } from '../../interfaces/Task';
+import { selectBacklogTasks, taskActions } from '@store/slices/taskSlice';
+import { useDispatch } from 'react-redux';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import CalendarPicker from '@mui/lab/CalendarPicker';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import CalendarPicker from '@mui/lab/CalendarPicker';
+import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
+import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton/ListItemButton';
-import { useDispatch } from 'react-redux';
-import { selectBacklogTasks, taskActions } from '@store/slices/taskSlice';
-import { Task } from '../../interfaces/Task';
-import { EMPTY_STRING, TASK_STATUS } from '../../configs/constants';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import PageContainer from '@components/base/PageContainer';
+import React, { useEffect, useState } from 'react';
 import TaskService from '../../services/TaskService';
-import { AxiosResponse } from 'axios';
-import PageContainer from '@components/PageContainer';
-import Chip from '@mui/material/Chip';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 export default function Overview() {
@@ -38,8 +38,8 @@ export default function Overview() {
       if (taskTitle) {
         const newTask: Partial<Task> = { title: taskTitle, status: TASK_STATUS.BACKLOG };
         const { data }: AxiosResponse = await TaskService.createTask(newTask);
-        if (data?.taskId) {
-          dispatch(taskActions.addTask({ taskId: data?.taskId, ...newTask } as Task));
+        if (data?.id) {
+          dispatch(taskActions.addTask({ id: data?.id, ...newTask } as Task));
           setTitle(EMPTY_STRING);
         }
       }
@@ -49,11 +49,11 @@ export default function Overview() {
     }
   };
 
-  const handleConpleteTask = (taskId: string) => async () => {
+  const handleConpleteTask = (id: string) => async () => {
     try {
-      const { data }: AxiosResponse = await TaskService.deleteTask(taskId);
+      const { data }: AxiosResponse = await TaskService.deleteTask(id);
       if (data?.success) {
-        dispatch(taskActions.completeTask(taskId));
+        dispatch(taskActions.completeTask(id));
       }
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -81,11 +81,11 @@ export default function Overview() {
               <List>
                 {tasks.map((task: Task) => (
                   <ListItem
-                    key={task.taskId}
+                    key={task.id}
 
                   >
                     <ListItemButton
-                      onClick={handleConpleteTask(task.taskId)}
+                      onClick={handleConpleteTask(task.id)}
                       dense
                       sx={{ justifyContent: 'space-between' }}
                     >

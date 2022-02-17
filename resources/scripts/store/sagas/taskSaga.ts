@@ -1,9 +1,9 @@
-import { taskActions } from '../slices/taskSlice';
-import { takeEvery, call, put } from 'redux-saga/effects';
 import { AxiosResponse } from 'axios';
-import TaskService from '../../services/TaskService';
-import { snakeToCamel } from '../../utils/helpers';
 import { DefaultObjectType } from '../../interfaces/Meta';
+import { call, put, takeEvery } from 'redux-saga/effects';
+import { snakeToCamel } from '../../utils/helpers';
+import { taskActions } from '../slices/taskSlice';
+import TaskService from '../../services/TaskService';
 
 export function * getTasks() {
   try {

@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
-import { Task } from '../../interfaces/Task';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { TASK_STATUS } from '../../configs/constants';
+import { Task } from '../../interfaces/Task';
+import { useSelector } from 'react-redux';
 
 export interface TaskSliceType {
   tasks: Task[];
@@ -26,11 +26,11 @@ export const taskSlice = createSlice({
       state.tasks.unshift(action.payload);
     },
     updateTask(state, action: PayloadAction<Task>) {
-      const index = state.tasks.findIndex((task) => task.taskId === action.payload.taskId);
+      const index = state.tasks.findIndex((task) => task.id === action.payload.id);
       state.tasks[index] = action.payload;
     },
     completeTask(state, action: PayloadAction<string>) {
-      state.tasks = state.tasks.filter((task) => task.taskId !== action.payload);
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     }
   }
 });

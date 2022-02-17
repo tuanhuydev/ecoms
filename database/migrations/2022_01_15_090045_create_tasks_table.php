@@ -18,7 +18,7 @@ class CreateTasksTable extends Migration
     {
         if (!Schema::hasTable($this->tableName)) {
             Schema::create($this->tableName, function (Blueprint $table) {
-                $table->uuid('task_id');
+                $table->id();
                 $table->string('title');
                 $table->text('description')->nullable();
                 $table->enum('status', ['BACKLOG', 'PROGRESS', 'DONE'])->default('BACKLOG');
