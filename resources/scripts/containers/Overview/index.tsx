@@ -1,12 +1,12 @@
 import { AxiosResponse } from 'axios';
-import { EMPTY_STRING, TASK_STATUS } from '../../configs/constants';
+import { EMPTY_STRING } from '../../configs/constants';
+import { TASK_STATUS } from '../../configs/enums';
 import { Task } from '../../interfaces/Task';
 import { selectBacklogTasks, taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Button from '@mui/material/Button';
 import CalendarPicker from '@mui/lab/CalendarPicker';
-import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
