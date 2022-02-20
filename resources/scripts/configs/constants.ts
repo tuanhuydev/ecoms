@@ -13,9 +13,3 @@ export const ROUTE_PATHS = {
   SETTING: '/admin/setting',
   TASKS: '/admin/tasks'
 };
-
-export enum TASK_STATUS {
-  BACKLOG = 'BACKLOG',
-  PROGRESS = 'PROGRESS',
-  DONE = 'DONE'
-}

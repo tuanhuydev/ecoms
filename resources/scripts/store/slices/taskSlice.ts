@@ -1,17 +1,17 @@
+import { LOADING_STATE, TASK_STATUS } from '../../configs/enums';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
-import { TASK_STATUS } from '../../configs/constants';
 import { Task } from '../../interfaces/Task';
 import { useSelector } from 'react-redux';
 
 export interface TaskSliceType {
   tasks: Task[];
-  loading: boolean,
+  loading: string,
 }
 
 const initialState: TaskSliceType = {
   tasks: [],
-  loading: false
+  loading: LOADING_STATE.IDLE
 };
 
 export const taskSlice = createSlice({
@@ -19,6 +19,9 @@ export const taskSlice = createSlice({
   initialState: initialState,
   reducers: {
     fetchTasks() {},
+    setLoading(state, action) {
+      state.loading = action.payload;
+    },
     setTasks(state, action) {
       state.tasks = action.payload;
     },
@@ -39,6 +42,7 @@ export const taskSlice = createSlice({
 export const taskActions = taskSlice.actions;
 
 // Selector
+export const selectTaskLoading = (): string => useSelector((state: RootState) => state.task.loading);
 export const selectAllTasks = (): Task[] => useSelector((state: RootState) => state.task.tasks);
 export const selectBacklogTasks = (): Task[] => useSelector((state: RootState) =>
   state.task.tasks.filter((task: Task) =>

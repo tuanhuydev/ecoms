@@ -9,7 +9,7 @@ abstract class Auth {
     const user = localStorage.getItem('user');
     const accessToken = Cookie.get('securityId');
     if (user && accessToken) {
-      return { user, accessToken };
+      return { user: JSON.parse(user), accessToken };
     }
     return false;
   }

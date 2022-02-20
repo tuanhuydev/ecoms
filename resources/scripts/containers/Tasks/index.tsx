@@ -1,10 +1,10 @@
 import { AppDispatch } from '@store/index';
 import { AxiosResponse } from 'axios';
-import { TASK_STATUS } from '../../configs/constants';
+import { LOADING_STATE, TASK_STATUS } from '../../configs/enums';
 import { Task } from '../../interfaces/Task';
 import { grey } from '@mui/material/colors';
 import { newTaskSchema } from './schemas';
-import { selectAllTasks, taskActions } from '@store/slices/taskSlice';
+import { selectAllTasks, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useTheme } from '@mui/material/styles';
@@ -35,6 +35,7 @@ const Tasks = () => {
   const theme = useTheme();
   const dispatch: AppDispatch = useDispatch();
   const tasks: Task[] = selectAllTasks();
+  const loading: string = selectTaskLoading();
 
   const [selectedTask, setSelectedTask] = useState<Task>();
 
@@ -80,7 +81,7 @@ const Tasks = () => {
   }, []);
 
   return (
-    <PageContainer title='Tasks'>
+    <PageContainer title='Tasks' loading={loading === LOADING_STATE.LOADING}>
       <Box sx={{ pt: 2, pb: 1 }}>
         <FormTextField control={control} name="title" onKeyDown={handleCreateTask} />
       </Box>

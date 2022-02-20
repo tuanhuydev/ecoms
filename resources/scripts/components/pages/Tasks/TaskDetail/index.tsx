@@ -1,13 +1,13 @@
 import { AppDispatch } from '@store/index';
 import { AxiosResponse } from 'axios';
-import { TASK_STATUS } from '../../../../configs/constants';
+import { TASK_STATUS } from '../../../../configs/enums';
 import { Task } from '../../../../interfaces/Task';
 import { amber, blue, green, grey } from '@mui/material/colors';
 import { newTaskSchema } from '@containers/Tasks/schemas';
 import { styled, useTheme } from '@mui/material/styles';
 import { taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useFormState, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Box, { BoxProps } from '@mui/system/Box';
 import Button from '@mui/material/Button';
@@ -91,11 +91,11 @@ const TaskDetail = (props: TaskDetailProps) => {
     resolver: yupResolver(newTaskSchema)
   });
   const taskStatus = useWatch({ control, name: 'status' });
-
+  const { isDirty } = useFormState({ control });
   const handleUpdateTask = async () => {
     try {
       const validated = await trigger();
-      if (task.status !== TASK_STATUS.DONE && validated) {
+      if (validated) {
         const { status, ...restTask }: any = getValues();
         const { data }: AxiosResponse = await TaskService.updateTask({
           ...restTask,
@@ -127,8 +127,15 @@ const TaskDetail = (props: TaskDetailProps) => {
   }, [task, setValue]);
 
   useEffect(() => {
-    handleUpdateTask();
-  }, [taskStatus]);
+    const timeoutUpdate = setTimeout(() => {
+      if (isDirty) {
+        handleUpdateTask();
+      }
+    }, 300);
+    return () => {
+      clearTimeout(timeoutUpdate);
+    };
+  }, [isDirty]);
 
   const taskIsDone = taskStatus.value === TASK_STATUS.DONE;
   const taskIsProgress = taskStatus.value === TASK_STATUS.PROGRESS;
