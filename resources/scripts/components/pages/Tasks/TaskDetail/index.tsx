@@ -2,7 +2,7 @@ import { AppDispatch } from '@store/index';
 import { AxiosResponse } from 'axios';
 import { TASK_STATUS } from '../../../../configs/constants';
 import { Task } from '../../../../interfaces/Task';
-import { blue, green, grey } from '@mui/material/colors';
+import { amber, blue, green, grey } from '@mui/material/colors';
 import { newTaskSchema } from '@containers/Tasks/schemas';
 import { styled, useTheme } from '@mui/material/styles';
 import { taskActions } from '@store/slices/taskSlice';
@@ -43,7 +43,11 @@ const statusOptions = [
 ];
 
 const StyledToolbar = styled(Toolbar)<StyledDrawerProps>(({ theme, status = TASK_STATUS.BACKLOG }) => {
-  const statusColor = status === TASK_STATUS.DONE ? green[400] : blue[400];
+  const statusColor = status === TASK_STATUS.DONE
+    ? green[400]
+    : status === TASK_STATUS.PROGRESS
+      ? amber[400]
+      : blue[400];
   return {
     backgroundColor: statusColor,
     color: theme.palette.common.white,
@@ -82,7 +86,7 @@ const TaskDetail = (props: TaskDetailProps) => {
     defaultValues: {
       title: '',
       description: '',
-      status: statusOptions.find((option) => option.value === task?.status)
+      status: statusOptions[0]
     },
     resolver: yupResolver(newTaskSchema)
   });
@@ -112,23 +116,28 @@ const TaskDetail = (props: TaskDetailProps) => {
   useEffect(() => {
     if (task) {
       // Conflict react-hook-form type so have to mark as any
-      Object.keys(task).forEach((key: any) => {
-        setValue(key, task[key as keyof Task]);
+      Object.entries(task).forEach(([key, value]: [key: string, value: any]) => {
+        if (key === 'status') {
+          setValue(key, statusOptions.find((option) => option.value === value));
+        } else {
+          setValue((key as any), task[key as keyof Task]);
+        }
       });
     }
-  }, [task]);
+  }, [task, setValue]);
 
   useEffect(() => {
     handleUpdateTask();
   }, [taskStatus]);
 
-  const taskIsDone = task?.status === TASK_STATUS.DONE;
+  const taskIsDone = taskStatus.value === TASK_STATUS.DONE;
+  const taskIsProgress = taskStatus.value === TASK_STATUS.PROGRESS;
 
   return <Fragment>
     <StyledDrawer {...restProps} anchor="right" onClose={onClose}>
-      <StyledToolbar variant='dense' status={task?.status as TASK_STATUS}>
+      <StyledToolbar variant='dense' status={taskStatus.value}>
         <Box sx={{
-          backgroundColor: taskIsDone ? green[700] : blue[700],
+          backgroundColor: taskIsDone ? green[700] : taskIsProgress ? amber[700] : blue[700],
           padding: theme.spacing(0, 0.5),
           fontSize: theme.typography.fontSize,
           display: 'flex',
