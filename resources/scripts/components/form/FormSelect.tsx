@@ -19,20 +19,15 @@ const FormSelect = (props: FormSelectProps) => {
       {...restProps}
       render={({
         field: { onChange, onBlur, value, name }
-      }) => {
-        const selectedOption = options.find((option) => option.value === value);
-        return (
-          <Select
-            onChange={onChange}
-            onBlur={onBlur}
-            options={options}
-            value={selectedOption}
-            name={name}
-          />
-
-        );
-      }}
-
+      }) => (
+        <Select
+          onChange={onChange}
+          onBlur={onBlur}
+          options={options}
+          value={value}
+          name={name}
+        />
+      )}
     />);
 };
 

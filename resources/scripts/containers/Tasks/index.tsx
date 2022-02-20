@@ -1,23 +1,28 @@
 import { AppDispatch } from '@store/index';
 import { AxiosResponse } from 'axios';
-import { Controller, useForm } from 'react-hook-form';
 import { TASK_STATUS } from '../../configs/constants';
 import { Task } from '../../interfaces/Task';
+import { grey } from '@mui/material/colors';
 import { newTaskSchema } from './schemas';
 import { selectAllTasks, taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { useTheme } from '@mui/material/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
+import FormTextField from '@components/form/FormTextField';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PageContainer from '@components/base/PageContainer';
+import Radio from '@mui/material/Radio';
 import React, { useEffect, useState } from 'react';
 import TaskDetail from '@components/pages/Tasks/TaskDetail';
 import TaskService from '../../services/TaskService';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 const INITIAL_FORM_VALUES = {
@@ -27,6 +32,7 @@ const INITIAL_FORM_VALUES = {
 };
 
 const Tasks = () => {
+  const theme = useTheme();
   const dispatch: AppDispatch = useDispatch();
   const tasks: Task[] = selectAllTasks();
 
@@ -50,7 +56,7 @@ const Tasks = () => {
     }
   };
 
-  const handleEnterTitle = (e: any) => {
+  const handleCreateTask = (e: any) => {
     if (e.code === 'Enter') {
       onSubmitForm();
     }
@@ -75,52 +81,75 @@ const Tasks = () => {
 
   return (
     <PageContainer title='Tasks'>
-      <Card sx={{ px: 2 }}>
-        <Box sx={{ display: 'flex', width: '100%', py: 2 }}>
-          <div style={{ display: 'flex', width: '100%' }}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Controller
-                control={control}
-                name="title"
-                render={({ field: { onChange, name, ref, value } }) => (
-                  <TextField
-                    fullWidth
-                    label="New Task"
-                    id="newTaskForm"
-                    value={value}
-                    name={name}
-                    ref={ref}
-                    onChange={onChange}
-                    onKeyDown={handleEnterTitle}
-                  />
+      <Box sx={{ pt: 2, pb: 1 }}>
+        <FormTextField control={control} name="title" onKeyDown={handleCreateTask} />
+      </Box>
+      <Box>
+        <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
+          {tasks.map((task) => {
+            return (
+              <ListItem
+                sx={{
+                  backgroundColor: grey[200],
+                  minHeight: 48,
+                  marginBottom: theme.spacing(0.25),
+                  borderRadius: theme.spacing(0.25)
+                }}
+                disablePadding
+                key={task.id}
+                secondaryAction={(
+                  <IconButton>
+                    <MoreVertIcon />
+                  </IconButton>
                 )}
-              />
-              {errors.title && <div>This is required</div>}
-            </Box>
-          </div>
-        </Box>
-        <Box>
-          <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            {tasks.map((task) => {
-              return (
-                <ListItem
-                  key={task.id}
-                  secondaryAction={(
-                    <Checkbox
-                      onChange={handleCompleteTask(task)}
-                      checked={task.status === TASK_STATUS.DONE}
-                    />
-                  )}
+              >
+                <Radio
+                  onClick={handleCompleteTask(task)}
+                  checked={task?.status === TASK_STATUS.DONE}
+                />
+                <ListItemButton
+                  disableRipple
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: 'transparent'
+                    },
+                    '&:focus': {
+                      backgroundColor: 'transparent'
+                    }
+                  }}
+                  onClick={handleOpenTask(task)}
                 >
-                  <ListItemButton onClick={handleOpenTask(task)} disabled={task.status === TASK_STATUS.DONE}>
-                    <Typography noWrap>{task.title}</Typography>
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-        </Box>
-      </Card>
+                  <Typography noWrap sx={{ width: 400 }}>{task.title}</Typography>
+                  <Box sx={{ display: 'flex' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        WebkitAlignItems: 'center',
+                        marginRight: theme.spacing(0.5),
+                        color: grey[400]
+                      }}><AutorenewIcon sx={{ color: grey[400], width: 18, height: 18 }} />:</Box>
+                    <Chip
+                      size="small"
+                      label={task?.status.toLowerCase()}
+                      sx={{
+                        textTransform: 'capitalize',
+                        width: 80
+                      }}
+
+                      color={
+                        task.status === TASK_STATUS.DONE
+                          ? 'success'
+                          : task.status === TASK_STATUS.PROGRESS
+                            ? 'warning'
+                            : 'primary'
+                      } />
+                  </Box>
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
+      </Box>
       {selectedTask && (<TaskDetail open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />)}
     </PageContainer>
   );
