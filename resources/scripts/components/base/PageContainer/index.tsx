@@ -11,9 +11,14 @@ export interface PageContainerProps {
   loading?: boolean;
   children?: ReactNode;
   ToolbarProps?: ToolbarProps;
-}
+};
 
-const PageContainer = ({ title = '', loading = false, children, ToolbarProps }: PageContainerProps) => {
+const PageContainer = ({
+  title = '',
+  loading = false,
+  children,
+  ToolbarProps
+}: PageContainerProps) => {
   return (
     <Box>
       {loading && (<LinearProgress />)}

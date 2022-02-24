@@ -7,6 +7,7 @@ import { newTaskSchema } from './schemas';
 import { selectAllTasks, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useSnackbar } from 'notistack';
 import { useTheme } from '@mui/material/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
@@ -38,6 +39,7 @@ const Tasks = () => {
   const loading: string = selectTaskLoading();
 
   const [selectedTask, setSelectedTask] = useState<Task>();
+  const { enqueueSnackbar } = useSnackbar();
 
   // Form
   const { control, getValues, reset, formState: { errors } } = useForm({
@@ -53,7 +55,7 @@ const Tasks = () => {
       dispatch(taskActions.addTask({ id: data?.id, ...newTask } as Task));
       reset();
     } catch (err) {
-      console.log(err);
+      enqueueSnackbar('Something went wrong', { variant: 'error' });
     }
   };
 
@@ -69,7 +71,7 @@ const Tasks = () => {
       const { data }: AxiosResponse = await TaskService.updateTask({ id: task.id, status: taskStatus });
       if (data?.success) dispatch(taskActions.updateTask({ ...task, status: taskStatus }));
     } catch (err) {
-      console.log(err);
+      enqueueSnackbar('Something went wrong', { variant: 'error' });
     }
   };
 
