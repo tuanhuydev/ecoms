@@ -115,7 +115,6 @@ const AccountMenu = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <Divider />
         <MenuItem>
           <ListItemIcon>
             <Settings fontSize="small" />
