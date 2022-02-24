@@ -14,6 +14,7 @@
         "@assets/*": ["./assets/*"],
         "@components/*": ["./scripts/components/*"],
         "@containers/*": ["./scripts/containers/*"],
+        "@services/*": ["./scripts/services/*"],
         "@store/*": ["./scripts/store/*"],
       }
     }
