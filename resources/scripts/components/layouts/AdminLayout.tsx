@@ -1,6 +1,6 @@
 import { AppDispatch } from '@store/index';
 import { Outlet } from 'react-router-dom';
-import { adminRoutes } from '../../configs/routes';
+import { adminRoutes } from 'scripts/configs/routes';
 import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
 import { useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';

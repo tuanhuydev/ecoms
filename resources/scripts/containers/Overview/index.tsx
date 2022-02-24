@@ -15,7 +15,7 @@ import ListItemButton from '@mui/material/ListItemButton/ListItemButton';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import PageContainer from '@components/base/PageContainer';
 import React, { useEffect, useState } from 'react';
-import TaskService from '../../services/TaskService';
+import TaskService from '@services/TaskService';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 

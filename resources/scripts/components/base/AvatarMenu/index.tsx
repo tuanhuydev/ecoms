@@ -1,4 +1,4 @@
-import { Login } from '../../../services/AuthService';
+import { Login } from '@services/AuthService';
 import { SelectUser } from '@store/slices/userSlice';
 import { User } from 'scripts/interfaces/User';
 import Avatar from '@mui/material/Avatar';
