@@ -11,9 +11,13 @@ module.exports = {
     ecmaVersion: 12
   },
   plugins: [
-    '@typescript-eslint'
+    '@typescript-eslint',
+    'sort-imports-es6-autofix'
   ],
   rules: {
+    semi: ['error', 'always'],
+    indent: 'off', // https://github.com/eslint/eslint/issues/13956
+    '@typescript-eslint/indent': ['error', 2],
     'no-use-before-define': 'off',
     'no-var': 1, // warning
     'eslint no-path-concat': 0, // off
@@ -21,7 +25,12 @@ module.exports = {
     'space-before-function-paren': 0, // off
     'max-len': ['error', { code: 120 }],
     'comma-dangle': ['error', 'never'],
-    'no-console': ['error', { allow: ['warn', 'error'] }],
-    semi: ['error', 'always']
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-unused-vars': ['warn', { vars: 'all' }],
+    'sort-imports-es6-autofix/sort-imports-es6': [2, {
+      ignoreCase: false,
+      ignoreMemberSort: false,
+      memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single']
+    }]
   }
 };

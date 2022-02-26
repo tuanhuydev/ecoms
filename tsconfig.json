@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
       "outDir": "./public/js/",
+      "baseUrl": "./resources/",
       "noImplicitAny": true,
       "sourceMap": true,
       "allowJs": true,
@@ -10,9 +11,11 @@
       "moduleResolution": "node",
       "allowSyntheticDefaultImports": true,
       "paths": {
-        "@assets/*": ["./resources/assets/*"],
-        "@components/*": ["./resources/scripts/components/*"],
-        "@containers/*": ["./resources/scripts/containers/*"],
+        "@assets/*": ["./assets/*"],
+        "@components/*": ["./scripts/components/*"],
+        "@containers/*": ["./scripts/containers/*"],
+        "@services/*": ["./scripts/services/*"],
+        "@store/*": ["./scripts/store/*"],
       }
     }
   }

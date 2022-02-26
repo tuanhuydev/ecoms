@@ -1,9 +1,9 @@
-import JQuery from 'jquery';
-import clsx from 'clsx';
-import { TableConfig, ColumnConfig, TableInstance } from './types';
-import cloneDeep from 'lodash/cloneDeep';
+import { ColumnConfig, TableConfig, TableInstance } from './types';
+import { EmptyObject } from '../../types/custom';
 import { makeRandomString } from '../../utils/helpers';
-import { EmptyObject } from '../../types/global';
+import JQuery from 'jquery';
+import cloneDeep from 'lodash/cloneDeep';
+import clsx from 'clsx';
 
 class Table {
   private config: TableConfig;

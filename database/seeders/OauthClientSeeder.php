@@ -18,7 +18,7 @@ class OauthClientSeeder extends Seeder
     {
         DB::table('oauth_clients')->insert([
             'id' => 1,
-            'user_id' => '',
+            'user_id' => 'd27a49d2-ba18-40ea-9298-9c4e4979a3e8',
             'name' => 'HuyNT Personal Access Client',
             'secret' => 'I5jUgYS4b4RL53VwsTGyHUG86CgbzZnYr3no5bbG',
             'provider' => '',

@@ -1,5 +1,5 @@
+import { EmptyObject } from '../../types/custom';
 import JQuery from 'jquery';
-import { EmptyObject } from '../../types/global';
 
 export interface ColumnConfig {
   field: string;

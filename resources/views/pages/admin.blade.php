@@ -11,10 +11,10 @@
     <meta property="og:description" content="@yield("description")" />
     <meta property="og:image"       content="@yield("image")" />
     <link rel="stylesheet" href="/css/app.css">
-    <link rel="stylesheet" href="/js/pages/admin/app.css">
+    <link rel="stylesheet" href="/js/pages/admin.css">
 </head>
 <body>
     <div id="root"></div>
-    <script src="/js/pages/admin/app.js" defer type="text/javascript"></script>
+    <script src="/js/pages/admin.js" defer type="text/javascript"></script>
 </body>
 </html>

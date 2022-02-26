@@ -1,35 +1,33 @@
+import { EMPTY_STRING, ROUTE_PATHS } from '../../configs/constants';
+import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
+import AdminLayout from '@components/layouts/AdminLayout';
+import BaseLayout from '@components/layouts/Base';
+import Overview from '@containers/Overview';
+import PrivateRoute from './PrivateRoute';
 import React, { FC } from 'react';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
-import { APP_URL } from '../../configs/constants';
-import { adminRoutes } from '../../configs/routes';
-import { RouteType } from '../../interfaces/Meta';
+import Setting from '@containers/Setting';
+import Tasks from '@containers/Tasks';
 
-const navigateNoMatch = () => {
-  window.location.href = APP_URL;
-  return <></>;
-};
+const routes: RouteObject[] = [
+  {
+    path: ROUTE_PATHS.ADMIN,
+    element: (<BaseLayout />),
+    children: [
+      {
+        path: EMPTY_STRING,
+        element: (<PrivateRoute><AdminLayout /></PrivateRoute>),
+        children: [
+          { index: true, element: <Navigate to={ROUTE_PATHS.OVERVIEW} /> },
+          { path: ROUTE_PATHS.OVERVIEW, element: <Overview /> },
+          { path: ROUTE_PATHS.SETTING, element: <Setting /> },
+          { path: ROUTE_PATHS.TASKS, element: <Tasks /> }
+        ]
+      }
+    ]
+  },
+  { path: '*', element: (<h1>Not Found</h1>) }
+];
 
-export const makeRouteElements = () => {
-  const routeElements: Array<JSX.Element> = Object.keys(adminRoutes).map((key: string) => {
-    const route: RouteType = adminRoutes[key];
-    return (
-      <Route path={route.path} key={key} exact>
-        {route.container}
-      </Route>
-    );
-  });
-
-  // route /admin auto redirect to overview
-  routeElements.push(
-    <Route path="/admin" key={'admin-redirect-to-overview'}>
-      <Redirect to="/admin/overview" />
-    </Route>
-  );
-  // Redirect home when no match route
-  routeElements.push(<Route path="*" key={'no-match-route'} render={navigateNoMatch}></Route>);
-  return routeElements;
-};
-
-const Router: FC = ({ children }): JSX.Element => <BrowserRouter>{children}</BrowserRouter>;
+const Router: FC = (): JSX.Element => useRoutes(routes);
 
 export default Router;

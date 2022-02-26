@@ -1,0 +1,13 @@
+.task {
+  &__title {
+    margin: 1.5rem 0;
+    font-size: 1.4rem;
+    height: 2rem;
+    font-weight: bold;
+  }
+
+  &__description {
+    font-size: 1rem;
+    font-weight: normal;
+  }
+}

@@ -1,41 +1,100 @@
 @import '../commons/mixins';
 @import '../commons/variables';
 
-.auth-form {
-  flex: 1;
-  display: flex;
-
+.auth {
   &__container {
     @include center;
-    flex-direction: column;
-    flex: 1;
-    animation: onload 0.5s;
-  }
-
-  &__thumbnail {
-    @include center;
-    background-color: rgba($color-primary--light, 0.75);
-    flex: 0 0 45%;
-    animation: onload 0.85s;
+    margin: auto 0;
   }
 
   &__form {
-    min-width: 25rem;
-  }
-}
+    @include flexColumn;
+    align-items: center;
+    background-color: var(--white);
+    border-radius: 6px;
+    padding: 2rem;
+    min-width: 26.25rem;
 
-@keyframes onload {
-  0% {
-    transform: translateX(-15%);
-    opacity: 0;
-  }
+    .title {
+      font-size: 1.5rem;
+      margin-bottom: 2.625rem;
+      text-transform: capitalize;
+      color: #212121;
+    }
 
-  75% {
-    opacity: 1;
-  }
+    .control {
+      transition: all 0.25s;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+      background-color: transparent;
 
-  100% {
-    transform: translateX(0);
-    opacity: 1;
+      &.error {
+        background-color: rgba(#ff0000, 0.1);
+        border: 1px solid rgba(#ff0000, 0.5);
+      }
+    }
+
+    .control__input {
+      flex: 1;
+      font-size: 1rem;
+      padding: 0.625rem 0.75rem;
+      margin-bottom: 0.25rem;
+      border-radius: 6px;
+      min-height: 2rem;
+      background-color: #fafafa;
+
+      &:hover {
+        background-color: #eeeeee;
+      }
+
+      &::placeholder {
+        font-weight: 300;
+        color: #bdbdbd;
+      }
+    }
+
+    .control__error {
+      font-size: 0.875rem;
+      height: 1rem;
+      color: rgba(#ff0000, 0.75);
+    }
+
+    .actions {
+      transition: all 1.5s;
+      width: min-content;
+
+      &.error {
+        @include middle;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      &__status {
+        font-size: 0.875rem;
+        height: 1rem;
+        color: rgba(#ff0000, 0.75);
+      }
+    }
+
+    .submit {
+      @include center;
+      width: 3rem;
+      height: 3rem;
+      background-color: #fafafa;
+      transition: all 0.25s;
+      border-radius: 6px;
+
+      &:hover {
+        background-color: #eeeeee;
+      }
+
+      svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        fill: #616161;
+      }
+    }
   }
 }
