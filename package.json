@@ -1,6 +1,6 @@
 {
    "private": true,
-   "version": "1.1.0",
+   "version": "1.0.0",
    "packageFiles": [],
    "scripts": {
       "start": "npx webpack --node-env local",

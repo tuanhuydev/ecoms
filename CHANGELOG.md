@@ -2,11 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## 1.1.0 (2022-02-26)
+## 1.0.0 (2022-02-26)
 
 
 ### Features
 
-* **build:** integrate mui and its components ([deac533](https://github.com/tuanhuydev/think/commit/deac533b9c036680be36d0f666ae9ee381967f67))
-* **build:** integrate pre-commit and enhance linter ([516735a](https://github.com/tuanhuydev/think/commit/516735a2a1fae1d34cf8b0bc2b40621a035dcd18))
-* **vendor:** install react and module scss ([ce64cec](https://github.com/tuanhuydev/think/commit/ce64cec1f7977ceda1e7c65346ccf78b610f1e76))
+* feat(build): integrate redux & webpack build analyzer
+
+* fix(webpack): build time
+
+* refactor(docker): quick enhancement
+
+* refactor(axios): migrate from class to configuration
+
+* refactor(login): enhance UI, refactor code for login page
+
+* feature(task): implement phase 01 task management
+
+* fix(authentication): private route for admin page
+
+* feat(sidenav): support app name on top of sidenav
+
+* fix(app): replace mui fonts to open san, init theme config
+
+* Draft: feat(task): implement task detail (#28)
+
+* feat(task): implement task detail
+
+* refactor(task): enhance UI for task detail
+
+* fix(sidebar): scale down sidebar (#30)
+
+* refactor(tasks): enhance ui task list (#34)
+
+* feat(pageContainer): apply loading and user menu (#35)
+
+* feat(snackbar): implement toast (#36)
+
+* fix(webpack): sync typescript tsconfig path with webpack (#38)
