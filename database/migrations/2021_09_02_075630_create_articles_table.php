@@ -15,6 +15,7 @@ class CreateArticlesTable extends Migration
     {
         if (!Schema::hasTable('articles')) {
             Schema::create('articles', function (Blueprint $table) {
+                $table->engine = 'InnoDB';
                 $table->id('article_id');
                 $table->string('slug');
                 $table->tinyText('title');

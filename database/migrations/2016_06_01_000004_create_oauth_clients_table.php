@@ -41,6 +41,7 @@ class CreateOauthClientsTable extends Migration
     public function up()
     {
         $this->schema->create('oauth_clients', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->uuid('user_id')->nullable()->index();
             $table->string('name');

@@ -79,10 +79,7 @@ export default function Overview() {
             </Grid>
             <List>
               {tasks.map((task: Task) => (
-                <ListItem
-                  key={task.id}
-
-                >
+                <ListItem key={task.id}>
                   <ListItemButton
                     onClick={handleConpleteTask(task.id)}
                     dense

@@ -15,6 +15,7 @@ class User extends Authenticatable
 
     protected $primaryKey = 'id';
     protected $keyType = 'string';
+    
     // Prevent save as uuid but return 0
     public $incrementing = false;
 
@@ -29,6 +30,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+        'avatar'
     ];
 
     /**
