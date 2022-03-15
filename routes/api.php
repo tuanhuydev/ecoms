@@ -6,6 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\TaskController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Mail;
+use  App\Mail\SignUpConfirm;
+
 
 Route::group(['prefix' => 'auth'], function() {
     Route::post('/{type}', [AuthController::class, 'auth']);
@@ -28,11 +31,33 @@ Route::group(['prefix' => 'tasks'], function() {
     Route::delete('/{id}', [TaskController::class, 'deleteTask'])->name('tasks.delete');
 });
 
-/**
- * COMMONS API
- */
+
+/*
+|--------------------------------------------------------------------------
+| Commons API
+|--------------------------------------------------------------------------
+*/
+
+// Upload 
 Route::post('/upload', function(Request $request) {
     $systemPath = Storage::putFile('public', $request->file('file'));
     $publicPath = asset(Storage::url($systemPath));
     return response()->json(['path' => $publicPath]);
+});
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Testing API
+|--------------------------------------------------------------------------
+*/
+
+Route::group(['prefix' => 'test'], function() {
+
+    Route::get('/email', function(Request $request) {
+        $MOCK_EMAIL = "lmjcvm@gmail.com";
+        Mail::to($MOCK_EMAIL)->send(new SignUpConfirm());
+    });
 });
