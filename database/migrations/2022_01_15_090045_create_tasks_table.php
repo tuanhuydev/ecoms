@@ -18,6 +18,7 @@ class CreateTasksTable extends Migration
     {
         if (!Schema::hasTable($this->tableName)) {
             Schema::create($this->tableName, function (Blueprint $table) {
+                $table->engine = 'InnoDB';
                 $table->id();
                 $table->string('title');
                 $table->text('description')->nullable();
