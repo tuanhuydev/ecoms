@@ -1,0 +1,47 @@
+// FLEX
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+
+// WIDTH
+$sizes: 25, 50, 75, 100;
+
+@each $size in $sizes {
+  .w-#{$size} {
+    width: #{$size} + '%';
+  }
+}
+
+// MARGIN
+$spacers: 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20;
+
+@each $spacer in $spacers {
+  .mt-#{$spacer} {
+    margin-top: #{$spacer* 0.25} + 'rem';
+  }
+  .mb-#{$spacer} {
+    margin-bottom: #{$spacer* 0.25} + 'rem';
+  }
+  .ml-#{$spacer} {
+    margin-left: #{$spacer* 0.25} + 'rem';
+  }
+  .mr-#{$spacer} {
+    margin-right: #{$spacer* 0.25} + 'rem';
+  }
+}
+
+
+

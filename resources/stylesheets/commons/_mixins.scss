@@ -35,3 +35,9 @@
   padding-left: $value * 1px;
   padding-right: $value * 1px;
 }
+
+@mixin hoverTextUnderline() {
+  &:hover {
+    text-decoration: underline;
+  }
+}

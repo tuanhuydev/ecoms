@@ -29,11 +29,6 @@
       flex-direction: column;
       margin-bottom: 1rem;
       background-color: transparent;
-
-      &.error {
-        background-color: rgba(#ff0000, 0.1);
-        border: 1px solid rgba(#ff0000, 0.5);
-      }
     }
 
     .control__input {
@@ -55,27 +50,9 @@
       }
     }
 
-    .control__error {
+    #errorList {
       font-size: 0.875rem;
-      height: 1rem;
       color: rgba(#ff0000, 0.75);
-    }
-
-    .actions {
-      transition: all 1.5s;
-      width: min-content;
-
-      &.error {
-        @include middle;
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      &__status {
-        font-size: 0.875rem;
-        height: 1rem;
-        color: rgba(#ff0000, 0.75);
-      }
     }
 
     .submit {

@@ -5,6 +5,7 @@ import React from 'react';
 
 export interface FormTextFieldProps {
   name: string;
+  // eslint-disable-next-line no-unused-vars
   onKeyDown?: (e: any) => void;
   errors?: DefaultObjectType;
   control?: any;

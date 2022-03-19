@@ -1,9 +1,8 @@
-import { Login } from '@services/AuthService';
 import { SelectUser } from '@store/slices/userSlice';
+import { SignIn } from '@services/AuthService';
 import { User } from 'scripts/interfaces/User';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Logout from '@mui/icons-material/Logout';
@@ -13,7 +12,7 @@ import React, { Fragment, useEffect } from 'react';
 import Settings from '@mui/icons-material/Settings';
 import styled from '@emotion/styled';
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
+const StyledBadge = styled(Badge)(() => ({
   '& .MuiBadge-badge': {
     backgroundColor: '#44b700',
     color: '#44b700',
@@ -52,7 +51,7 @@ const AccountMenu = () => {
   const handleClose = () => setAnchorEl(null);
 
   const handleLogout = () => {
-    Login.clearAuth();
+    SignIn.clearAuth();
     window.location.href = '/';
   };
 
