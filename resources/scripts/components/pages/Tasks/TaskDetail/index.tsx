@@ -30,7 +30,7 @@ interface StyledDrawerProps extends ToolbarProps {
   status?: TASK_STATUS;
 }
 
-const StyledDrawer = styled(Drawer)<DrawerProps>(({ theme }) => ({
+const StyledDrawer = styled(Drawer)<DrawerProps>(() => ({
   '& .MuiDrawer-paper': {
     width: 400
   }
@@ -109,6 +109,7 @@ const TaskDetail = (props: TaskDetailProps) => {
         }
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };

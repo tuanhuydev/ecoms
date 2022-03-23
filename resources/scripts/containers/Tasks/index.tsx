@@ -42,7 +42,7 @@ const Tasks = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   // Form
-  const { control, getValues, reset, formState: { errors } } = useForm({
+  const { control, getValues, reset } = useForm({
     defaultValues: INITIAL_FORM_VALUES,
     resolver: yupResolver(newTaskSchema)
   });

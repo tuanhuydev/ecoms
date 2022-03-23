@@ -1,0 +1,29 @@
+@import './mixins';
+
+// By sizes
+$spacers: 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20;
+
+@each $spacer in $spacers {
+  .fs-#{$spacer} {
+   font-size: #{$spacer* 0.25} + 'rem';
+  }
+}
+
+// By colors
+.text-grey-400 {
+  color: var(--grey-400);
+}
+
+// By state
+.hover-underline {
+  @include hoverTextUnderline;
+}
+
+// Alignment
+$alignments: left, center, right;
+
+@each $alignment in $alignments {
+  .text-#{$alignment} {
+   text-align: #{$alignment};
+  }
+}

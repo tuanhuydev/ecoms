@@ -18,14 +18,21 @@ class AuthController extends Controller
 
     /**
      * Render auth page's view
+     * conditional render base on $type
      *  
      * @param string $type
      * @return View
      */
     public function index (String $type) {
-        return view('pages.auth', [
-            'type' => $type ?? 'Login'
-        ]);
+        if (in_array($type, array('sign-up', 'sign-in', 'verify-account'))) {
+            $words = array_map(fn($word) => ucfirst($word), explode("-", $type));
+            $title = join(" ", $words);
+            $data = [
+                'type' => $type,
+                'title' => $title,
+            ];
+            return view('pages.auth', $data);
+        }
     }
 
     /**
@@ -38,18 +45,27 @@ class AuthController extends Controller
     {
         $type = $request->type;
         switch($type) {
-            case 'login':
-                return $this->login($request);
-            case 'register':
-                return $this->register($request);
+            case 'sign-in':
+                return $this->signIn($request);
+            case 'sign-up':
+                return $this->signUp($request);
+            case 'verify-account':
+                return $this->verifyAccount($request);
             default:
                 throw new Error();
         }
     }
 
-    public function login(Request $request) 
+
+    /**
+     * Validate and call service to sign user in
+     * 
+     * @param Request $request
+     * @return Response
+     * 
+     */
+    private function signIn(Request $request) 
     {
-        //TODO: catch 400 on field validation
         $body = $request->validate([
             'email' => 'required|max:50',
             'password' => 'required|min:8|max:16',
@@ -59,15 +75,41 @@ class AuthController extends Controller
         return response()->json(['user' => $result['user'], 'access_token' => $result['access_token']]);
     }
 
-    public function register(Request $request) 
+    /**
+     * Validate and call service to sign user in
+     * 
+     * @param Request $request
+     * @return Response
+     * 
+     */
+    private function signUp(Request $request) 
     {
         $body = $request->validate([
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
             'email' => 'email|required|unique:users',
-            'password' => 'required|min:8|max:16'
+            'password' => 'required|min:8|max:16|same:confirm_password',
+            'confirm_password' => 'required|min:8|max:16'
         ]);
         $result = $this->userService->register($body);
-        return response()->json([ 'success' => $result ]);
+        return response()->json($result);
+    }
+
+
+    /**
+     * Verify user's account base on userId and token
+     * 
+     * @param Request $request
+     * @return Response
+     * 
+     */
+    private function verifyAccount(Request $request)
+    {
+        $body = $request->validate([
+            'token' => 'required',
+            'id' => 'required',
+        ]);
+        $result = $this->userService->verifyAccount($body);
+        return response()->json(['success' => $result]);
     }
 }

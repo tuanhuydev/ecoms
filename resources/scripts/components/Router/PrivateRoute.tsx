@@ -1,12 +1,12 @@
 import { APP_URL } from '../../configs/constants';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
-import { Login } from '../../services/AuthService';
+import { SignIn } from '../../services/AuthService';
 import { setUser } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
 
 const PrivateRoute = ({ children }: {children: JSX.Element}) => {
   const dispatch = useDispatch();
-  const auth = Login.getAuth();
+  const auth = SignIn.getAuth();
   if (!auth) {
     window.location.href = `${APP_URL}/auth/login`;
   }

@@ -9,6 +9,7 @@ export interface FormTextareaProps extends Partial<ControllerProps> {
   placeholder?: string;
   name: string;
   disabled?: boolean;
+  // eslint-disable-next-line no-unused-vars
   onBlur?: (event: any) => void
 }
 

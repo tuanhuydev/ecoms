@@ -8,10 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\Article;
+use App\Models\Traits\HasUuid;
+use App\Models\Traits\HasConfirmationToken;
+
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasUuid, HasConfirmationToken;
 
     protected $primaryKey = 'id';
     protected $keyType = 'string';
@@ -25,7 +28,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'user_id',
         'first_name',
         'last_name',
         'email',
@@ -40,7 +42,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'confirmation_token'
     ];
 
     /**

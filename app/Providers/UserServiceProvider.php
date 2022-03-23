@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Http\Controllers\AuthController;
 use App\Services\UserService;
+use App\Services\EmailService;
 
 class UserServiceProvider extends ServiceProvider
 {
