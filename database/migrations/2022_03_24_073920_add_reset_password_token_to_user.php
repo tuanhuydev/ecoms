@@ -4,9 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddConfirmationTokenUser extends Migration
+class AddResetPasswordTokenToUser extends Migration
 {
-    private $tableName = 'users';
+    private string $tableName = "users";
     /**
      * Run the migrations.
      *
@@ -16,7 +16,7 @@ class AddConfirmationTokenUser extends Migration
     {
         if (Schema::hasTable($this->tableName)) {
             Schema::table($this->tableName, function (Blueprint $table) {
-                $table->string('confirmation_token')->nullable();
+                $table->string('reset_password_token')->nullable();
             });
         }
     }
@@ -30,7 +30,7 @@ class AddConfirmationTokenUser extends Migration
     {
         if (Schema::hasTable($this->tableName)) {
             Schema::table($this->tableName, function (Blueprint $table) {
-                $table->dropColumn('confirmation_token');
+                $table->dropColumn('reset_password_token');
             });
         }
     }

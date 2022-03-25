@@ -25,12 +25,11 @@
                 </div>
             @endif
             
-            @if (in_array($type, array('sign-up', 'sign-in')))
+            @if (in_array($type, array('sign-up', 'sign-in', 'forgot-password')))
                 <div class="control">
                     <input type="email" class="control__input" name="email" required placeholder="Email" />
                 </div>
             @endif
-
 
 
             @if (in_array($type, array('sign-up', 'sign-in', 'new-password')))
@@ -53,7 +52,7 @@
             <ul class="text-center" id="errorList"></ul>
             @if ($type === 'sign-in')
                 <div class="flex justify-between w-100 mt-12">
-                    <a href="forgot-password" class="text-grey-400 fs-3 hover-underline">Forgot your password ?</a>
+                    <a href="{{ route('pages.auth', ['type' => 'forgot-password']) }}" class="text-grey-400 fs-3 hover-underline">Forgot your password ?</a>
                     <a href="{{ route('pages.auth', ['type' => 'sign-up']) }}" class="text-grey-400 fs-3 hover-underline">Sign up new account</a>
                 </div>
             @endif

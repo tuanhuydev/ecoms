@@ -32,7 +32,9 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-        'avatar'
+        'avatar',
+        'reset_password_token',
+        'email_verified_at'
     ];
 
     /**

@@ -9,7 +9,8 @@ use Illuminate\Support\Str;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\NotFoundException;
 use Illuminate\Support\Facades\Mail;
-use  App\Mail\SignUpConfirm;
+use App\Mail\SignUpConfirm;
+use App\Mail\ForgotPassword;
 use Carbon\Carbon;
 
 class UserService
@@ -23,7 +24,7 @@ class UserService
      * @param string $email
      * @param string $password
      */
-    function authenticate(string $email, string $password): array 
+    function signIn(string $email, string $password): array 
     {
         if (!Auth::attempt(['email' => $email, 'password' => $password])) {
             throw new UnauthorizedException();
@@ -39,13 +40,17 @@ class UserService
 
     /**
      * Create new user
+     *  -> Hash password
+     *  -> Create new user
+     *  -> Send confirmation email
+     * 
      * @param mixed body
      * @return User
      */
-    function register(mixed $body): User {
+    function signUp(mixed $body): User {
         $body['password'] = bcrypt($body['password']);
         $user = User::create($body);
-        // Send verified email
+
         Mail::to($user->email)->send(new SignUpConfirm($user));
 
         return $user;
@@ -56,17 +61,70 @@ class UserService
         return User::find($userId);
     }
 
+    /**
+     * Verify account
+     * -> Check user
+     * -> Check confirmation_token field value
+     * -> update user email_verified_at to current time
+     * -> save user's info.
+     * 
+     * @param mixed body
+     * @return User
+     */
     function verifyAccount(mixed $body): int {
         $user = User::find($body['id']);
         if (!$user) {
             throw new NotFoundException();
         }
-        if (strcmp($user->confirmation_token, $body['token']) !== 1) {
+        if (strcmp(($user->confirmation_token), $body['token']) !== 0) {
             throw new UnauthorizedException();
         } 
         $user->email_verified_at = Carbon::now();
         $user->confirmation_token = 1;
         return $user->save();
+    }
+
+    /**
+     * Execute password
+     * -> Check user
+     * -> Check confirmation_token field value
+     * -> update user email_verified_at to current time
+     * -> save user's info.
+     * 
+     * @param mixed body
+     * @return User
+     */
+    function forgotPassword(mixed $body): int {
+        $user = User::where('email', $body['email'])->first();
+        if (!$user) {
+            throw new NotFoundException();
+        }
+        $token = Str::uuid();
+        $user->reset_password_token = $token;
+        Mail::to($user->email)->send(new ForgotPassword($token));
         
+        return $user->save(); 
+    }
+
+    /**
+     * Update user password
+     * -> Find user by reset_password_token
+     * -> Hash new password
+     * -> Update user meta fields
+     * -> Save user
+     * 
+     * @param mixed body
+     * @return User
+     */
+    function updatePassword(mixed $body): int {
+        $user = User::where('reset_password_token', $body['token'])->first();
+        if (!$user) {
+            throw new NotFoundException();
+        }
+
+        $user->password = bcrypt($body['password']);
+        $user->updated_at = Carbon::now();
+        $user->reset_password_token = null;
+        return $user->save();
     }
 }
