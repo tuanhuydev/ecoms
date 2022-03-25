@@ -24,7 +24,7 @@ class AuthController extends Controller
      * @return View
      */
     public function index (String $type) {
-        if (in_array($type, array('sign-up', 'sign-in', 'verify-account'))) {
+        if (in_array($type, array('sign-up', 'sign-in', 'verify-account', 'forgot-password', 'new-password'))) {
             $words = array_map(fn($word) => ucfirst($word), explode("-", $type));
             $title = join(" ", $words);
             $data = [
@@ -32,7 +32,8 @@ class AuthController extends Controller
                 'title' => $title,
             ];
             return view('pages.auth', $data);
-        }
+        } 
+        return redirect()->route('home');       
     }
 
     /**
@@ -51,6 +52,10 @@ class AuthController extends Controller
                 return $this->signUp($request);
             case 'verify-account':
                 return $this->verifyAccount($request);
+            case 'forgot-password':
+                return $this->forgotPassword($request);
+            case 'update-password':
+                return $this->updatePassword($request);
             default:
                 throw new Error();
         }
@@ -71,7 +76,7 @@ class AuthController extends Controller
             'password' => 'required|min:8|max:16',
         ]);
 
-        $result = $this->userService->authenticate($body['email'], $body['password']);
+        $result = $this->userService->signIn($body['email'], $body['password']);
         return response()->json(['user' => $result['user'], 'access_token' => $result['access_token']]);
     }
 
@@ -91,10 +96,9 @@ class AuthController extends Controller
             'password' => 'required|min:8|max:16|same:confirm_password',
             'confirm_password' => 'required|min:8|max:16'
         ]);
-        $result = $this->userService->register($body);
+        $result = $this->userService->signUp($body);
         return response()->json($result);
     }
-
 
     /**
      * Verify user's account base on userId and token
@@ -111,5 +115,26 @@ class AuthController extends Controller
         ]);
         $result = $this->userService->verifyAccount($body);
         return response()->json(['success' => $result]);
+    }
+
+    private function forgotPassword(Request $request)
+    {
+        $body = $request->validate([
+            'email' => 'required|max:50',
+        ]);
+        $result = $this->userService->forgotPassword($body);
+        return response()->json(['success' => $result]);
+    }
+
+    private function updatePassword(Request $request)
+    {
+
+        $body = $request->validate([
+            'password' => 'required|min:8|max:16|same:confirm_password',
+            'confirm_password' => 'required|min:8|max:16',
+            'token' => 'required'
+        ]);
+        $success = $this->userService->updatePassword($body);
+        return response()->json(['success' => $success]);
     }
 }

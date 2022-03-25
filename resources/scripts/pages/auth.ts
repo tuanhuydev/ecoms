@@ -1,5 +1,5 @@
 import { APP_URL } from '../configs/constants';
-import { SignIn, SignUp, VerifyAccount } from '../services/AuthService';
+import { ForgotPassword, SignIn, SignUp, UpdatePassword, VerifyAccount } from '../services/AuthService';
 import Cookie from 'js-cookie';
 import qs from 'qs';
 
@@ -58,6 +58,10 @@ window.onload = function() {
 
   const handleFinally = () => disableFormControl(false);
 
+  const navigateSignIn = () => {
+    window.location.href = `${APP_URL}/auth/sign-in`;
+  };
+
   const handleSignIn = async () => {
     const emailInput: HTMLInputElement = authForm.querySelector("input[name='email']");
     const passwordInput: HTMLInputElement = authForm.querySelector("input[name='password']");
@@ -98,14 +102,34 @@ window.onload = function() {
     const queryParams = qs.parse(queryParamsString);
     const securityId: string = String(queryParams?.securityId);
 
-    const handleVerifySuccess = () => {
-      window.location.href = `${APP_URL}/auth/sign-in`;
-    };
-
     const auth = new VerifyAccount(verifyToken, securityId);
 
-    await auth.makeAuth(handleVerifySuccess, handleFailed, handleFinally);
+    await auth.makeAuth(navigateSignIn, handleFailed, handleFinally);
     authForm.reset();
+  };
+
+  const handleForgotPassword = async() => {
+    const email: string = (authForm.querySelector("input[name='email']") as HTMLInputElement)?.value;
+
+    const auth = new ForgotPassword(email);
+
+    await auth.makeAuth(navigateSignIn, handleFailed, handleFinally);
+    authForm.reset();
+  };
+
+  const handleChangePassword = async() => {
+    const password: string = (authForm.querySelector("input[name='password']") as HTMLInputElement)?.value;
+    const confirmPassword: string = (
+      authForm.querySelector("input[name='confirmPassword']") as HTMLInputElement
+    )?.value;
+    // TODO: Utilize function
+    const queryParamsString = String(window.location.href).split('?')[1];
+    const queryParams = qs.parse(queryParamsString);
+    const token: string = String(queryParams?.token);
+    // console.log(password, confirmPassword, token);
+    const auth = new UpdatePassword(password, confirmPassword, token);
+
+    await auth.makeAuth(navigateSignIn, handleFailed, handleFinally);
   };
 
   // Events listeners
@@ -115,12 +139,24 @@ window.onload = function() {
     disableFormControl();
 
     const formType = authForm.dataset.type;
-    if (formType === 'sign-in') {
-      handleSignIn();
-    } else if (formType === 'sign-up') {
-      handleSignUp();
-    } else if (formType === 'verify-account') {
-      handleVerifyAccount();
+    switch (formType) {
+      case 'sign-in':
+        handleSignIn();
+        break;
+      case 'sign-up':
+        handleSignUp();
+        break;
+      case 'verify-account':
+        handleVerifyAccount();
+        break;
+      case 'forgot-password':
+        handleForgotPassword();
+        break;
+      case 'new-password':
+        handleChangePassword();
+        break;
+      default:
+        navigateSignIn();
     }
   });
 };
