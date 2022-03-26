@@ -3,7 +3,6 @@ import { AxiosResponse } from 'axios';
 import { DefaultObjectType } from '../interfaces/Meta';
 import Cookie from 'js-cookie';
 import httpClient from '../configs/httpClient';
-import isEmpty from 'lodash/isEmpty';
 
 abstract class Auth {
   static getAuth() {
@@ -15,9 +14,6 @@ abstract class Auth {
     return false;
   }
 
-  // eslint-disable-next-line no-unused-vars
-  abstract makeAuth(onDone: Function, onError?: Function, onFinally?: Function): void;
-
   static clearAuth() {
     localStorage.removeItem('user');
     Cookie.remove('securityId');
@@ -27,6 +23,10 @@ abstract class Auth {
     localStorage.setItem('user', JSON.stringify(user));
     Cookie.set('securityId', accessToken, { expires: 7, sameSite: 'strict' });
   }
+
+  // eslint-disable-next-line no-unused-vars
+  abstract makeAuth(onDone: Function, onError?: Function, onFinally?: Function): void;
+  abstract validateFields(): void;
 }
 
 class SignIn extends Auth {
@@ -39,21 +39,24 @@ class SignIn extends Auth {
     this.password = password;
   }
 
-  private validateFields() {
-    const error: DefaultObjectType = {};
+  validateFields() {
+    const error: DefaultObjectType = {
+      email: [],
+      password: []
+    };
+
     if (!this.email.length) {
-      error.email = ['The email field is required.'];
+      error.email.push('The email field is required.');
     }
 
     if (!this.password.length) {
-      error.password = ['The password field is required.'];
+      error.password.push('The password field is required.');
     }
 
     if (this.password.length < 8) {
       error.password.push('The password must be at least 8 characters.');
     }
-
-    if (!isEmpty(error)) {
+    if (Object.values(error).some(value => value.length)) {
       throw error;
     }
   }
@@ -70,6 +73,7 @@ class SignIn extends Auth {
 
       if (onDone) onDone();
     } catch (err) {
+      // console.log(err);
       if (onError) onError(err, !!err?.response);
     } finally {
       if (onFinally) onFinally();
@@ -93,20 +97,25 @@ class SignUp extends Auth {
     this.confirmPassword = confirmPassword;
   }
 
-  private validateFields() {
-    const error: DefaultObjectType = {};
+  validateFields() {
+    const error: DefaultObjectType = {
+      firstName: [],
+      lastName: [],
+      email: [],
+      password: []
+    };
     if (!this.firstName.length) {
-      error.firstName = ['The firstName field is required.'];
+      error.firstName.push('The firstName field is required.');
     }
     if (!this.lastName.length) {
-      error.lastName = ['The lastName field is required.'];
+      error.lastName.push('The lastName field is required.');
     }
     if (!this.email.length) {
-      error.email = ['The email field is required.'];
+      error.email.push('The email field is required.');
     }
 
     if (!this.password.length) {
-      error.password = ['The password field is required.'];
+      error.password.push('The password field is required.');
     }
 
     if (this.password.length <= 8) {
@@ -116,7 +125,8 @@ class SignUp extends Auth {
     if (this.password !== this.confirmPassword) {
       error.password.push('The password and confirm password must match.');
     }
-    if (!isEmpty(error)) {
+
+    if (Object.values(error).some(value => value.length)) {
       throw error;
     }
   }
@@ -153,6 +163,25 @@ class VerifyAccount extends Auth {
     this.id = id;
   }
 
+  validateFields() {
+    const error: DefaultObjectType = {
+      token: [],
+      id: []
+    };
+
+    if (!this.token.length) {
+      error.token.push('The token field is required.');
+    }
+
+    if (!this.id.length) {
+      error.password.push('The id field is required.');
+    }
+
+    if (Object.values(error).some(value => value.length)) {
+      throw error;
+    }
+  }
+
   async makeAuth(onDone: Function, onError?: Function, onFinally?: Function) {
     try {
       await httpClient.post(`${API_URL}/auth/verify-account`, { token: this.token, id: this.id });
@@ -173,13 +202,16 @@ class ForgotPassword extends Auth {
     this.email = email;
   }
 
-  private validateFields() {
-    const error: DefaultObjectType = {};
+  validateFields() {
+    const error: DefaultObjectType = {
+      email: []
+    };
+
     if (!this.email.length) {
-      error.email = ['The email must be not empty.'];
+      error.email.push('The email field is required.');
     }
 
-    if (!isEmpty(error)) {
+    if (Object.values(error).some(value => value.length)) {
       throw error;
     }
   }
@@ -215,14 +247,23 @@ class UpdatePassword extends Auth {
   }
 
   validateFields() {
-    const error: DefaultObjectType = {};
-    if (!this.password.length) {
-      error.password = ['The password must be not empty.'];
+    const error: DefaultObjectType = {
+      token: [],
+      password: []
+    };
+    if (!this.token.length) {
+      error.token.push('The token must be not empty.');
     }
+
+    if (!this.password.length) {
+      error.password.push('The password must be not empty.');
+    }
+
     if (this.password !== this.confirmPassword) {
       error.password.push('The password must be match with confirm password.');
     }
-    if (!isEmpty(error)) {
+
+    if (Object.values(error).some(value => value.length)) {
       throw error;
     }
   }
