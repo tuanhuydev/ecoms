@@ -1,21 +1,21 @@
 import { DefaultObjectType } from '../interfaces/Meta';
 import { ROUTE_PATHS } from './constants';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import React from 'react';
-import SettingsIcon from '@mui/icons-material/Settings';
 
 export const adminRoutes = {
   overview: {
     path: ROUTE_PATHS.OVERVIEW,
-    icon: <DashboardIcon />
-  },
-  setting: {
-    path: ROUTE_PATHS.SETTING,
-    icon: <SettingsIcon />
+    icon: <DashboardOutlinedIcon />
   },
   tasks: {
     path: ROUTE_PATHS.TASKS,
     icon: <ListAltIcon />
+  },
+  users: {
+    path: ROUTE_PATHS.USERS,
+    icon: <PeopleOutlineIcon />
   }
 } as DefaultObjectType;

@@ -1,4 +1,4 @@
-import { SelectUser } from '@store/slices/userSlice';
+import { SelectCurrentUser } from '@store/slices/userSlice';
 import { SignIn } from '@services/AuthService';
 import { User } from 'scripts/interfaces/User';
 import Avatar from '@mui/material/Avatar';
@@ -43,7 +43,7 @@ const StyledBadge = styled(Badge)(() => ({
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const user = SelectUser();
+  const user = SelectCurrentUser();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

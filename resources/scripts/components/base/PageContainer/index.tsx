@@ -1,6 +1,5 @@
 import AvatarMenu from '../AvatarMenu';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
 import LinearProgress from '@mui/material/LinearProgress';
 import React, { ReactNode } from 'react';
 import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
@@ -27,7 +26,7 @@ const PageContainer = ({
         disableGutters
         sx={{
           background: 'white',
-          mb: 0.5,
+          mb: 0.25,
           px: 1.5
         }}>
         <Typography variant="h6" component="h6"
@@ -39,9 +38,7 @@ const PageContainer = ({
           <AvatarMenu />
         </Box>
       </Toolbar>
-      <Box>
-        <Card sx={{ px: 1, mx: 0.5 }}> {children}</Card>
-      </Box>
+      {children}
     </Box>
   );
 };

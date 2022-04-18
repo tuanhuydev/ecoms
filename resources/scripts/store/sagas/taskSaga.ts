@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { DefaultObjectType } from '../../interfaces/Meta';
 import { LOADING_STATE } from '../../configs/enums';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { snakeToCamel } from '../../utils/helpers';
 import { taskActions } from '../slices/taskSlice';
 import TaskService from '../../services/TaskService';
@@ -27,5 +27,7 @@ export function * getTasks() {
 }
 
 export default function * taskSaga() {
+  // yield takeLatest() Fetch Meta data
   yield takeEvery(taskActions.fetchTasks.type, getTasks);
+  // yield takeEvery()
 }
