@@ -10,6 +10,7 @@ use Laravel\Passport\HasApiTokens;
 use App\Models\Article;
 use App\Models\Traits\HasUuid;
 use App\Models\Traits\HasConfirmationToken;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 
 class User extends Authenticatable
@@ -55,6 +56,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getFullName() {
+        return ucfirst($this->first_name)." ".ucfirst($this->last_name); 
+    }
 
     public function articles() 
     {

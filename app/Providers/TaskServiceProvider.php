@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\api\TaskController;
 use App\Services\TaskService;
 
 class TaskServiceProvider extends ServiceProvider

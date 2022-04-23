@@ -41,7 +41,6 @@ window.onload = function() {
   };
 
   const handleFailed = (err: any, isAxiosError: boolean = true) => {
-    console.log(err);
     const errorsElement: HTMLUListElement = authForm.querySelector('ul#errorList');
     if (isAxiosError) {
       const { response = { data: {} }, request = { status: 500, statusText: 'Internal Error' } } = err;

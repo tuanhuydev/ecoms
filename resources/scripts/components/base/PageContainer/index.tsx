@@ -1,6 +1,9 @@
+import { ROUTE_PATHS } from 'scripts/configs/constants';
+import { adminRoutes } from 'scripts/configs/routes';
+import { matchPath, useLocation } from 'react-router-dom';
+import { selectCurrentUser } from '@store/slices/userSlice';
 import AvatarMenu from '../AvatarMenu';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
 import LinearProgress from '@mui/material/LinearProgress';
 import React, { ReactNode } from 'react';
 import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
@@ -19,30 +22,46 @@ const PageContainer = ({
   children,
   ToolbarProps
 }: PageContainerProps) => {
+  const { pathname } = useLocation();
+  const { permission: userPermission } = selectCurrentUser();
+
+  /**
+   * Check current path match defined path
+   * Check current path match defined route with path
+   * Check user able to access current path by their permission
+   */
+  const isRouteAvailable = Object.values(ROUTE_PATHS).some((path) => {
+    if (matchPath(pathname, path)) {
+      return !!Object.values(adminRoutes).find((adminRoute) =>
+        adminRoute.path === path && adminRoute.permissions.includes(userPermission.toUpperCase()));
+    }
+    return false;
+  });
+
   return (
-    <Box>
-      {loading && (<LinearProgress />)}
-      <Toolbar
-        {...ToolbarProps}
-        disableGutters
-        sx={{
-          background: 'white',
-          mb: 0.5,
-          px: 1.5
-        }}>
-        <Typography variant="h6" component="h6"
+    isRouteAvailable
+      ? (<Box>
+        {loading && (<LinearProgress />)}
+        <Toolbar
+          {...ToolbarProps}
+          disableGutters
           sx={{
-            fontWeight: 'bold',
-            fontFamily: "'Open Sans',sans-serif"
-          }} >{title}</Typography>
-        <Box sx={{ ml: 'auto' }}>
-          <AvatarMenu />
-        </Box>
-      </Toolbar>
-      <Box>
-        <Card sx={{ px: 1, mx: 0.5 }}> {children}</Card>
-      </Box>
-    </Box>
+            background: 'white',
+            mb: 0.25,
+            px: 1.5
+          }}>
+          <Typography variant="h6" component="h6"
+            sx={{
+              fontWeight: 'bold',
+              fontFamily: "'Open Sans',sans-serif"
+            }} >{title}</Typography>
+          <Box sx={{ ml: 'auto' }}>
+            <AvatarMenu />
+          </Box>
+        </Toolbar>
+        {children}
+      </Box>)
+      : (<h1>Permission Denied</h1>)
   );
 };
 

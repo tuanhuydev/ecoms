@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\api\TaskController;
+use App\Http\Controllers\api\UserController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Mail;
@@ -29,6 +30,10 @@ Route::group(['prefix' => 'tasks'], function() {
     Route::patch('/', [TaskController::class, 'updateTask'])->name('tasks.update');
     Route::get('/{id}', [TaskController::class, 'getTaskById'])->name('tasks.getById');
     Route::delete('/{id}', [TaskController::class, 'deleteTask'])->name('tasks.delete');
+});
+
+Route::group(['prefix' => 'users'] ,function() {
+    Route::get('/', [UserController::class, 'getUsers'])->name('users.getUsers');
 });
 
 

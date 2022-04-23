@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import metaSlice from './slices/metaSlice';
-import rootSaga from './rootSaga';
+import rootSaga from './sagas/rootSaga';
 import taskSlice from './slices/taskSlice';
 import userSlice from './slices/userSlice';
 

@@ -127,4 +127,14 @@ class UserService
         $user->reset_password_token = null;
         return $user->save();
     }
+
+    /**
+     * Get all users
+     */
+    function getUsers(mixed $body = [])
+    {
+        return User::all();
+    }
+
+    
 }

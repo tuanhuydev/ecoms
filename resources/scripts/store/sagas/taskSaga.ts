@@ -8,7 +8,6 @@ import TaskService from '../../services/TaskService';
 
 export function * getTasks() {
   try {
-    // yield  dispatch action set loading here
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
     const { data }: AxiosResponse = yield call(TaskService.getTasks);
     // Format Data
@@ -27,5 +26,7 @@ export function * getTasks() {
 }
 
 export default function * taskSaga() {
+  // yield takeLatest() Fetch Meta data
   yield takeEvery(taskActions.fetchTasks.type, getTasks);
+  // yield takeEvery()
 }

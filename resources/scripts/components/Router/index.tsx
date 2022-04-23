@@ -5,8 +5,8 @@ import BaseLayout from '@components/layouts/Base';
 import Overview from '@containers/Overview';
 import PrivateRoute from './PrivateRoute';
 import React, { FC } from 'react';
-import Setting from '@containers/Setting';
 import Tasks from '@containers/Tasks';
+import Users from '@containers/Users';
 
 const routes: RouteObject[] = [
   {
@@ -19,7 +19,7 @@ const routes: RouteObject[] = [
         children: [
           { index: true, element: <Navigate to={ROUTE_PATHS.OVERVIEW} /> },
           { path: ROUTE_PATHS.OVERVIEW, element: <Overview /> },
-          { path: ROUTE_PATHS.SETTING, element: <Setting /> },
+          { path: ROUTE_PATHS.USERS, element: <Users /> },
           { path: ROUTE_PATHS.TASKS, element: <Tasks /> }
         ]
       }
