@@ -1,8 +1,8 @@
 import { APP_URL } from '../../configs/constants';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { SignIn } from '../../services/AuthService';
-import { setCurrentUser } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
+import { userActions } from '@store/slices/userSlice';
 
 const PrivateRoute = ({ children }: {children: JSX.Element}) => {
   const dispatch = useDispatch();
@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }: {children: JSX.Element}) => {
   if (!auth) {
     window.location.href = `${APP_URL}/auth/login`;
   }
-  dispatch(setCurrentUser((auth as DefaultObjectType).user));
+  dispatch(userActions.setCurrentUser((auth as DefaultObjectType).user));
   return children;
 };
 

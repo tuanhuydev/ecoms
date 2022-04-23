@@ -1,6 +1,8 @@
 import { AppDispatch } from '@store/index';
 import { Outlet } from 'react-router-dom';
+import { User } from 'scripts/interfaces/User';
 import { adminRoutes } from 'scripts/configs/routes';
+import { selectCurrentUser } from '@store/slices/userSlice';
 import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
 import { useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
@@ -35,18 +37,21 @@ const ContentProps = {
 const AdminLayout = () => {
   const openSidebar = selectOpenSidebar();
   const dispatch: AppDispatch = useDispatch();
+  const currentUser: User = selectCurrentUser();
 
-  const renderSideLinks = Object.keys(adminRoutes).map((key: string) => {
-    const route = adminRoutes[key];
-    return (
-      <SideNavItem
-        key={key}
-        label={key}
-        to={route.path}
-        icon={route.icon}
-      />
-    );
-  });
+  // Filter sidebar links base on user's permissions
+  const renderSideLinks = Object.entries(adminRoutes)
+    .filter(([key, values]) => values.permissions.includes(currentUser.permission.toUpperCase()))
+    .map(([key, route]) => {
+      return (
+        <SideNavItem
+          key={key}
+          label={key}
+          to={route.path}
+          icon={route.icon}
+        />
+      );
+    });
 
   const handleIconClick = () => dispatch(setOpenSidebar({ openSidebar: !openSidebar }));
 

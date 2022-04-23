@@ -2,10 +2,9 @@ import { EMPTY_STRING, ROUTE_PATHS } from '../../configs/constants';
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import AdminLayout from '@components/layouts/AdminLayout';
 import BaseLayout from '@components/layouts/Base';
+import Overview from '@containers/Overview';
 import PrivateRoute from './PrivateRoute';
 import React, { FC } from 'react';
-
-import Overview from '@containers/Overview';
 import Tasks from '@containers/Tasks';
 import Users from '@containers/Users';
 

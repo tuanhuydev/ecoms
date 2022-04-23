@@ -21,15 +21,25 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setCurrentUser(state, action: PayloadAction<User>) {
+    fetchUsers() {},
+    setLoading(state: any, action: PayloadAction<LOADING_STATE>) {
+      state.loading = action.payload;
+    },
+    setCurrentUser(state: any, action: PayloadAction<User>) {
       state.currentUser = action.payload;
+    },
+    setUsers(state: any, action: PayloadAction<User[]>) {
+      state.users = action.payload;
     }
   }
 });
 
-export const { setCurrentUser } = userSlice.actions;
+// Actions
+export const userActions = userSlice.actions;
 
 // selector
-export const SelectCurrentUser = () => useSelector((state: RootState) => state.user.currentUser);
+export const selectCurrentUser = () => useSelector((state: RootState) => state.user.currentUser);
+export const selectUsers = () => useSelector((state: RootState) => state.user.users);
+export const selectLoadingUser = () => useSelector((state: RootState) => state.user.loading);
 
 export default userSlice.reducer;

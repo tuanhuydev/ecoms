@@ -4,7 +4,7 @@ import httpClient from '../configs/httpClient';
 class UserService {
   static path: string = `${API_URL}/users`;
 
-  static getTasks() {
+  static getUsers() {
     return httpClient.get(UserService.path);
   }
 

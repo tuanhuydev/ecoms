@@ -25,3 +25,8 @@ export const ROUTE_PATHS = {
   TASKS: '/admin/tasks',
   USERS: '/admin/users'
 };
+
+export const PERMISSIONS = {
+  GUEST: 'GUEST',
+  ADMIN: 'ADMIN'
+};
