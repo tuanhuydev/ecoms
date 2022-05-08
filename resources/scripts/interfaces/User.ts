@@ -1,3 +1,4 @@
+
 export interface User {
   userId: string;
   firstName: string;
@@ -5,4 +6,5 @@ export interface User {
   email: string;
   avatar?: string;
   permission?: string;
+  status?: string;
 };

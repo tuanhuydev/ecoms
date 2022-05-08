@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SignUpConfirm;
 use App\Mail\ForgotPassword;
 use Carbon\Carbon;
+use App\Enums\StatusType;
+
 
 class UserService
 {
@@ -31,7 +33,7 @@ class UserService
         }
         $user = Auth::user();
         $tokenVerified = "1";
-        if (empty($user->email_verified_at) || $user->confirmation_token !== $tokenVerified) {
+        if (empty($user->email_verified_at) || $user->confirmation_token !== $tokenVerified || $user->status !== StatusType::ACTIVE) {
             throw new UnauthorizedException();
         }
         $accessToken = $user->createToken('authToken')->accessToken;
@@ -81,6 +83,7 @@ class UserService
         } 
         $user->email_verified_at = Carbon::now();
         $user->confirmation_token = 1;
+        $user->status = StatusType::ACTIVE;
         return $user->save();
     }
 
@@ -101,6 +104,7 @@ class UserService
         }
         $token = Str::uuid();
         $user->reset_password_token = $token;
+        $user->status = StatusType::SUSPENDED;
         Mail::to($user->email)->send(new ForgotPassword($token));
         
         return $user->save(); 
@@ -125,6 +129,7 @@ class UserService
         $user->password = bcrypt($body['password']);
         $user->updated_at = Carbon::now();
         $user->reset_password_token = null;
+        $user->status = StatusType::ACTIVE;
         return $user->save();
     }
 
