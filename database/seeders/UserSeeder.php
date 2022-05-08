@@ -22,7 +22,9 @@ class UserSeeder extends Seeder
             'last_name' => 'Nguyen Tuan',
             'email' => 'tuanhuydev@gmail.com',
             'password' => '$2y$10$x4i9Z85iG4cUj38Zgx729eMHk3wtZwRNfAJEBmSaHRwJiLPA4EtIm', // 123456789
+            'confirmation_token'=> '1',
             'created_at' => '2021-07-18 10:34:16',
+            'email_verified_at' => '2021-07-18 10:34:16',
             'updated_at' => '2021-07-18 10:53:30',
         ]);
     }

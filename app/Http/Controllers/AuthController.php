@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Services\UserService;
 use Illuminate\View\View;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -77,7 +78,7 @@ class AuthController extends Controller
         ]);
 
         $result = $this->userService->signIn($body['email'], $body['password']);
-        return response()->json(['user' => $result['user'], 'access_token' => $result['access_token']]);
+        return response()->json(['user' => new UserResource($result['user']), 'access_token' => $result['access_token']]);
     }
 
     /**

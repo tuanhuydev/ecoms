@@ -30,3 +30,10 @@ export const PERMISSIONS = {
   GUEST: 'GUEST',
   ADMIN: 'ADMIN'
 };
+
+export const STATUSES = {
+  PENDING: { value: 'PENDING', color: '#F9A825' },
+  ACTIVE: { value: 'ACTIVE', color: '#689F38' },
+  SUSPENDED: { value: 'SUSPENDED', color: '#EF6C00' },
+  BLOCKED: { value: 'BLOCKED', color: '#EF6C00' }
+};

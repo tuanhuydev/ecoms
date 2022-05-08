@@ -3,11 +3,11 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\PermissionType;
+use App\Enums\StatusType;
 
-class AddPermissionToTable extends Migration
+class AddStatusToUsers extends Migration
 {
-    private string $tableName = "users";
+    private $tableName =  'users';
     /**
      * Run the migrations.
      *
@@ -17,7 +17,7 @@ class AddPermissionToTable extends Migration
     {
         if (Schema::hasTable($this->tableName)) {
             Schema::table($this->tableName, function (Blueprint $table) {
-                $table->enum('permission', PermissionType::getKeys())->default(PermissionType::GUEST);
+                $table->enum('status', StatusType::getKeys())->default(StatusType::PENDING);
             });
         }
     }
@@ -31,7 +31,7 @@ class AddPermissionToTable extends Migration
     {
         if (Schema::hasTable($this->tableName)) {
             Schema::table($this->tableName, function (Blueprint $table) {
-                $table->dropColumn('permission');
+                $table->dropColumn('status');
             });
         }
     }

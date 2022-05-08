@@ -1,15 +1,16 @@
 import { API_URL } from '../configs/constants';
 import { AxiosResponse } from 'axios';
 import { DefaultObjectType } from '../interfaces/Meta';
+import { User } from 'scripts/interfaces/User';
 import Cookie from 'js-cookie';
 import httpClient from '../configs/httpClient';
 
 abstract class Auth {
   static getAuth() {
-    const user = localStorage.getItem('user');
+    const user: string = localStorage.getItem('user');
     const accessToken = Cookie.get('securityId');
     if (user && accessToken) {
-      return { user: JSON.parse(user), accessToken };
+      return { user: JSON.parse(user) as User, accessToken };
     }
     return false;
   }

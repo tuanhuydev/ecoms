@@ -63,7 +63,24 @@ const Users = () => {
       width: 300,
       resizable: false,
       editable: false,
-      sortable: false
+      sortable: false,
+      renderCell: ({ value }: GridRenderCellParams) => (
+        <div className='text-capitalize text-primary-blue'>{value.toLowerCase() ?? '-'}</div>
+      )
+
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 300,
+      resizable: false,
+      editable: false,
+      sortable: false,
+      renderCell: ({ value }: GridRenderCellParams) => {
+        return (
+          <div className={`text-capitalize text-status-${value.toLowerCase()}`}>{value.toLowerCase() ?? '-'}</div>
+        );
+      }
     },
     {
       field: null,
