@@ -1,0 +1,9 @@
+# Ignore artifacts:
+build
+coverage
+.history/
+public/
+
+# Dependencies
+vendor/
+node_modules/

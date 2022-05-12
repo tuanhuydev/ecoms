@@ -1,4 +1,7 @@
-/node_modules
+# Dependencies
+node_modules/
+vendor/
+
 /public/hot
 /public/css
 /public/js
@@ -18,4 +21,10 @@ yarn-error.log
 /.idea
 /.vscode
 .DS_Store
-.history
+
+# version control
+.history/
+
+# Database
+tools/mysql/data/*
+

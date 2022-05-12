@@ -1,0 +1,78 @@
+@import '../commons/mixins';
+@import '../commons/variables';
+
+.auth {
+  &__container {
+    @include center;
+    margin: auto 0;
+  }
+
+  &__form {
+    @include flexColumn;
+    align-items: center;
+    background-color: var(--white);
+    border-radius: 6px;
+    padding: 2rem;
+    min-width: 26.25rem;
+
+    .title {
+      font-size: 1.5rem;
+      margin-bottom: 2.625rem;
+      text-transform: capitalize;
+      color: #212121;
+    }
+
+    .control {
+      transition: all 0.25s;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+      background-color: transparent;
+    }
+
+    .control__input {
+      flex: 1;
+      font-size: 1rem;
+      padding: 0.625rem 0.75rem;
+      margin-bottom: 0.25rem;
+      border-radius: 6px;
+      border-color: transparent;
+      min-height: 2rem;
+      background-color: #fafafa;
+
+      &:hover {
+        background-color: #eeeeee;
+      }
+
+      &::placeholder {
+        font-weight: 300;
+        color: #bdbdbd;
+      }
+    }
+
+    #errorList {
+      font-size: 0.875rem;
+      color: rgba(#ff0000, 0.75);
+    }
+
+    .submit {
+      @include center;
+      width: 3rem;
+      height: 3rem;
+      background-color: #fafafa;
+      transition: all 0.25s;
+      border-radius: 6px;
+
+      &:hover {
+        background-color: #eeeeee;
+      }
+
+      svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        fill: #616161;
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+@import '@common-styles/mixins';
+@import '@common-styles/variables';
+
+html {
+  font-size: 16px;
+}
+
+body {
+  @include flexColumn;
+  min-height: 100vh;
+  margin: 0;
+  background-color: $color-primary--bg;
+  font-size: inherit;
+  font-family: 'Open Sans', sans-serif;
+
+  main {
+    @include flexColumn;
+    flex-grow: 1;
+  }
+
+  a {
+    &:link,
+    &:visited,
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  input {
+    box-shadow: none;
+    outline: none;
+    display: block;
+    font-size: inherit;
+  }
+
+  button {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+  }
+}

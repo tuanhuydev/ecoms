@@ -1,0 +1,22 @@
+////////////////////////////
+///// LAYOUTS
+@import '../layouts/admin.scss';
+
+////////////////////////////
+///// COMPONENTS
+
+// @import '../components/sidebar';
+// @import '../components/navbar';
+// @import '../components/breadcrumb';
+// @import '../components/quick-user';
+
+.card-grid {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+
+  .card {
+    padding: 1rem;
+  }
+}
