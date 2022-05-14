@@ -1,0 +1,88 @@
+:root {
+  --white: #fff;
+  --black: #000;
+  --grey-0: #FAFBFC;
+  --grey-50: #FAFAFA;
+  --grey-100: #F5F5F5;
+  --grey-200: #EEEEEE;
+  --grey-300: #E0E0E0;
+  --grey-400: #BDBDBD;
+  --grey-500: #9E9E9E;
+  --grey-600: #757575;
+  --grey-700: #616161;
+  --grey-800: #424242;
+  --grey-900: #212121;
+  --primary-blue: #42A5F5;
+  --status-success: #689F38;
+  --status-warning: #F9A825;
+  --status-danger: #EF6C00;
+}
+
+.auth__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto 0;
+}
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--white);
+  border-radius: 6px;
+  padding: 2rem;
+  min-width: 26.25rem;
+}
+.auth__form .title {
+  font-size: 1.5rem;
+  margin-bottom: 2.625rem;
+  text-transform: capitalize;
+  color: #212121;
+}
+.auth__form .control {
+  transition: all 0.25s;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+.auth__form .control__input {
+  flex: 1;
+  font-size: 1rem;
+  padding: 0.625rem 0.75rem;
+  margin-bottom: 0.25rem;
+  border-radius: 6px;
+  border-color: transparent;
+  min-height: 2rem;
+  background-color: #fafafa;
+}
+.auth__form .control__input:hover {
+  background-color: #eeeeee;
+}
+.auth__form .control__input::placeholder {
+  font-weight: 300;
+  color: #bdbdbd;
+}
+.auth__form #errorList {
+  font-size: 0.875rem;
+  color: rgba(255, 0, 0, 0.75);
+}
+.auth__form .submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  height: 3rem;
+  background-color: #fafafa;
+  transition: all 0.25s;
+  border-radius: 6px;
+}
+.auth__form .submit:hover {
+  background-color: #eeeeee;
+}
+.auth__form .submit svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: #616161;
+}

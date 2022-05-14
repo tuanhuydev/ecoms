@@ -1,0 +1,26 @@
+.admin {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+.admin__sidebar {
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+.admin__body {
+  position: relative;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+.card-grid .card {
+  padding: 1rem;
+}

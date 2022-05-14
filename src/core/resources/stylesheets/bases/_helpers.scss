@@ -1,0 +1,96 @@
+@use 'sass:string';
+@import './background';
+
+// FLEX
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+
+// WIDTH
+$sizes: 25, 50, 75, 100;
+
+@each $size in $sizes {
+  .w-#{$size} {
+    width: #{$size} + '%';
+  }
+}
+
+// MARGIN
+$spacers: 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20;
+$directions: 'top', 'right', 'bottom', 'left', 'vertical', 'horizontal';
+
+@each $spacer in $spacers {
+
+  @each $direction in $directions {
+    @if $direction == 'vertical' {
+      .my-#{$spacer} {
+        margin-top: #{$spacer * 0.25} + 'rem';
+        margin-bottom: #{$spacer * 0.25} + 'rem';
+      }
+
+      .py-#{$spacer} {
+        padding-top: #{$spacer * 0.25} + 'rem';
+        padding-bottom: #{$spacer * 0.25} + 'rem';
+      }
+      
+    } @else if $direction == 'horizontal' {
+      .mx-#{$spacer} {
+        margin-left: #{$spacer * 0.25} + 'rem';
+        margin-right: #{$spacer * 0.25} + 'rem';
+      }
+
+      .px-#{$spacer} {
+        padding-left: #{$spacer * 0.25} + 'rem';
+        padding-right: #{$spacer * 0.25} + 'rem';
+      }
+    } @else {     
+      $short: string.slice($direction, 0, 1);
+
+      .m#{$short}-#{$spacer} {
+        margin-#{$direction}: #{$spacer * 0.25} + 'rem';
+      }
+
+      .p#{$short}-#{$spacer} {
+        padding-#{$direction}: #{$spacer * 0.25} + 'rem';
+      }
+    }
+
+  }
+}
+
+// BORDER
+$borderWidthes: 0, 1, 2, 3, 4, 5, 6, 7, 8;
+
+@each $borderWidth in $borderWidthes {
+  .border-#{$borderWidth} {
+    border-width: #{$borderWidth} + 'px';
+  }
+  .border-radius-#{$borderWidth} {
+    border-radius: #{$borderWidth} + 'px';
+  }
+}
+
+
+
+

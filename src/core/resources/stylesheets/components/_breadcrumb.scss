@@ -1,0 +1,64 @@
+@import '../commons//mixins';
+@import '../commons/variables';
+
+.breadcrumb {
+  background-color: var(--white);
+  align-items: center;
+  padding: 0.75rem 1rem;
+
+  &__title {
+    position: relative;
+    font-weight: bold;
+    text-transform: capitalize;
+    padding-right: 1rem;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto auto;
+      padding-right: 1rem;
+      border-right: 1px solid #e2e2e2;
+      height: 100%;
+    }
+  }
+
+  &__paths {
+    @include middle;
+    margin: auto 0;
+    padding-left: 1rem;
+
+    .path-item {
+      position: relative;
+
+      &--active {
+        .path-item__link {
+          color: #000;
+        }
+      }
+
+      &__link {
+        text-transform: capitalize;
+      }
+
+      &:not(:last-child) {
+        padding-right: 0.75rem;
+        margin-right: 0.5rem;
+
+        &::after {
+          @include circle;
+          content: '';
+          position: absolute;
+          inset: 50% 0 auto auto;
+          transform: translateY(-50%);
+          width: 0.25rem;
+          height: 0.25rem;
+          background-color: #e2e2e2;
+        }
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+@import '@common-styles/variables.scss';
+
+.textarea {
+  font-family: $font__sanSerif;
+  border: none;
+  outline: none;
+  resize: none;
+  width: 100%;
+  min-height: 2rem;
+  padding: 0;
+}
