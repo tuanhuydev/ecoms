@@ -2,7 +2,10 @@
 node_modules/
 vendor/
 
-public/
+src/core/public/css/
+src/core/public/js/
+src/core/public/images/
+src/core/public/fonts/
 
 # Environments
 .env
@@ -20,4 +23,3 @@ docker-compose.override.yml
 
 # Database
 tools/mysql/data/*
-
