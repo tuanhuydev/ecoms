@@ -1,9 +1,8 @@
-import { API_URL } from '../configs/constants';
 import { Task } from '../interfaces/Task';
 import httpClient from '../configs/httpClient';
 
 class TaskService {
-  static path: string = `${API_URL}/tasks`;
+  static path: string = '/tasks';
 
   static getTasks() {
     return httpClient.get(TaskService.path);

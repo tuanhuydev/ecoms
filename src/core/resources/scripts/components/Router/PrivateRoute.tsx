@@ -9,7 +9,7 @@ const PrivateRoute = ({ children }: {children: JSX.Element}) => {
   const dispatch = useDispatch();
   const auth = SignIn.getAuth();
   if (!auth) {
-    window.location.href = `${APP_URL}/auth/login`;
+    window.location.href = `${APP_URL}/auth/sign-in`;
   }
   const currentUser: User = (auth as DefaultObjectType).user;
   dispatch(userActions.setCurrentUser(currentUser));

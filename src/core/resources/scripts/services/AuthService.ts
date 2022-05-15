@@ -66,7 +66,7 @@ class SignIn extends Auth {
     try {
       this.validateFields();
       const { data }: AxiosResponse = await httpClient.post(
-        `${API_URL}/auth/sign-in`,
+        '/auth/sign-in',
         { email: this.email, password: this.password }
       );
       const { user, access_token: accessToken } = data;
@@ -142,7 +142,7 @@ class SignUp extends Auth {
         password: this.password,
         confirm_password: this.confirmPassword
       };
-      const { data: newUser }: AxiosResponse = await httpClient.post(`${API_URL}/auth/sign-up`, formData);
+      const { data: newUser }: AxiosResponse = await httpClient.post('/auth/sign-up', formData);
       if (onDone) {
         await onDone(newUser);
       }
@@ -185,7 +185,7 @@ class VerifyAccount extends Auth {
 
   async makeAuth(onDone: Function, onError?: Function, onFinally?: Function) {
     try {
-      await httpClient.post(`${API_URL}/auth/verify-account`, { token: this.token, id: this.id });
+      await httpClient.post('/auth/verify-account', { token: this.token, id: this.id });
       if (onDone) onDone();
     } catch (err) {
       if (onError) onError(err, !!err?.response);
@@ -221,7 +221,7 @@ class ForgotPassword extends Auth {
     try {
       this.validateFields();
       const { data }: AxiosResponse = await httpClient.post(
-        `${API_URL}/auth/forgot-password`,
+        '/auth/forgot-password',
         { email: this.email }
       );
       if (data?.success) {
@@ -273,7 +273,7 @@ class UpdatePassword extends Auth {
     try {
       this.validateFields();
       const { data }: AxiosResponse = await httpClient.post(
-        `${API_URL}/auth/update-password`,
+        '/auth/update-password',
         {
           password: this.password,
           confirm_password: this.confirmPassword,

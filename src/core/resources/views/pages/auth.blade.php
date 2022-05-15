@@ -7,6 +7,8 @@
     <div class="auth__container">
         <form class="auth__form" id="auth__form" data-type="{{$type}}">
             <h1 class="title">{{ $title }}</h1>
+            @csrf 
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
             
             @if ($type === 'verify-account')
                 <div class="control">

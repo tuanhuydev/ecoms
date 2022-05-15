@@ -15,8 +15,6 @@ const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const isDevelopment = process.env.NODE_ENV === 'local';
 
-const fileLoaderName = () => isDevelopment ? '[name].[ext]' : '[contenthash].[ext]';
-
 const config = {
   entry: entries,
   mode: isDevelopment ? 'development' : 'production',
@@ -25,10 +23,10 @@ const config = {
     ignored: /node_modules/,
     aggregateTimeout: 500
   },
-  cache: {
-    type: 'filesystem',
-    cacheLocation: path.resolve(__dirname, 'node_modules/.cache')
-  },
+  // cache: {
+  //   type: 'filesystem',
+  //   cacheLocation: path.resolve(__dirname, 'node_modules/.cache')
+  // },
   module: {
     rules: [
       {
@@ -100,7 +98,7 @@ const config = {
           {
             loader: 'file-loader',
             options: {
-              name: fileLoaderName,
+              name: '[name].[ext]',
               outputPath: '/fonts'
             }
           }
@@ -114,7 +112,7 @@ const config = {
             options: {
               limit: false,
               fallback: 'file-loader',
-              name: `images/${fileLoaderName()}`
+              name: 'images/[name].[ext]'
             }
           }
         ]
@@ -134,11 +132,10 @@ const config = {
     new WebpackBar(),
     new RemoveEmptyScriptsPlugin(),
     // new SpeedMeasurePlugin(),
-    new ForkTsCheckerWebpackPlugin(),
+    // new ForkTsCheckerWebpackPlugin(),
     new DotEnv({ path: '.env' }),
     new MiniCssExtractPlugin({
-      filename: isDevelopment ? '[name].css' : '[name].[contenthash].css'
-      // chunkFilename: isDevelopment ? '[id].css' : '[id].[contenthash].css'
+      filename: '[name].css'
     })
   ],
   optimization: {
@@ -148,7 +145,8 @@ const config = {
     usedExports: true
   },
   output: {
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname, 'public/'),
+    publicPath: '/'
   }
 };
 

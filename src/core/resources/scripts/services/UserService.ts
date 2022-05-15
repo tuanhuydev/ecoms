@@ -1,8 +1,7 @@
-import { API_URL } from '../configs/constants';
 import httpClient from '../configs/httpClient';
 
 class UserService {
-  static path: string = `${API_URL}/users`;
+  static path: string = '/users';
 
   static getUsers() {
     return httpClient.get(UserService.path);
