@@ -1,4 +1,4 @@
-const entries = require('./webpack.entries.js');
+const entry = require('./webpack.entries.js');
 const path = require('path');
 const WebpackBar = require('webpackbar');
 const DotEnv = require('dotenv-webpack');
@@ -15,18 +15,36 @@ const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const isDevelopment = process.env.NODE_ENV === 'local';
 
+const mode = isDevelopment ? 'development' : 'production';
+const devtool = isDevelopment ? 'eval-source-map' : 'hidden-source-map';
+const watchOptions = {
+  ignored: /node_modules/,
+  aggregateTimeout: 500
+};
+const cacheOptions = isDevelopment
+  ? {
+    type: 'filesystem',
+    cacheLocation: path.resolve(__dirname, 'node_modules/.cache')
+  }
+  : false;
+
+const plugins = [
+  new WebpackBar(),
+  new RemoveEmptyScriptsPlugin(),
+  new DotEnv({ path: '.env' }),
+  new MiniCssExtractPlugin({ filename: '[name].css' })
+];
+
+if (isDevelopment) {
+  plugins.push(new ForkTsCheckerWebpackPlugin());
+}
+
 const config = {
-  entry: entries,
-  mode: isDevelopment ? 'development' : 'production',
-  devtool: isDevelopment ? 'eval' : 'hidden-source-map',
-  watchOptions: {
-    ignored: /node_modules/,
-    aggregateTimeout: 500
-  },
-  // cache: {
-  //   type: 'filesystem',
-  //   cacheLocation: path.resolve(__dirname, 'node_modules/.cache')
-  // },
+  entry,
+  mode,
+  devtool,
+  watchOptions,
+  cache: cacheOptions,
   module: {
     rules: [
       {
@@ -40,11 +58,9 @@ const config = {
             }
           }
         ]
-
       },
       {
         test: /\.module\.scss$/,
-        exclude: [/node_modules/],
         use: [
           {
             loader: MiniCssExtractPlugin.loader
@@ -69,7 +85,7 @@ const config = {
       },
       {
         test: /\.scss?$/,
-        exclude: [/\.module\.scss?$/, /node_modules/],
+        exclude: /\.module\.scss?$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader
@@ -128,20 +144,10 @@ const config = {
       '@common-styles': path.resolve(__dirname, 'resources/stylesheets/commons')
     }
   },
-  plugins: [
-    new WebpackBar(),
-    new RemoveEmptyScriptsPlugin(),
-    // new SpeedMeasurePlugin(),
-    // new ForkTsCheckerWebpackPlugin(),
-    new DotEnv({ path: '.env' }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css'
-    })
-  ],
+  plugins,
   optimization: {
-    removeAvailableModules: false,
-    removeEmptyChunks: false,
-    splitChunks: false,
+    removeAvailableModules: !isDevelopment,
+    removeEmptyChunks: !isDevelopment,
     usedExports: true
   },
   output: {

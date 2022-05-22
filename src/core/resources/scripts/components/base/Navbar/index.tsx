@@ -1,6 +1,5 @@
 import { AppDispatch } from '@store/index';
 import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
-import { styled } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import IconButton from '@mui/material/IconButton';
@@ -8,6 +7,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import React from 'react';
 import Toolbar from '@mui/material/Toolbar';
+import styled from '@mui/material/styles/styled';
 import styles from './styles.module.scss';
 
 export interface NavbarProps extends MuiAppBarProps {

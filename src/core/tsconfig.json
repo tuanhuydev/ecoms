@@ -10,6 +10,7 @@
       "jsx": "react",
       "moduleResolution": "node",
       "allowSyntheticDefaultImports": true,
+      "skipLibCheck": true,
       "paths": {
         "@assets/*": ["./assets/*"],
         "@components/*": ["./scripts/components/*"],
@@ -17,5 +18,8 @@
         "@services/*": ["./scripts/services/*"],
         "@store/*": ["./scripts/store/*"],
       }
-    }
+    },
+    "exclude": [
+      "node_modules"
+    ]
   }

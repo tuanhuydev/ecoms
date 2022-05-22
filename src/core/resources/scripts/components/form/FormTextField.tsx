@@ -1,6 +1,7 @@
 import { Controller } from 'react-hook-form';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
-import { TextField, TextFieldProps } from '@mui/material';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
+
 import React from 'react';
 
 export interface FormTextFieldProps {
