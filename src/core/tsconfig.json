@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "outDir": "./public/js/",
+      "baseUrl": "./resources/",
+      "noImplicitAny": true,
+      "sourceMap": true,
+      "allowJs": true,
+      "module": "es6",
+      "target": "es5",
+      "jsx": "react",
+      "moduleResolution": "node",
+      "allowSyntheticDefaultImports": true,
+      "skipLibCheck": true,
+      "paths": {
+        "@assets/*": ["./assets/*"],
+        "@components/*": ["./scripts/components/*"],
+        "@containers/*": ["./scripts/containers/*"],
+        "@services/*": ["./scripts/services/*"],
+        "@store/*": ["./scripts/store/*"],
+      }
+    },
+    "exclude": [
+      "node_modules"
+    ]
+  }
