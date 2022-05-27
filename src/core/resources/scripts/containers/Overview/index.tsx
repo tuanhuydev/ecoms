@@ -49,59 +49,9 @@ export default function Overview() {
     }
   };
 
-  const handleConpleteTask = (id: string) => async () => {
-    try {
-      const { data }: AxiosResponse = await TaskService.deleteTask(id);
-      if (data?.success) {
-        dispatch(taskActions.completeTask(id));
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    }
-  };
-
   return (
     <PageContainer title="Overview">
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Grid container>
-          <Grid item md={5} lg={6}>
-            <Grid container spacing={2} sx={{ p: 4, display: 'flex', justifyContent: 'space-between' }}>
-              <TextField
-                id="standard"
-                label="Let do something"
-                variant="standard"
-                sx={{ flexGrow: 1, mr: 2, mb: 2 }}
-                onChange={handleInputChange}
-                value={taskTitle}
-              />
-              <Button variant="outlined" onClick={handleAddTask}>Add new task</Button>
-            </Grid>
-            <List>
-              {tasks.map((task: Task) => (
-                <ListItem key={task.id}>
-                  <ListItemButton
-                    onClick={handleConpleteTask(task.id)}
-                    dense
-                    sx={{ justifyContent: 'space-between' }}
-                  >
-                    <Typography noWrap sx={{ overflowWrap: 'break-word', width: 350 }}>{task.title}</Typography>
-                    <Chip label={task.status} color={
-                      task.status === TASK_STATUS.PROGRESS
-                        ? 'warning'
-                        : task.status === TASK_STATUS.DONE
-                          ? 'success'
-                          : 'primary'} variant="outlined" />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Grid>
-          <Grid item md={5} lg={6}>
-            <CalendarPicker date={new Date()} onChange={() => {}} />
-          </Grid>
-        </Grid>
-      </LocalizationProvider>
+      Overview
     </PageContainer>
   );
 }

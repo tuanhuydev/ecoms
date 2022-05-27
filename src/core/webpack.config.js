@@ -36,7 +36,7 @@ const plugins = [
 ];
 
 if (isDevelopment) {
-  plugins.push(new ForkTsCheckerWebpackPlugin());
+  // plugins.push(new ForkTsCheckerWebpackPlugin());
 }
 
 const config = {

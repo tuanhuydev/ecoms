@@ -4,10 +4,11 @@ import { matchPath, useLocation } from 'react-router-dom';
 import { selectCurrentUser } from '@store/slices/userSlice';
 import AvatarMenu from '../AvatarMenu';
 import Box from '@mui/material/Box';
-import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import React, { ReactNode } from 'react';
 import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import getStyles from './style';
 
 export interface PageContainerProps {
   title: string;
@@ -22,6 +23,7 @@ const PageContainer = ({
   children,
   ToolbarProps
 }: PageContainerProps) => {
+  const { toolbarStyles, typoStyles, wrapperStyles } = getStyles();
   const { pathname } = useLocation();
   const { permission: userPermission } = selectCurrentUser();
 
@@ -40,26 +42,18 @@ const PageContainer = ({
 
   return (
     isRouteAvailable
-      ? (<Box>
-        {loading && (<LinearProgress />)}
+      ? (<Box sx={wrapperStyles}>
         <Toolbar
           {...ToolbarProps}
           disableGutters
-          sx={{
-            background: 'white',
-            mb: 0.25,
-            px: 1.5
-          }}>
-          <Typography variant="h6" component="h6"
-            sx={{
-              fontWeight: 'bold',
-              fontFamily: "'Open Sans',sans-serif"
-            }} >{title}</Typography>
+          sx={toolbarStyles}>
+          <Typography variant="h6" component="h6" sx={typoStyles}>{title}</Typography>
+          {loading && (<CircularProgress color="inherit" size={18} />)}
           <Box sx={{ ml: 'auto' }}>
             <AvatarMenu />
           </Box>
         </Toolbar>
-        {children}
+        <div className="flex-1">{children}</div>
       </Box>)
       : (<h1>Permission Denied</h1>)
   );

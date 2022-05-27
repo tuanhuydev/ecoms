@@ -25,8 +25,22 @@ export function * getTasks() {
   }
 }
 
+export function * createTask({ payload }) {
+  try {
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
+    const { data }: AxiosResponse = yield call(TaskService.createTask, payload);
+    const newTask: Task = {
+      ...payload,
+      id: data.id
+    };
+    yield put({ type: taskActions.addTask.type, payload: newTask });
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
+  } catch (error) {
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.FAIL });
+  }
+}
+
 export default function * taskSaga() {
-  // yield takeLatest() Fetch Meta data
   yield takeEvery(taskActions.fetchTasks.type, getTasks);
-  // yield takeEvery()
+  yield takeEvery(taskActions.createTask.type, createTask);
 }

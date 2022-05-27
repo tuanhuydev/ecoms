@@ -18,6 +18,8 @@ import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PageContainer from '@components/base/PageContainer';
 import Radio from '@mui/material/Radio';
@@ -25,6 +27,7 @@ import React, { useEffect, useState } from 'react';
 import TaskDetail from '@components/pages/Tasks/TaskDetail';
 import TaskService from '../../services/TaskService';
 import Typography from '@mui/material/Typography';
+import getStyles from './styles';
 
 const INITIAL_FORM_VALUES = {
   title: '',
@@ -33,13 +36,15 @@ const INITIAL_FORM_VALUES = {
 };
 
 const Tasks = () => {
+  const styles = getStyles();
   const theme = useTheme();
   const dispatch: AppDispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
   const tasks: Task[] = selectAllTasks();
   const loading: string = selectTaskLoading();
 
   const [selectedTask, setSelectedTask] = useState<Task>();
-  const { enqueueSnackbar } = useSnackbar();
 
   // Form
   const { control, getValues, reset } = useForm({
@@ -47,12 +52,11 @@ const Tasks = () => {
     resolver: yupResolver(newTaskSchema)
   });
 
-  const onSubmitForm = async () => {
+  const handleSubmitForm = async () => {
     try {
       const title = getValues('title');
       const newTask = { title, status: TASK_STATUS.BACKLOG };
-      const { data }: AxiosResponse = await TaskService.createTask(newTask);
-      dispatch(taskActions.addTask({ id: data?.id, ...newTask } as Task));
+      dispatch(taskActions.createTask(newTask));
       reset();
     } catch (err) {
       enqueueSnackbar('Something went wrong', { variant: 'error' });
@@ -61,7 +65,7 @@ const Tasks = () => {
 
   const handleCreateTask = (e: any) => {
     if (e.code === 'Enter') {
-      onSubmitForm();
+      handleSubmitForm();
     }
   };
 
@@ -76,84 +80,117 @@ const Tasks = () => {
   };
 
   const handleOpenTask = (task: Task) => () => setSelectedTask(task);
+
   const handleCloseTask = () => setSelectedTask(null);
 
   useEffect(() => {
     dispatch(taskActions.fetchTasks());
   }, []);
 
+  const RowMenu = ({ taskId }: { taskId: string }) => {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLELement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
+
+    const handleDeleteTask = (id: string) => async () => {
+      try {
+        const { data }: AxiosResponse = await TaskService.deleteTask(id);
+        if (data?.success) {
+          dispatch(taskActions.completeTask(id));
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      }
+    };
+    return (
+      <>
+        <IconButton sx={styles.buttonStyles} onClick={handleClick}>
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          open={open}
+          onClose={handleClose}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left'
+          }}
+        >
+          <MenuItem onClick={handleDeleteTask(taskId)}>Delete</MenuItem>
+        </Menu>
+      </>
+    );
+  };
+
   return (
     <PageContainer title='Tasks' loading={loading === LOADING_STATE.LOADING}>
-      <Box sx={{ pt: 2, pb: 1 }}>
-        <FormTextField control={control} name="title" onKeyDown={handleCreateTask} />
-      </Box>
-      <Box>
-        <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
-          {tasks.map((task) => {
-            return (
-              <ListItem
-                sx={{
-                  backgroundColor: grey[200],
-                  minHeight: 48,
-                  marginBottom: theme.spacing(0.25),
-                  borderRadius: theme.spacing(0.25)
-                }}
-                disablePadding
-                key={task.id}
-                secondaryAction={(
-                  <IconButton>
-                    <MoreVertIcon />
-                  </IconButton>
-                )}
-              >
-                <Radio
-                  onClick={handleCompleteTask(task)}
-                  checked={task?.status === TASK_STATUS.DONE}
-                />
-                <ListItemButton
-                  disableRipple
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'transparent'
-                    },
-                    '&:focus': {
-                      backgroundColor: 'transparent'
-                    }
-                  }}
-                  onClick={handleOpenTask(task)}
+      <Box sx={styles.wrapperStyles}>
+        <Box sx={styles.formStyles}>
+          <FormTextField control={control} name="title" onKeyDown={handleCreateTask} />
+        </Box>
+        <Box sx={styles.listWrapperStyles}>
+          <List dense sx={styles.listStyles}>
+            {tasks.map((task) => {
+              return (
+                <ListItem
+                  sx={styles.listItemStyles}
+                  disablePadding
+                  key={task.id}
+                  secondaryAction={(<RowMenu taskId={task.id} />)}
                 >
-                  <Typography noWrap sx={{ width: 400 }}>{task.title}</Typography>
-                  <Box sx={{ display: 'flex' }}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        WebkitAlignItems: 'center',
-                        marginRight: theme.spacing(0.5),
-                        color: grey[400]
-                      }}><AutorenewIcon sx={{ color: grey[400], width: 18, height: 18 }} />:</Box>
-                    <Chip
-                      size="small"
-                      label={task?.status.toLowerCase()}
-                      sx={{
-                        textTransform: 'capitalize',
-                        width: 80
-                      }}
+                  <Radio
+                    disableRipple
+                    disableFocusRipple
+                    disableTouchRipple
+                    onClick={handleCompleteTask(task)}
+                    sx={{ p: 0, mr: 2 }}
+                    checked={task?.status === TASK_STATUS.DONE}
+                  />
+                  <ListItemButton
+                    disableRipple
+                    sx={styles.buttonStyles}
+                    onClick={handleOpenTask(task)}
+                  >
+                    <Typography noWrap sx={{ width: 400 }}>{task.title}</Typography>
+                    <Box sx={{ display: 'flex' }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          WebkitAlignItems: 'center',
+                          marginRight: theme.spacing(0.5),
+                          color: grey[400]
+                        }}><AutorenewIcon sx={{ color: grey[400], width: 18, height: 18 }} /></Box>
+                      <Chip
+                        size="small"
+                        label={task?.status.toLowerCase()}
+                        sx={{
+                          textTransform: 'capitalize',
+                          width: 80
+                        }}
 
-                      color={
-                        task.status === TASK_STATUS.DONE
-                          ? 'success'
-                          : task.status === TASK_STATUS.PROGRESS
-                            ? 'warning'
-                            : 'primary'
-                      } />
-                  </Box>
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
+                        color={
+                          task.status === TASK_STATUS.DONE
+                            ? 'success'
+                            : task.status === TASK_STATUS.PROGRESS
+                              ? 'warning'
+                              : 'primary'
+                        } />
+                    </Box>
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+        </Box>
       </Box>
-      {selectedTask && (<TaskDetail open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />)}
+      {selectedTask && (<TaskDetail open={Boolean(selectedTask)} task={selectedTask} onClose={handleCloseTask} />)}
     </PageContainer>
   );
 };

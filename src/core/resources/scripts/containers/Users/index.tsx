@@ -1,6 +1,7 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { LOADING_STATE } from 'scripts/configs/enums';
 import { User } from 'scripts/interfaces/User';
-import { selectUsers, userActions } from '@store/slices/userSlice';
+import { selectCurrentUser, selectLoadingUser, selectUsers, userActions } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
 import BaseSelect from '@components/base/Select';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -10,7 +11,6 @@ import Input from '@components/base/Input';
 import PageContainer from '@components/base/PageContainer';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import React, { useEffect, useState } from 'react';
-import styles from './styles.module.scss';
 
 const MOCK_OPTIONS = [
   { value: 'chocolate', label: 'Chocolate' },
@@ -26,8 +26,9 @@ const Users = () => {
     pageSize: 10
   });
   const dispatch = useDispatch();
+  const currentUser: User = selectCurrentUser();
   const users: User[] = selectUsers();
-  // const loading: LOADING_STATE = selectLoadingUser();
+  const loading: string = selectLoadingUser();
 
   useEffect(() => {
     if (!users.length) {
@@ -44,7 +45,7 @@ const Users = () => {
     {
       field: 'fullName',
       headerName: 'Name',
-      width: 150,
+      flex: 1,
       resizable: false,
       editable: false,
       sortable: false
@@ -52,7 +53,7 @@ const Users = () => {
     {
       field: 'email',
       headerName: 'Email',
-      width: 300,
+      minWidth: 300,
       resizable: false,
       editable: false,
       sortable: false
@@ -60,7 +61,7 @@ const Users = () => {
     {
       field: 'permission',
       headerName: 'Permission',
-      width: 300,
+      minWidth: 125,
       resizable: false,
       editable: false,
       sortable: false,
@@ -72,7 +73,7 @@ const Users = () => {
     {
       field: 'status',
       headerName: 'Status',
-      width: 300,
+      minWidth: 125,
       resizable: false,
       editable: false,
       sortable: false,
@@ -83,9 +84,9 @@ const Users = () => {
       }
     },
     {
-      field: null,
+      field: 'actions',
       headerName: 'Actions',
-      width: 250,
+      minWidth: 250,
       resizable: false,
       editable: false,
       sortable: false,
@@ -94,9 +95,13 @@ const Users = () => {
           <IconButton onClick={handleEdit(params.id as string)}>
             <EditOutlinedIcon />
           </IconButton>
-          <IconButton onClick={handleDelete(params.id as string)}>
-            <DeleteOutlinedIcon />
-          </IconButton>
+          {
+            currentUser.userId !== params.id && (
+              <IconButton onClick={handleDelete(params.id as string)}>
+                <DeleteOutlinedIcon />
+              </IconButton>
+            )
+          }
         </div>
       )
     }
@@ -111,14 +116,13 @@ const Users = () => {
   };
 
   return (
-    <PageContainer title='Users'>
-      <div className="container flex flex-column">
+    <PageContainer title='Users' loading={loading === LOADING_STATE.LOADING}>
+      <div className="container flex flex-column h-100">
         <div className="flex justify-between py-6 px-3 bg-white">
           <div className="flex">
             <Input name="search" className="border-0 border-radius-4 mr-2" placeholder="Search" />
             <BaseSelect options={MOCK_OPTIONS} placeholder="Permission" className="mr-2" />
             <BaseSelect options={MOCK_OPTIONS} placeholder="Status" className="mr-2"/>
-            <div className={styles.selectedFilter}></div>
           </div>
           <button className='button create flex items-center'>
             <PersonAddAltOutlinedIcon className='mr-1' />

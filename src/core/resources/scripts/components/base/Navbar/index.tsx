@@ -8,7 +8,6 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import React from 'react';
 import Toolbar from '@mui/material/Toolbar';
 import styled from '@mui/material/styles/styled';
-import styles from './styles.module.scss';
 
 export interface NavbarProps extends MuiAppBarProps {
   open?: boolean;
@@ -45,7 +44,7 @@ const Navbar = (props: NavbarProps) => {
 
   return (
     <AppBar position="static" open={openSidebar} sx={{ mb: 2 }}>
-      <Toolbar classes={{ root: styles.toolbar }}>
+      <Toolbar sx={{ px: 2 }}>
         <IconButton onClick={handleIconClick}>
           {openSidebar ? <ChevronLeftIcon /> : <MenuIcon />}
         </IconButton>

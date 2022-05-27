@@ -1,5 +1,5 @@
 import { LOADING_STATE, TASK_STATUS } from '../../configs/enums';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Task } from '../../interfaces/Task';
 import { useSelector } from 'react-redux';
@@ -18,7 +18,6 @@ export const taskSlice = createSlice({
   name: 'tasks',
   initialState: initialState,
   reducers: {
-    fetchTasks() {},
     setLoading(state, action) {
       state.loading = action.payload;
     },
@@ -39,7 +38,10 @@ export const taskSlice = createSlice({
 });
 
 // Actions
-export const taskActions = taskSlice.actions;
+const fetchTasks = createAction('task/fetchTasks');
+const createTask = createAction<any>('task/createTask');
+
+export const taskActions = { ...taskSlice.actions, fetchTasks, createTask };
 
 // Selector
 export const selectTaskLoading = (): string => useSelector((state: RootState) => state.task.loading);

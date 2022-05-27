@@ -1,6 +1,5 @@
 import React, { DetailedHTMLProps, TextareaHTMLAttributes, useEffect, useRef } from 'react';
 import clsx from 'clsx';
-import styles from './styles.module.scss';
 
 export interface TextareaProps extends
   DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> {
@@ -12,7 +11,7 @@ const Textarea = (props: TextareaProps) => {
   const { className = '', value = '', disabled = false, ...restProps } = props;
   const textareaRef = useRef();
 
-  const textareaClasses = clsx(styles.textarea, className);
+  const textareaClasses = clsx(className);
 
   /**
    * Calculate and update textarea height base on text height
@@ -37,6 +36,14 @@ const Textarea = (props: TextareaProps) => {
       className={textareaClasses}
       value={value}
       disabled={disabled}
+      style={{
+        border: 'none',
+        outline: 'none',
+        resize: 'none',
+        width: '100%',
+        minHeight: '2rem',
+        padding: 0
+      }}
     ></textarea>
   );
 };
