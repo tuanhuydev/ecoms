@@ -1,25 +1,8 @@
 # Dependencies
-node_modules/
-vendor/
+node_modules
 
-src/core/public/css/
-src/core/public/js/
-src/core/public/images/
-src/core/public/fonts/
-
-# Environments
-.env
-
-.phpunit.result.cache
-docker-compose.override.yml
-
-# IDE config
-/.idea
-/.vscode
-.DS_Store
-
-# version control
-.history/
-
-# Database
-tools/mysql/data/*
+# public folders
+public/css/**/*
+public/fonts/**/*
+public/images/**/*
+public/js/**/*

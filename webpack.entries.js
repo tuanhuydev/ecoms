@@ -33,7 +33,7 @@ const scanEntries = (currentPath, distDir = 'js', parentDirectory = '', entries 
 
   // Filter and classify directory's entities
   entities.length && entities.forEach((entity) => {
-    const pathToItem = `${currentPath}/${entity}`;
+    const pathToItem = path.join(currentPath, entity);
     const isDirectory = fs.statSync(pathToItem).isDirectory();
 
     if (isDirectory) {
@@ -47,8 +47,8 @@ const scanEntries = (currentPath, distDir = 'js', parentDirectory = '', entries 
 
   // Scan sub directories
   directories.forEach((directory) => {
-    const subPath = `${currentPath}/${directory}`;
-    const subDistDirectory = parentDirectory ? `${distDir}/${parentDirectory}` : distDir;
+    const subPath = path.join(currentPath, directory);
+    const subDistDirectory = parentDirectory ? path.join(distDir, parentDirectory) : distDir;
     const subEntries = scanEntries(subPath, subDistDirectory, directory, entries);
 
     entries = { ...entries, ...subEntries };
@@ -57,13 +57,13 @@ const scanEntries = (currentPath, distDir = 'js', parentDirectory = '', entries 
   // Handle files
   files.forEach((file) => {
     const fileName = extractFileName(file);
-    const distPath = parentDirectory ? `${distDir}/${parentDirectory}` : distDir;
-    entries[`${distPath}/${fileName}`] = `${currentPath}/${file}`;
+    const distPath = parentDirectory ? path.join(distDir, parentDirectory) : distDir;
+    entries[path.join(distPath, fileName)] = path.join(currentPath, file);
   });
 
   return entries;
 };
-module.exports = {
+module.exports = () => ({
   ...scanEntries(SCRIPT_PATH),
   ...scanEntries(STYLESHEET_PATH, 'css')
-};
+});
