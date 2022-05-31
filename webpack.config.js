@@ -1,4 +1,4 @@
-const entry = require('./webpack.entries.js');
+const makeEntry = require('./webpack.entries.js');
 const path = require('path');
 const WebpackBar = require('webpackbar');
 const DotEnv = require('dotenv-webpack');
@@ -13,7 +13,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
  */
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
-const isDevelopment = process.env.NODE_ENV === 'local';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const mode = isDevelopment ? 'development' : 'production';
 const devtool = isDevelopment ? 'eval-source-map' : 'hidden-source-map';
@@ -38,6 +38,7 @@ const plugins = [
 if (isDevelopment) {
   plugins.push(new ForkTsCheckerWebpackPlugin());
 }
+const entry = makeEntry();
 
 const config = {
   entry,
