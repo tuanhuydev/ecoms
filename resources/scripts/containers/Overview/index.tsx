@@ -49,7 +49,7 @@ export default function Overview() {
     }
   };
 
-  const handleConpleteTask = (id: string) => async () => {
+  const handleConpleteTask = (id: number) => async () => {
     try {
       const { data }: AxiosResponse = await TaskService.deleteTask(id);
       if (data?.success) {

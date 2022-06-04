@@ -4,10 +4,12 @@ import { matchPath, useLocation } from 'react-router-dom';
 import { selectCurrentUser } from '@store/slices/userSlice';
 import AvatarMenu from '../AvatarMenu';
 import Box from '@mui/material/Box';
-import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import React, { ReactNode } from 'react';
+import Skeleton from '@mui/material/Skeleton';
 import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import getStyles from './styles';
 
 export interface PageContainerProps {
   title: string;
@@ -23,6 +25,7 @@ const PageContainer = ({
   ToolbarProps
 }: PageContainerProps) => {
   const { pathname } = useLocation();
+  const styles = getStyles();
   const { permission: userPermission } = selectCurrentUser();
 
   /**
@@ -38,28 +41,32 @@ const PageContainer = ({
     return false;
   });
 
+  // <Box sx={{ px: 2 }}>
+  //   <Skeleton animation="pulse"></Skeleton>
+  //   <Skeleton animation="pulse"></Skeleton>
+  //   <Skeleton animation="pulse"></Skeleton>
+  //   <Skeleton animation="pulse"></Skeleton>
+  //   <Skeleton animation="pulse"></Skeleton>
+  // </Box>;
+
   return (
     isRouteAvailable
-      ? (<Box>
-        {loading && (<LinearProgress />)}
+      ? (<Box sx={styles.pageWrapper}>
         <Toolbar
           {...ToolbarProps}
           disableGutters
-          sx={{
-            background: 'white',
-            mb: 0.25,
-            px: 1.5
-          }}>
+          sx={styles.toolbarStyles}>
           <Typography variant="h6" component="h6"
-            sx={{
-              fontWeight: 'bold',
-              fontFamily: "'Open Sans',sans-serif"
-            }} >{title}</Typography>
-          <Box sx={{ ml: 'auto' }}>
+            sx={styles.titleStyles} >
+            {title}
+            {loading && <CircularProgress color="inherit" size={20} sx={styles.spinnerStyles} />}
+          </Typography>
+          <Box sx={styles.avatarStyles}>
             <AvatarMenu />
           </Box>
         </Toolbar>
-        {children}
+
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>{children}</Box>
       </Box>)
       : (<h1>Permission Denied</h1>)
   );

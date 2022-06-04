@@ -8,7 +8,7 @@ class TaskService {
     return httpClient.get(TaskService.path);
   }
 
-  static getTaskById(id: string) {
+  static getTaskById(id: number) {
     return httpClient.get(`${TaskService.path}/${id}`);
   }
 
@@ -20,7 +20,7 @@ class TaskService {
     return httpClient.patch(TaskService.path, data);
   }
 
-  static deleteTask(id: string) {
+  static deleteTask(id: number) {
     return httpClient.delete(`${TaskService.path}/${id}`);
   }
 }

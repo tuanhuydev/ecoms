@@ -83,7 +83,7 @@ const Users = () => {
       }
     },
     {
-      field: null,
+      field: 'id',
       headerName: 'Actions',
       width: 250,
       resizable: false,
@@ -112,7 +112,7 @@ const Users = () => {
 
   return (
     <PageContainer title='Users'>
-      <div className="container flex flex-column">
+      <div className="container flex flex-column flex-1">
         <div className="flex justify-between py-6 px-3 bg-white">
           <div className="flex">
             <Input name="search" className="border-0 border-radius-4 mr-2" placeholder="Search" />

@@ -25,8 +25,42 @@ export function * getTasks() {
   }
 }
 
+export function * createTask(action: any) {
+  try {
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
+    const { data }: AxiosResponse = yield call(TaskService.createTask, action.payload);
+    if (data?.id) {
+      const newTask = {
+        ...action.payload,
+        id: data?.id
+      };
+      yield put({ type: taskActions.addTask.type, payload: newTask });
+      yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
+    }
+  } catch (error) {
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.FAIL });
+  } finally {
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.IDLE });
+  }
+}
+
+export function * deleteTask(action: any) {
+  try {
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
+    const { data }: AxiosResponse = yield call(TaskService.deleteTask, action.payload);
+    if (data.success) {
+      yield put({ type: taskActions.removeTask.type, payload: action.payload });
+      yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
+    }
+  } catch (error) {
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.FAIL });
+  } finally {
+    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.IDLE });
+  }
+}
+
 export default function * taskSaga() {
-  // yield takeLatest() Fetch Meta data
   yield takeEvery(taskActions.fetchTasks.type, getTasks);
-  // yield takeEvery()
+  yield takeEvery(taskActions.deleteTask.type, deleteTask);
+  yield takeEvery(taskActions.createTask.type, createTask);
 }

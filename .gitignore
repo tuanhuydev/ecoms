@@ -1,8 +1,12 @@
 # Dependencies
-node_modules
+node_modules/
+vendor/
 
 # public folders
 public/css/**/*
 public/fonts/**/*
 public/images/**/*
 public/js/**/*
+
+# Environments
+.env
