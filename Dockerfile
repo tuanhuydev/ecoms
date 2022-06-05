@@ -39,14 +39,4 @@ COPY src/core ./
 RUN npm install -g yarn webpack webpack-cli
 
 RUN yarn install
-
-# RUN yarn run build
-
-# TODO: Create system user to run Composer and Artisan Commands
-# RUN useradd -G www-data,root -u 1000 -d /home/sidehand sidehand
-# RUN mkdir -p /home/sidehand/.composer && \
-#     chown -R sidehand:sidehand /home/sidehand 
-
-# USER sidehand
-
  

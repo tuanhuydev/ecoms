@@ -1,5 +1,5 @@
 import { LOADING_STATE, TASK_STATUS } from '../../configs/enums';
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Task } from '../../interfaces/Task';
 import { useSelector } from 'react-redux';
@@ -28,18 +28,28 @@ export const taskSlice = createSlice({
     addTask(state, action: PayloadAction<Task>) {
       state.tasks.unshift(action.payload);
     },
+    removeTask(state, action: PayloadAction<number>) {
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+    },
     updateTask(state, action: PayloadAction<Task>) {
       const index = state.tasks.findIndex((task) => task.id === action.payload.id);
       state.tasks[index] = action.payload;
     },
-    completeTask(state, action: PayloadAction<string>) {
+    completeTask(state, action: PayloadAction<number>) {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     }
   }
 });
 
 // Actions
-export const taskActions = taskSlice.actions;
+const deleteTask = createAction<number>('task/delete');
+const createTask = createAction<any>('task/create');
+
+export const taskActions = {
+  ...taskSlice.actions,
+  deleteTask,
+  createTask
+};
 
 // Selector
 export const selectTaskLoading = (): string => useSelector((state: RootState) => state.task.loading);
