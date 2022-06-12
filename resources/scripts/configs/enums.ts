@@ -12,3 +12,10 @@ export enum TASK_STATUS {
   PROGRESS = 'PROGRESS',
   DONE = 'DONE'
 }
+
+export enum SEVERITY {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  CRITICAL = 'CRITICAL'
+}

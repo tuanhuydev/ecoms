@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskService
 {
-    
+
     /**
      * Get all active tasks
      */
     public function getAll()
     {
-        return Task::orderByDesc('created_at')->get();
+      return Task::orderByDesc('created_at')->get();
     }
 
      /**
@@ -25,12 +25,12 @@ class TaskService
     {
         return Task::find($id);
     }
-    
+
     /**
      * Create new task
      * @param Task data
      * @return string taskId
-     * 
+     *
      */
     public function create($data)
     {
@@ -41,7 +41,7 @@ class TaskService
      * Update current task
      * @param Task data
      * @return boolean
-     * 
+     *
      */
     public function update($data)
     {
@@ -59,9 +59,9 @@ class TaskService
             if (!empty($data['due_date'])) {
                 $task->due_date = $data['due_date'];
             }
-            
+
             $task->updated_by = Auth::user()->user_id ?? null;
-        }        
+        }
         return $task->save();
     }
 

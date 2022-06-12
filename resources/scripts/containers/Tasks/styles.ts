@@ -12,7 +12,9 @@ const getStyles = () => {
 
   const listContainerStyles: SxProps = {
     backgroundColor: theme.palette.common.white,
-    flex: 1
+    flex: 1,
+    maxHeight: 'calc(100vh - 68px - 64px)',
+    overflow: 'auto'
   };
 
   const listItemStyles: SxProps = {
@@ -39,6 +41,7 @@ const getStyles = () => {
   const labelStyles: SxProps = {
     display: 'flex',
     WebkitAlignItems: 'center',
+    fontSize: 'small',
     marginRight: theme.spacing(0.5),
     color: grey[400]
   };
@@ -54,6 +57,17 @@ const getStyles = () => {
     width: 80
   };
 
+  const createButtonStyles: SxProps = {
+    px: 0.5,
+    py: 0.25,
+    ml: 'auto'
+  };
+
+  const typographyStyles: SxProps = {
+    width: 600,
+    mr: 2
+  };
+
   return {
     toolbarStyles,
     listContainerStyles,
@@ -61,7 +75,9 @@ const getStyles = () => {
     listItemStyles,
     labelStyles,
     renewIconStyles,
-    chipStyles
+    chipStyles,
+    createButtonStyles,
+    typographyStyles
   };
 };
 

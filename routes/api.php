@@ -24,7 +24,10 @@ Route::get('/test', function() {
 | Task API
 |--------------------------------------------------------------------------
 */
-Route::group(['prefix' => 'tasks'], function() {
+Route::group([
+  'middleware' => 'auth:api',
+  'prefix' => 'tasks'
+], function() {
     Route::get('/', [TaskController::class, 'getAllTasks'])->name('tasks.getAll');
     Route::post('/', [TaskController::class, 'createTask'])->name('tasks.create');
     Route::patch('/', [TaskController::class, 'updateTask'])->name('tasks.update');
@@ -43,7 +46,7 @@ Route::group(['prefix' => 'users'] ,function() {
 |--------------------------------------------------------------------------
 */
 
-// Upload 
+// Upload
 Route::post('/upload', function(Request $request) {
     $systemPath = Storage::putFile('public', $request->file('file'));
     $publicPath = asset(Storage::url($systemPath));

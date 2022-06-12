@@ -1,4 +1,3 @@
-import { API_URL } from '../configs/constants';
 import { AxiosResponse } from 'axios';
 import { DefaultObjectType } from '../interfaces/Meta';
 import { User } from 'scripts/interfaces/User';
