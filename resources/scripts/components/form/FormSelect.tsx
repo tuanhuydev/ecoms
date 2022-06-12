@@ -1,6 +1,6 @@
 import { Controller, ControllerProps } from 'react-hook-form';
+import BaseSelect from '@components/base/Select';
 import React from 'react';
-import Select from 'react-select';
 
 export interface FormSelectProps extends Partial<ControllerProps> {
   control: any;
@@ -20,7 +20,7 @@ const FormSelect = (props: FormSelectProps) => {
       render={({
         field: { onChange, onBlur, value, name }
       }) => (
-        <Select
+        <BaseSelect
           onChange={onChange}
           onBlur={onBlur}
           options={options}
