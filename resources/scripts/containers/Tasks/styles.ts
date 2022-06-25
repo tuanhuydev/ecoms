@@ -4,16 +4,23 @@ import grey from '@mui/material/colors/grey';
 
 const getStyles = () => {
   const theme = useTheme();
-  const toolbarStyles: SxProps = {
+  const maxContentHeight = 'calc(100vh - 68px - 64px)';
+
+  const quickSearchStyles: SxProps = {
     backgroundColor: theme.palette.common.white,
     p: 1,
     mb: 0.25
   };
 
+  const toolbarStyles: SxProps = {
+    ...quickSearchStyles,
+    display: 'flex'
+  };
+
   const listContainerStyles: SxProps = {
     backgroundColor: theme.palette.common.white,
     flex: 1,
-    maxHeight: 'calc(100vh - 68px - 64px)',
+    maxHeight: maxContentHeight,
     overflow: 'auto'
   };
 
@@ -67,9 +74,23 @@ const getStyles = () => {
     width: 600,
     mr: 2
   };
+  const emptyRecordStyles: SxProps = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: maxContentHeight,
+    color: grey[400],
+    textTransform: 'capitalize',
+    fontSize: theme.typography.body1
+  };
+
+  const skeletonStyles: SxProps = {
+    flex: 1
+  };
 
   return {
     toolbarStyles,
+    quickSearchStyles,
     listContainerStyles,
     buttonStyles,
     listItemStyles,
@@ -77,7 +98,9 @@ const getStyles = () => {
     renewIconStyles,
     chipStyles,
     createButtonStyles,
-    typographyStyles
+    typographyStyles,
+    emptyRecordStyles,
+    skeletonStyles
   };
 };
 

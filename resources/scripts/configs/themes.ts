@@ -18,8 +18,13 @@ export default createTheme({
             font-display: swap;
             font-weight: 400;
             src: local('OpenSans'), local('OpenSans-Regular'), url(${OpenSanRegular}) format('ttf');
-          }
+          },
         `
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true
+      }
     }
   }
 });

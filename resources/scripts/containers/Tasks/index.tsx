@@ -1,22 +1,21 @@
 import { AppDispatch } from '@store/index';
 import { AxiosResponse } from 'axios';
 import { Controller, useForm } from 'react-hook-form';
+import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { LOADING_STATE, SEVERITY, TASK_STATUS } from '../../configs/enums';
+import { TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { Task } from '../../interfaces/Task';
 import { newTaskSchema } from './schemas';
-import { selectAllTasks, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
 import { selectCurrentUser } from '@store/slices/userSlice';
+import { selectFilteredTasks, selectTaskFilter, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { yupResolver } from '@hookform/resolvers/yup';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import BaseSelect from '@components/base/Select';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
-import FormSelect from '@components/form/FormSelect';
 import IconButton from '@mui/material/IconButton';
 import Input from '@components/base/Input';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
@@ -30,36 +29,34 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PageContainer from '@components/base/PageContainer';
 import Radio from '@mui/material/Radio';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEventHandler, useEffect, useState } from 'react';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import Skeleton from '@mui/material/Skeleton';
 import TaskDetail from '@components/pages/Tasks/TaskDetail';
 import TaskService from '../../services/TaskService';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';
-
-const TASK_STATUS_OPTIONS = [
-  { label: 'Backlog', value: TASK_STATUS.BACKLOG },
-  { label: 'Progress', value: TASK_STATUS.PROGRESS },
-  { label: 'Done', value: TASK_STATUS.DONE }
-];
-
-const TASK_SEVERITY_OPTIONS = [
-  { label: 'Medium', value: SEVERITY.MEDIUM },
-  { label: 'Low', value: SEVERITY.LOW },
-  { label: 'High', value: SEVERITY.HIGH },
-  { label: 'Critical', value: SEVERITY.CRITICAL }
-];
+import omit from 'lodash/omit';
 
 const INITIAL_FORM_VALUES = {
-  title: '',
-  description: '',
-  status: TASK_STATUS_OPTIONS[0],
-  severity: TASK_SEVERITY_OPTIONS[0]
+  title: ''
 };
+
+const TaskStatusOptions = [
+  { label: 'All Status', value: 'ALL' },
+  ...TASK_STATUS_OPTIONS
+];
+
+const TaskSeverityOptions = [
+  { label: 'All Severity', value: 'ALL' },
+  ...TASK_SEVERITY_OPTIONS
+];
 
 const Tasks = () => {
   const styles = getStyles();
   const dispatch: AppDispatch = useDispatch();
-  const tasks: Task[] = selectAllTasks();
+  const tasks: Task[] = selectFilteredTasks();
+  const taskFilter = selectTaskFilter();
   const currentUser = selectCurrentUser();
   const loading: string = selectTaskLoading();
   const { enqueueSnackbar } = useSnackbar();
@@ -67,6 +64,7 @@ const Tasks = () => {
   const [selectedTask, setSelectedTask] = useState<Task>();
   const [deleteTaskId, setDeleteTaskId] = useState<number | null>(null);
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [search, setSearch] = useState('');
   const openMenu = Boolean(menuAnchor);
 
   // Form
@@ -77,12 +75,10 @@ const Tasks = () => {
 
   const handleCreateTask = () => {
     const title = getValues('title');
-    const statusOption = getValues('status');
-    const severityOption = getValues('severity');
     const newTask = {
       title,
-      status: statusOption.value,
-      severity: severityOption.value,
+      status: TASK_STATUS.BACKLOG,
+      severity: SEVERITY.LOW,
       createdBy: currentUser.userId
     };
     dispatch(taskActions.createTask(newTask));
@@ -135,6 +131,90 @@ const Tasks = () => {
     }
   };
 
+  const handleSearchTask: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const renderTaskList = () => {
+    if (!tasks.length && loading !== LOADING_STATE.LOADING) {
+      return (<Box sx={styles.emptyRecordStyles}>no records</Box>);
+    } else if (!tasks.length) {
+      const placeholders: number[] = new Array(10).fill(0);
+      return (
+        <Box>
+          {
+            placeholders.map((_: number, index: number) => (
+              <Box sx={{ display: 'flex', mx: 1, mb: 1 }} key={index}>
+                <Skeleton variant="circular" height={40} width={40} sx={{ mr: 1 }} />
+                <Skeleton variant="rectangular" height={40} sx={styles.skeletonStyles} />
+              </Box>
+            ))
+          }
+        </Box>
+      );
+    }
+    return (
+      (<List dense>
+        {tasks.map((task) => {
+          return (
+            <ListItem
+              sx={styles.listItemStyles}
+              disablePadding
+              key={task.id}
+              secondaryAction={(
+                <IconButton
+                  sx={styles.buttonStyles}
+                  onClick={handleOpenMenu(task.id)}
+                  disabled={isLoading}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+              )}
+            >
+              <Radio
+                onClick={handleCompleteTask(task)}
+                checked={task?.status === TASK_STATUS.DONE}
+                sx={styles.buttonStyles}
+                disabled={isLoading}
+              />
+              <ListItemButton
+                disableRipple
+                disabled={isLoading}
+                sx={styles.buttonStyles}
+                onClick={handleOpenTask(task)}
+              >
+                <Typography noWrap sx={styles.typographyStyles}>{task.title}</Typography>
+                <Box className="flex mr-12">
+                  <Box
+                    sx={styles.labelStyles}>Status:</Box>
+                  <Chip
+                    size="small"
+                    label={task?.status.toLowerCase()}
+                    sx={styles.chipStyles}
+                    color={getTaskStatus(task.status)} />
+                </Box>
+                <Box className="flex mr-12">
+                  <Box
+                    sx={styles.labelStyles}>Severity:</Box>
+                  {getSeverityElement(task.severity)}
+                </Box>
+              </ListItemButton>
+            </ListItem>
+          );
+        })}
+      </List>)
+    );
+  };
+
+  const handleChangeFilterSelect = (field: string) => ({ value }: DefaultObjectType) => {
+    if (value === 'ALL') {
+      const updatedFilter = omit(taskFilter, [field]);
+      dispatch(taskActions.setTaskFilter(updatedFilter));
+    } else {
+      dispatch(taskActions.setTaskFilter({ ...taskFilter, [field]: value }));
+    }
+  };
+
   useEffect(() => {
     if (!tasks.length) {
       dispatch(taskActions.fetchTasks());
@@ -147,13 +227,49 @@ const Tasks = () => {
     }
   }, [loading]);
 
+  useEffect(() => {
+    const debounceSearch = setTimeout(() => {
+      dispatch(taskActions.setTaskFilter({ ...taskFilter, search }));
+    }, 300);
+    return () => clearTimeout(debounceSearch);
+  }, [search]);
+
   const isLoading = loading === LOADING_STATE.LOADING;
 
   return (
     <PageContainer title='Tasks' loading={isLoading}>
       <Box sx={styles.toolbarStyles}>
-        <form onSubmit={handleSubmit(handleCreateTask)} className="flex items-center flex-wrap">
-          <Box sx={{ mr: 2 }} className="w-25">
+        <Box className="w-25 mr-4">
+          <Input
+            autoComplete="off"
+            disabled={isLoading}
+            placeholder="Search task"
+            icon={<SearchOutlinedIcon />}
+            value={search}
+            onChange={handleSearchTask}
+          />
+        </Box>
+        <Box sx={{ mr: 2 }}>
+          <BaseSelect
+            name='status'
+            options={TaskStatusOptions}
+            defaultValue={TaskStatusOptions[0]}
+            disabled={isLoading}
+            onChange={handleChangeFilterSelect('status')} />
+        </Box>
+        <Box sx={{ mr: 2 }}>
+          <BaseSelect
+            name='severity'
+            options={TaskSeverityOptions}
+            defaultValue={TaskSeverityOptions[0]}
+            disabled={isLoading}
+            onChange={handleChangeFilterSelect('severity')}
+          />
+        </Box>
+      </Box>
+      <Box sx={styles.listContainerStyles}>
+        <Box sx={styles.quickSearchStyles}>
+          <form onSubmit={handleSubmit(handleCreateTask)} className="flex items-center flex-wrap">
             <Controller
               name="title"
               control={control}
@@ -163,88 +279,14 @@ const Tasks = () => {
                   {...field}
                   autoComplete="off"
                   disabled={isLoading}
-                  className="border-0 border-radius-4 mr-2 w-100"
-                  placeholder="Create new task"
+                  className="border-0 border-radius-4 w-100"
+                  placeholder="Quick Create Task"
+                  style={{ height: '2.5rem' }}
                 />
               )}
             />
-          </Box>
-          <div className="mr-4">
-            <FormSelect name='status' control={control} options={TASK_STATUS_OPTIONS} disabled={isLoading} />
-          </div>
-          <Box sx={{ mr: 2 }}>
-            <Controller
-              name="severity"
-              control={control}
-              render={({ field }) => (
-                <BaseSelect
-                  {...field}
-                  options={TASK_SEVERITY_OPTIONS}
-                  disabled={isLoading}
-                />
-              )}
-            />
-          </Box>
-          <Button
-            type='submit'
-            variant="contained"
-            endIcon={<AddOutlinedIcon />}
-            sx={styles.createButtonStyles}>
-            Create Task
-          </Button>
-        </form>
-      </Box>
-      <Box sx={styles.listContainerStyles}>
-        <List dense>
-          {tasks.map((task) => {
-            return (
-              <ListItem
-                sx={styles.listItemStyles}
-                disablePadding
-                key={task.id}
-                secondaryAction={(
-                  <IconButton
-                    sx={styles.buttonStyles}
-                    onClick={handleOpenMenu(task.id)}
-                    disabled={isLoading}
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                )}
-              >
-                <Radio
-                  onClick={handleCompleteTask(task)}
-                  checked={task?.status === TASK_STATUS.DONE}
-                  sx={styles.buttonStyles}
-                  disabled={isLoading}
-                />
-                <ListItemButton
-                  disableRipple
-                  disabled={isLoading}
-                  sx={styles.buttonStyles}
-                  onClick={handleOpenTask(task)}
-                >
-                  <Typography noWrap sx={styles.typographyStyles}>{task.title}</Typography>
-                  <Box className="flex mr-12">
-                    <Box
-                      sx={styles.labelStyles}>Status:</Box>
-                    <Chip
-                      size="small"
-                      label={task?.status.toLowerCase()}
-                      sx={styles.chipStyles}
-                      color={getTaskStatus(task.status)} />
-                  </Box>
-                  <Box className="flex mr-12">
-                    <Box
-                      sx={styles.labelStyles}>Severity:</Box>
-                    {getSeverityElement(task.severity)}
-                  </Box>
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
-      </Box>
+          </form>
+        </Box>{renderTaskList()}</Box>
       {selectedTask && (<TaskDetail open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />)}
       {deleteTaskId && (<Menu
         anchorEl={menuAnchor}
