@@ -1,8 +1,10 @@
+import './styles.scss';
+import { APP_URL, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { AppDispatch } from '@store/index';
 import { AxiosResponse } from 'axios';
 import { TASK_STATUS } from '../../../../configs/enums';
 import { Task } from '../../../../interfaces/Task';
-import { amber, blue, green, grey } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import { newTaskSchema } from '@containers/Tasks/schemas';
 import { styled, useTheme } from '@mui/material/styles';
 import { taskActions } from '@store/slices/taskSlice';
@@ -12,55 +14,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Box, { BoxProps } from '@mui/system/Box';
 import Button from '@mui/material/Button';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import FormSelect from '@components/form/FormSelect';
 import FormTextarea from '@components/form/FormTextarea';
 import IconButton from '@mui/material/IconButton';
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import TaskService from '../../../../services/TaskService';
-import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
-import styles from './styles.module.scss';
+import getStyles from './styles';
 
 export interface TaskDetailProps extends DrawerProps {
   task: Task;
   onClose: () => void;
 }
-
-interface StyledDrawerProps extends ToolbarProps {
-  status?: TASK_STATUS;
-}
-
-const StyledDrawer = styled(Drawer)<DrawerProps>(() => ({
-  '& .MuiDrawer-paper': {
-    width: 400
-  }
-}));
-
-const statusOptions = [
-  { value: TASK_STATUS.BACKLOG, label: 'Backlog' },
-  { value: TASK_STATUS.PROGRESS, label: 'In Progress' },
-  { value: TASK_STATUS.DONE, label: 'Done' }
-];
-
-const StyledToolbar = styled(Toolbar)<StyledDrawerProps>(({ theme, status = TASK_STATUS.BACKLOG }) => {
-  const statusColor = status === TASK_STATUS.DONE
-    ? green[400]
-    : status === TASK_STATUS.PROGRESS
-      ? amber[400]
-      : blue[400];
-  return {
-    backgroundColor: statusColor,
-    color: theme.palette.common.white,
-    minHeight: 32,
-    height: 32,
-    display: 'flex',
-    justifyContent: 'space-between',
-
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(0)
-    }
-  };
-});
 
 const StyledFieldGroup = styled(Box)<BoxProps>(({ theme }) => ({
   marginBottom: theme.spacing(0.75),
@@ -78,20 +46,29 @@ const StyledFieldGroup = styled(Box)<BoxProps>(({ theme }) => ({
 
 const TaskDetail = (props: TaskDetailProps) => {
   const { task, onClose, ...restProps } = props;
+  const editable = !!task;
+  const styles = getStyles();
+
+  // Hooks
   const theme = useTheme();
   const dispatch: AppDispatch = useDispatch();
+
+  const [editMode, setEditMode] = useState(false);
 
   // React hook form
   const { control, setValue, getValues, trigger } = useForm({
     defaultValues: {
       title: '',
       description: '',
-      status: statusOptions[0]
+      acceptance: '',
+      status: TASK_STATUS_OPTIONS[0]
     },
     resolver: yupResolver(newTaskSchema)
   });
   const taskStatus = useWatch({ control, name: 'status' });
+
   const { isDirty } = useFormState({ control });
+
   const handleUpdateTask = async () => {
     try {
       const validated = await trigger();
@@ -114,12 +91,30 @@ const TaskDetail = (props: TaskDetailProps) => {
     }
   };
 
+  const handleCopy = (content: string) => {
+    navigator.clipboard.writeText(content);
+  };
+
+  const copyTaskId = (taskId: number) => () => {
+    handleCopy(taskId.toString());
+  };
+
+  const copyTaskLink = (taskId: number) => () => {
+    handleCopy(`${APP_URL}/admin/tasks/${taskId.toString()}`);
+  };
+
+  const copyTaskBranch = (taskTitle: string) => () => {
+    const nonSpecialCharactersString = taskTitle.trim().toLowerCase().replace(/[^\w\s]/g, '');
+    const formatedString = nonSpecialCharactersString.split(/\s+/).join('-');
+    handleCopy(formatedString);
+  };
+
   useEffect(() => {
     if (task) {
       // Conflict react-hook-form type so have to mark as any
       Object.entries(task).forEach(([key, value]: [key: string, value: any]) => {
         if (key === 'status') {
-          setValue(key, statusOptions.find((option) => option.value === value));
+          setValue(key, TASK_STATUS_OPTIONS.find((option) => option.value === value));
         } else {
           setValue((key as any), task[key as keyof Task]);
         }
@@ -127,53 +122,82 @@ const TaskDetail = (props: TaskDetailProps) => {
     }
   }, [task, setValue]);
 
-  useEffect(() => {
-    const timeoutUpdate = setTimeout(() => {
-      if (isDirty) {
-        handleUpdateTask();
-      }
-    }, 300);
-    return () => {
-      clearTimeout(timeoutUpdate);
-    };
-  }, [isDirty]);
-
   const taskIsDone = taskStatus.value === TASK_STATUS.DONE;
-  const taskIsProgress = taskStatus.value === TASK_STATUS.PROGRESS;
+
+  const headerbuttonConfig: any = {
+    size: 'small',
+    disableRipple: true,
+    sx: {
+      mr: 0.5
+    },
+    disableFocusRipple: true
+  };
 
   return <Fragment>
-    <StyledDrawer {...restProps} anchor="right" onClose={onClose}>
-      <StyledToolbar variant='dense' status={taskStatus.value}>
-        <Box sx={{
-          backgroundColor: taskIsDone ? green[700] : taskIsProgress ? amber[700] : blue[700],
-          padding: theme.spacing(0, 0.5),
-          fontSize: theme.typography.fontSize,
-          display: 'flex',
-          alignItems: 'center',
-          height: '100%'
-        }}>
-            Task:
+    <Drawer {...restProps} anchor="right" onClose={onClose} sx={styles.drawerStyles}>
+      <Box sx={styles.toolbarStyles(taskStatus.value)}>
+        <Box sx={styles.titleStyles(taskStatus.value)}>
+          Task&nbsp;
           <Button
             variant="text"
-            sx={{ backgroundColor: 'transparent', color: theme.palette.common.white, padding: 0, minWidth: '1rem' }}
+            onClick={copyTaskId(task?.id)}
+            sx={{
+              backgroundColor: 'transparent',
+              color: theme.palette.common.white,
+              p: 0,
+              ml: 0.25,
+              minWidth: '1rem',
+              '&:hover': {
+                textDecoration: 'underline'
+              }
+            }}
           >#{task?.id}</Button>
         </Box>
-        <IconButton size="small" disableRipple onClick={onClose} sx={{ borderRadius: theme.shape.borderRadius }}>
-          <CloseOutlinedIcon style={{ fill: theme.palette.common.white, width: 14, height: 14 }} />
-        </IconButton>
-      </StyledToolbar>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <Box>
+            <IconButton
+              {...headerbuttonConfig}
+              onClick={copyTaskLink(task?.id)}>
+              <ShareOutlinedIcon sx={styles.headerButtonIconStyles} />
+            </IconButton>
+            <IconButton {...headerbuttonConfig} onClick={copyTaskBranch(task?.title)}>
+              <CodeOutlinedIcon sx={styles.headerButtonIconStyles} />
+            </IconButton>
+            {
+              editable && (
+                <IconButton {...headerbuttonConfig} onClick={onClose}>
+                  <EditOutlinedIcon sx={styles.headerButtonIconStyles} />
+                </IconButton>)
+            }
+          </Box>
+          <Box sx={styles.titleStyles(taskStatus.value)}>
+            <IconButton size="small" disableRipple={true} disableFocusRipple={true} onClick={onClose}>
+              <CloseOutlinedIcon sx={styles.headerButtonIconStyles} />
+            </IconButton>
+          </Box>
+        </Box>
+
+      </Box>
       <Box sx={{ padding: theme.spacing(0, 0.75) }}>
         <FormTextarea
           name="title"
           placeholder="Title"
           control={control}
           onBlur={handleUpdateTask}
-          className={styles.task__title}
+          className="task__title"
           disabled={taskIsDone}
         />
         <StyledFieldGroup>
-          <label>Author:</label>
+          <label>Reporter:</label>
           Huy Nguyen Tuan
+        </StyledFieldGroup>
+        <StyledFieldGroup>
+          <label>Assignee:</label>
+          Huy Nguyen Tuan
+        </StyledFieldGroup>
+        <StyledFieldGroup>
+          <label> Due date:</label>
+          2022/06/06
         </StyledFieldGroup>
         <StyledFieldGroup sx={{ display: 'flex' }}>
           <label>Status:</label>
@@ -181,14 +205,26 @@ const TaskDetail = (props: TaskDetailProps) => {
             <FormSelect
               name="status"
               control={control}
-              options={statusOptions}
+              options={TASK_STATUS_OPTIONS}
+              defaultValue={TASK_STATUS_OPTIONS[0]}
             />
           </Box>
         </StyledFieldGroup>
-        {/* <StyledFieldGroup>
-          <label>Tags:</label>
-          Render tags
-        </StyledFieldGroup> */}
+        <StyledFieldGroup sx={{ display: 'flex' }}>
+          <label>Type:</label>
+          <Box sx={{ flexGrow: 1 }}>
+            <FormSelect
+              name="status"
+              control={control}
+              options={TASK_STATUS_OPTIONS}
+              defaultValue={TASK_STATUS_OPTIONS[0]}
+            />
+          </Box>
+        </StyledFieldGroup>
+        <StyledFieldGroup>
+          <label> Due date:</label>
+          2022/06/06
+        </StyledFieldGroup>
         <StyledFieldGroup>
           <label>Description:</label>
           <FormTextarea
@@ -197,11 +233,11 @@ const TaskDetail = (props: TaskDetailProps) => {
             onBlur={handleUpdateTask}
             control={control}
             disabled={taskIsDone}
-            className={styles.task__description}
+            className='task__description'
           />
         </StyledFieldGroup>
       </Box>
-    </StyledDrawer>
+    </Drawer>
   </Fragment>;
 };
 
