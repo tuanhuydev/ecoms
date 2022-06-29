@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material';
 import amber from '@mui/material/colors/amber';
 import blue from '@mui/material/colors/blue';
 import green from '@mui/material/colors/green';
+import grey from '@mui/material/colors/grey';
 
 const getStyles = () => {
   const theme = useTheme();
@@ -43,17 +44,84 @@ const getStyles = () => {
     };
   };
 
-  const headerButtonIconStyles = {
+  const headerButtonIconStyles: SxProps = {
     fill: theme.palette.common.white,
     width: 14,
     height: 14
+  };
+
+  const taskIdStyles: SxProps = {
+    backgroundColor: 'transparent',
+    color: theme.palette.common.white,
+    p: 0,
+    ml: 0.25,
+    minWidth: '1rem',
+    '&:hover': {
+      textDecoration: 'underline'
+    }
+  };
+
+  const subTitleStyles: SxProps = {
+    display: 'flex',
+    fontSize: '0.75rem',
+    px: theme.spacing(0.75),
+    mb: theme.spacing(1),
+    fontWeight: theme.typography.fontWeightLight,
+
+    label: {
+      fontSize: '0.75rem',
+      color: grey[500]
+    }
+  };
+
+  const labelGroupStyles: SxProps = {
+    color: grey[500],
+    width: '4rem',
+    fontWeight: theme.typography.fontWeightLight,
+    fontSize: theme.typography.fontSize,
+    marginRight: theme.spacing(0.75)
+  };
+
+  const baseFieldGroupStyles: SxProps = {
+    my: theme.spacing(0.5),
+    fontSize: theme.typography.htmlFontSize,
+    transition: 'all 0.25s'
+  };
+
+  const fieldGroupStyles: SxProps = {
+    ...baseFieldGroupStyles,
+    label: {
+      px: theme.spacing(0.75)
+    }
+  };
+
+  const inlineFieldGroupStyles: SxProps = {
+    ...baseFieldGroupStyles,
+    px: theme.spacing(0.75),
+    display: 'flex',
+    alignItems: 'center'
+  };
+
+  const textareaStyles = (editMode: boolean): SxProps => {
+    return {
+      transition: 'all 0.25s',
+      marginTop: theme.spacing(0.25),
+      px: editMode ? theme.spacing(0.75) : 0
+    };
   };
 
   return {
     drawerStyles,
     toolbarStyles,
     titleStyles,
-    headerButtonIconStyles
+    headerButtonIconStyles,
+    taskIdStyles,
+    subTitleStyles,
+    fieldGroupStyles,
+    inlineFieldGroupStyles,
+    textareaStyles,
+    baseFieldGroupStyles,
+    labelGroupStyles
   };
 };
 

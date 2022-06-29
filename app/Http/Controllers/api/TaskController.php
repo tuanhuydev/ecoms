@@ -27,7 +27,7 @@ class TaskController extends Controller
      */
     public function getAllTasks(Request $request)
     {
-      $tasks = $this->taskService->getAll();
+      $tasks = $this->taskService->getAll($request);
       return response()->json(['tasks' => TaskResource::collection($tasks)]);
     }
 
@@ -55,6 +55,7 @@ class TaskController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
         ]);
+        $validatedData['created_by'] = $request->user()->id;
         $newTask = $this->taskService->create($validatedData);
         return response()->json(['id' => $newTask->id]);
     }

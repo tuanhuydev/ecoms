@@ -57,20 +57,28 @@ export const taskSlice = createSlice({
 // Actions
 const deleteTask = createAction<number>('task/delete');
 const createTask = createAction<any>('task/create');
+const saveTask = createAction<any>('task/save');
 
 export const taskActions = {
   ...taskSlice.actions,
   deleteTask,
-  createTask
+  createTask,
+  saveTask
 };
 
 // Selector
 export const selectTaskLoading = (): string => useSelector((state: RootState) => state.task.loading);
+
 export const selectAllTasks = (): Task[] => useSelector((state: RootState) => state.task.tasks);
+
 export const selectBacklogTasks = (): Task[] => useSelector((state: RootState) =>
   state.task.tasks.filter((task: Task) =>
     task.status === TASK_STATUS.BACKLOG)
 );
+
+export const selectTaskById = (id: number) => useSelector((state: RootState) => {
+  return state.task.tasks.find((task: Task) => task.id === id);
+});
 
 export const selectTaskFilter = (): DefaultObjectType => useSelector((state: RootState) => state.task.filter);
 

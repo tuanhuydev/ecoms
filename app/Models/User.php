@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\Article;
+use App\Models\Task;
 use App\Models\Traits\HasUuid;
 use App\Models\Traits\HasConfirmationToken;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -19,7 +20,7 @@ class User extends Authenticatable
 
     protected $primaryKey = 'id';
     protected $keyType = 'string';
-    
+
     // Prevent save as uuid but return 0
     public $incrementing = false;
 
@@ -45,7 +46,9 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'confirmation_token'
+        'confirmation_token',
+        'reset_password_token',
+        'email_verified_at'
     ];
 
     /**
@@ -58,11 +61,17 @@ class User extends Authenticatable
     ];
 
     public function getFullName() {
-        return ucfirst($this->first_name)." ".ucfirst($this->last_name); 
+        return ucfirst($this->first_name)." ".ucfirst($this->last_name);
     }
 
-    public function articles() 
+
+    public function articles()
     {
-        return $this->hasMany(Article::class, 'foreign_key', 'author_id');
+        return $this->hasMany(Article::class, 'id', 'author_id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }

@@ -1,5 +1,5 @@
 import { Controller, ControllerProps } from 'react-hook-form';
-import BaseSelect from '@components/base/Select';
+import BaseDatePicker from '@components/base/DatePicker';
 import React from 'react';
 
 export interface FormSelectProps extends Partial<ControllerProps> {
@@ -11,8 +11,8 @@ export interface FormSelectProps extends Partial<ControllerProps> {
   options: Array<any>;
 }
 
-const FormSelect = (props: FormSelectProps) => {
-  const { options, disabled = false, ...restProps } = props;
+const FormDatePicker = (props: any) => {
+  const { disabled = false, ...restProps } = props;
 
   return (
     <Controller
@@ -20,10 +20,9 @@ const FormSelect = (props: FormSelectProps) => {
       render={({
         field: { onChange, onBlur, value, name }
       }) => (
-        <BaseSelect
+        <BaseDatePicker
           onChange={onChange}
           onBlur={onBlur}
-          options={options}
           value={value}
           name={name}
           disabled={disabled}
@@ -32,4 +31,4 @@ const FormSelect = (props: FormSelectProps) => {
     />);
 };
 
-export default FormSelect;
+export default FormDatePicker;

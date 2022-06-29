@@ -3,10 +3,11 @@ import React, { RefObject } from 'react';
 import Select from 'react-select';
 
 const BaseSelect = React.forwardRef((props: any, ref: RefObject<any>) => {
+  const { disabled, ...restProps } = props;
   const theme = useTheme();
   const customStyles = {
     control: () => ({
-      width: 150,
+      width: '100%',
       display: 'flex',
       background: '#FAFAFA',
       borderRadius: 4,
@@ -23,7 +24,7 @@ const BaseSelect = React.forwardRef((props: any, ref: RefObject<any>) => {
     })
   };
   return (
-    <Select {...props} ref={ref} styles={customStyles} width='300px' />
+    <Select {...restProps} isDisabled={disabled} ref={ref} styles={customStyles} width='300px' />
   );
 });
 
