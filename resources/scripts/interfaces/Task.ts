@@ -1,4 +1,5 @@
 import { SEVERITY, TASK_STATUS } from 'scripts/configs/enums';
+import { User } from './User';
 
 export interface Task {
   id: number;
@@ -8,4 +9,6 @@ export interface Task {
   dueDate?: string;
   severity: SEVERITY;
   status: TASK_STATUS;
+  createdBy?: User;
+  createdAt?: string;
 }

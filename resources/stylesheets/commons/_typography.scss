@@ -26,6 +26,10 @@ $spacers: 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20;
   color: var(--status-warning);
 }
 
+.text-white {
+  color: white;
+}
+
 .text-status-suspened,
 .text-status-blocked {
   color: var(--status-danger);

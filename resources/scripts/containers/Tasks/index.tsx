@@ -79,7 +79,11 @@ const Tasks = () => {
       title,
       status: TASK_STATUS.BACKLOG,
       severity: SEVERITY.LOW,
-      createdBy: currentUser.userId
+      createdBy: currentUser,
+      createdAt: new Date().toISOString(),
+      description: '',
+      acceptance: '',
+      dueDate: ''
     };
     dispatch(taskActions.createTask(newTask));
     reset();

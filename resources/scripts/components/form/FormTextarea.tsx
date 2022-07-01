@@ -26,7 +26,12 @@ const FormTextarea = (props: FormTextareaProps) => {
         return (
           <>
             <Textarea
-              onBlur={(e) => { onBlur(); handleBlur(e); }}
+              onBlur={(e) => {
+                onBlur();
+                if (handleBlur) {
+                  handleBlur(e);
+                }
+              }}
               onChange={onChange}
               className={className}
               placeholder={placeholder}

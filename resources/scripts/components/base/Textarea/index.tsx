@@ -12,7 +12,7 @@ const Textarea = (props: TextareaProps) => {
   const { className = '', value = '', disabled = false, ...restProps } = props;
   const textareaRef = useRef();
 
-  const textareaClasses = clsx('textarea', className);
+  const textareaClasses = clsx(['textarea', className]);
 
   /**
    * Calculate and update textarea height base on text height
@@ -20,8 +20,9 @@ const Textarea = (props: TextareaProps) => {
   const onInputFitSize = () => {
     if (textareaRef.current) {
       const textareaElement = textareaRef.current as HTMLTextAreaElement;
-      textareaElement.style.minHeight = '25px';
-      textareaElement.style.height = (textareaElement.scrollHeight) + 'px';
+      textareaElement.style.overflowY = 'hidden';
+      textareaElement.style.height = 'auto';
+      textareaElement.style.height = `${textareaElement.scrollHeight}px`;
     }
   };
 

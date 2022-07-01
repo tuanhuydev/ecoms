@@ -73,7 +73,6 @@ class SignIn extends Auth {
 
       if (onDone) onDone();
     } catch (err) {
-      // console.log(err);
       if (onError) onError(err, !!err?.response);
     } finally {
       if (onFinally) onFinally();

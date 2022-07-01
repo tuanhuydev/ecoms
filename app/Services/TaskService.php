@@ -13,9 +13,10 @@ class TaskService
     /**
      * Get all active tasks
      */
-    public function getAll()
+    public function getAll(Request $request)
     {
-      return Task::orderByDesc('created_at')->get();
+      $tasks = Task::where('created_by',  $request->user()->id)->orderByDesc('created_at')->get();
+      return $tasks;
     }
 
      /**

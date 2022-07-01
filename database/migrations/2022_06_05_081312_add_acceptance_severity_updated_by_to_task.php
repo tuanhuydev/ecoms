@@ -18,7 +18,7 @@ class AddAcceptanceSeverityUpdatedByToTask extends Migration
   {
     if (Schema::hasTable($this->tableName)) {
       Schema::table($this->tableName, function (Blueprint $table) {
-          $table->bigInteger('created_by')->nullable();
+          $table->uuid('created_by')->nullable();
           $table->string('acceptance')->nullable();
           $table->enum('severity', SeverityType::getKeys())->default(SeverityType::MEDIUM);
       });
