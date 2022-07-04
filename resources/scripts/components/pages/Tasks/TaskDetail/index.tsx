@@ -4,6 +4,7 @@ import { AppDispatch } from '@store/index';
 import { LOADING_STATE, TASK_STATUS } from '../../../../configs/enums';
 import { Task } from '../../../../interfaces/Task';
 import { formatDistance } from 'date-fns';
+import { isValidDate } from 'scripts/utils/helpers';
 import { newTaskSchema } from '@containers/Tasks/schemas';
 import { selectTaskById, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
@@ -48,7 +49,7 @@ const TaskDetail = (props: TaskDetailProps) => {
       title: '',
       description: '',
       acceptance: '',
-      dueDate: new Date(),
+      dueDate: '',
       status: TASK_STATUS_OPTIONS[0],
       severity: TASK_SEVERITY_OPTIONS[0]
     },
@@ -62,7 +63,10 @@ const TaskDetail = (props: TaskDetailProps) => {
     const validated = await trigger();
     if (validated) {
       const { status, severity, dueDate, ...restTask }: any = getValues();
-      const dateString = new Date(dueDate).toISOString();
+      let dateString = '';
+      if (isValidDate(dueDate)) {
+        dateString = new Date(dueDate).toISOString();
+      }
       dispatch(taskActions.saveTask({
         ...restTask,
         status: status.value,
@@ -111,7 +115,7 @@ const TaskDetail = (props: TaskDetailProps) => {
         } else if (key === 'severity') {
           setValue(key, TASK_SEVERITY_OPTIONS.find((option) => option.value === value));
         } else if (key === 'dueDate') {
-          setValue((key as any), new Date(task[key]));
+          setValue((key as any), isValidDate(task[key]) ? new Date(task[key]) : '');
         } else {
           setValue((key as any), task[key as keyof Task]);
         }
