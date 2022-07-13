@@ -35,8 +35,12 @@ Route::group([
     Route::delete('/{id}', [TaskController::class, 'deleteTask'])->name('tasks.delete');
 });
 
-Route::group(['prefix' => 'users'] ,function() {
+Route::group([
+  'middleware' => 'auth:api',
+  'prefix' => 'users'
+] ,function() {
     Route::get('/', [UserController::class, 'getUsers'])->name('users.getUsers');
+    Route::patch('/', [UserController::class, 'updateUser'])->name('users.updateUser');
 });
 
 

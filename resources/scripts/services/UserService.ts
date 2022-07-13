@@ -1,10 +1,15 @@
-import httpClient from '../configs/httpClient';
+import { User } from 'scripts/interfaces/User';
+import { httpClientWithAuth } from '../configs/httpClient';
 
 class UserService {
   static path: string = '/users';
 
   static getUsers() {
-    return httpClient.get(UserService.path);
+    return httpClientWithAuth.get(UserService.path);
+  }
+
+  static updateUser(data: Partial<User>) {
+    return httpClientWithAuth.patch(UserService.path, data);
   }
 
   // static getTaskById(id: string) {

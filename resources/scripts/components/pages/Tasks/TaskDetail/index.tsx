@@ -1,4 +1,3 @@
-import './styles.scss';
 import { APP_URL, TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { AppDispatch } from '@store/index';
 import { LOADING_STATE, TASK_STATUS } from '../../../../configs/enums';
@@ -195,7 +194,6 @@ const TaskDetail = (props: TaskDetailProps) => {
           name="title"
           placeholder="Title"
           control={control}
-          className="task__title"
           disabled={taskIsDone || !editMode}
         />
       </Box>
@@ -242,7 +240,6 @@ const TaskDetail = (props: TaskDetailProps) => {
             placeholder="Description"
             control={control}
             disabled={taskIsDone || !editMode}
-            className='task__description'
           />
         </Box>
       </Box>

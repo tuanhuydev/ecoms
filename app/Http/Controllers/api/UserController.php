@@ -22,4 +22,19 @@ class UserController extends Controller
         $users = $this->userService->getUsers();
         return UserResource::collection($users);
     }
+
+    function updateUser(Request $request)
+    {
+      $validatedData = $request->validate([
+        'userId' => 'required',
+      ]);
+      $loggedUserId =$request->user()->id;
+      if ($loggedUserId === $validatedData['userId']) {
+        return response()->json(['success' => false ]);
+      }
+      if ($request->status) {
+        $validatedData['status'] = $request->status;
+      }
+      return response()->json(['success' => $this->userService->updateUser($validatedData)]);
+    }
 }
