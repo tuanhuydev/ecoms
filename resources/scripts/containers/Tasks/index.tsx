@@ -227,7 +227,7 @@ const Tasks = () => {
 
   useEffect(() => {
     if (loading === LOADING_STATE.FAIL) {
-      enqueueSnackbar('Something went wrong', { variant: 'error' });
+      enqueueSnackbar('Error', { variant: 'error' });
     }
   }, [loading]);
 

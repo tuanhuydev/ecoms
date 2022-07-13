@@ -41,6 +41,7 @@ const AdminLayout = () => {
 
   // Filter sidebar links base on user's permissions
   const renderSideLinks = Object.entries(adminRoutes)
+    // eslint-disable-next-line no-unused-vars
     .filter(([key, values]) => values.permissions.includes(currentUser.permission.toUpperCase()))
     .map(([key, route]) => {
       return (

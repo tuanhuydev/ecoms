@@ -6,7 +6,6 @@ import AvatarMenu from '../AvatarMenu';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import React, { ReactNode } from 'react';
-import Skeleton from '@mui/material/Skeleton';
 import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';

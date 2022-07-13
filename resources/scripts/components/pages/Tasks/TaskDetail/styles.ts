@@ -106,7 +106,15 @@ const getStyles = () => {
     return {
       transition: 'all 0.25s',
       marginTop: theme.spacing(0.25),
-      px: editMode ? theme.spacing(0.75) : 0
+      px: editMode ? theme.spacing(0.75) : 0,
+      textarea: {
+        fontSize: '1rem',
+        fontWeight: theme.typography.fontWeightRegular
+      },
+      "textarea[name='title']": {
+        fontSize: '1.4rem',
+        fontWeight: theme.typography.fontWeightBold
+      }
     };
   };
 

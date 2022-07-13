@@ -19,3 +19,10 @@ export enum SEVERITY {
   HIGH = 'HIGH',
   CRITICAL = 'CRITICAL'
 }
+
+export enum USER_STATUS {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  BLOCKED = 'BLOCKED'
+}

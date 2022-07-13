@@ -8,7 +8,7 @@
       "build": "npx webpack --node-env production",
       "prettier": "prettier --debug-check ./resources",
       "prettier:fix": "prettier --write ./resources",
-      "lint": "eslint 'resources' --ext '.ts, .tsx'",
+      "lint": "eslint \"**/*.{ts,tsx}\"",
       "lint:fix": "yarn lint --fix",
       "release": "standard-version"
    },
