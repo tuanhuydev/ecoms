@@ -19,8 +19,9 @@ import IconButton from '@mui/material/IconButton';
 import Input from '@components/base/Input';
 import PageContainer from '@components/base/PageContainer';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
-import React, { ChangeEventHandler, useEffect, useState } from 'react';
+import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import UserForm from '@components/pages/Users/UserForm';
 import getStyles from './styles';
 
 const Users = () => {
@@ -146,7 +147,21 @@ const Users = () => {
     setSearch(event.target.value);
   };
 
+  const handleToggleUserForm = (value: boolean = false) => {
+    setOpenForm(value);
+  };
+
+  const saveUser = (data: any) => {
+    console.log(data);
+  };
+
   const isLoading = loadingState === LOADING_STATE.LOADING;
+
+  const MemoUserForm = useMemo(() => {
+    return (
+      <UserForm open={openForm} onClose={() => handleToggleUserForm(false)} onSubmit={saveUser} />
+    );
+  }, [openForm]);
 
   return (
     <PageContainer title='Users' loading={isLoading}>
@@ -163,13 +178,16 @@ const Users = () => {
             />
           </Box>
           <Box>
-            <button className='button create flex items-center'>
+            <button
+              className='button create flex items-center'
+              disabled={isLoading}
+              onClick={() => handleToggleUserForm(true)}>
               <PersonAddAltOutlinedIcon className='mr-1' />
-              Add
+                Add
             </button>
           </Box>
         </Box>
-        <div className="bg-white flex-1 px-4">
+        <Box className="bg-white flex-1 px-4 overflow-auto" sx={styles.gridContainerStyles}>
           <DataGrid
             loading={isLoading}
             columns={columns}
@@ -181,7 +199,7 @@ const Users = () => {
             disableColumnMenu
             sx={styles.gridStyles}
           />
-        </div>
+        </Box>
       </div>
       <ConfirmBox
         title="Confirm"
@@ -190,6 +208,7 @@ const Users = () => {
         onClose={handleCloseModal}
         onSubmit={handleSubmitModal}
       />
+      {MemoUserForm}
     </PageContainer>
   );
 };

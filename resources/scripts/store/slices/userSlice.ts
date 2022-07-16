@@ -37,6 +37,9 @@ export const userSlice = createSlice({
     setFilter(state: any, action: PayloadAction<DefaultObjectType>) {
       state.filter = { ...state.filter, ...action.payload };
     },
+    addUser(state: any, action: PayloadAction<User>) {
+      state.users.unshift(action.payload);
+    },
     updateUser(state: any, action: PayloadAction<any>) {
       const { userId, ...restUser } = action.payload;
       state.users = state.users.map((user: User) => {
@@ -51,9 +54,10 @@ export const userSlice = createSlice({
 
 // Actions
 const fetchUsers = createAction('user/fetch');
-const patchUser = createAction<any>('user/patch');
+const saveUser = createAction<Partial<User>>('user/save');
+const patchUser = createAction<Partial<User>>('user/patch');
 
-export const userActions = { ...userSlice.actions, fetchUsers, patchUser };
+export const userActions = { ...userSlice.actions, fetchUsers, patchUser, saveUser };
 
 // selector
 export const selectCurrentUser = () => useSelector((state: RootState) => state.user.currentUser);

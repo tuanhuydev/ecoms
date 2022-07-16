@@ -1,19 +1,19 @@
-import './styles.scss';
+import { SxProps } from '@mui/system';
+import Box from '@mui/material/Box';
 import React, { DetailedHTMLProps, TextareaHTMLAttributes, useEffect, useRef } from 'react';
-import clsx from 'clsx';
+import getStyles from './styles';
 
 export interface TextareaProps extends
   DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> {
   value?: string;
   name?: string;
+  sx?: SxProps;
 }
 
 const Textarea = (props: TextareaProps) => {
-  const { className = '', value = '', disabled = false, ...restProps } = props;
+  const { value = '', disabled = false, sx, ...restProps } = props;
   const textareaRef = useRef();
-
-  const textareaClasses = clsx(['textarea', className]);
-
+  const styles = getStyles();
   /**
    * Calculate and update textarea height base on text height
    */
@@ -31,14 +31,15 @@ const Textarea = (props: TextareaProps) => {
   }, []);
 
   return (
-    <textarea
+    <Box
       {...restProps}
+      sx={{ ...styles.textareaStyles, ...sx }}
+      component="textarea"
       ref={textareaRef}
       onInput={onInputFitSize}
-      className={textareaClasses}
       value={value}
       disabled={disabled}
-    ></textarea>
+    ></Box>
   );
 };
 

@@ -187,7 +187,6 @@ const TaskDetail = (props: TaskDetailProps) => {
             </IconButton>
           </Box>
         </Box>
-
       </Box>
       <Box sx={styles.textareaStyles(editMode)}>
         <FormTextarea
@@ -211,7 +210,6 @@ const TaskDetail = (props: TaskDetailProps) => {
             name="status"
             control={control}
             options={TASK_STATUS_OPTIONS}
-            defaultValue={TASK_STATUS_OPTIONS[0]}
             disabled={!editMode}
           />
         </Box>
@@ -224,7 +222,6 @@ const TaskDetail = (props: TaskDetailProps) => {
             control={control}
             options={TASK_SEVERITY_OPTIONS}
             disabled={!editMode}
-            defaultValue={TASK_SEVERITY_OPTIONS[0]}
           />
         </Box>
       </Box>

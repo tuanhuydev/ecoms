@@ -1,4 +1,4 @@
-import { SEVERITY, TASK_STATUS } from './enums';
+import { SEVERITY, TASK_STATUS, USER_STATUS } from './enums';
 import { User } from 'scripts/interfaces/User';
 
 export const APP_URL = process.env.APP_ENV === 'local' ? 'http://localhost' : process.env.APP_URL;
@@ -26,7 +26,8 @@ export const ROUTE_PATHS = {
 
 export const PERMISSIONS = {
   GUEST: 'GUEST',
-  ADMIN: 'ADMIN'
+  ADMIN: 'ADMIN',
+  MAINTAINER: 'MAINTAINER'
 };
 
 export const STATUSES = {
@@ -47,4 +48,17 @@ export const TASK_SEVERITY_OPTIONS = [
   { label: 'Low', value: SEVERITY.LOW },
   { label: 'High', value: SEVERITY.HIGH },
   { label: 'Critical', value: SEVERITY.CRITICAL }
+];
+
+export const USER_STATUS_OPTIONS = [
+  { label: 'Active', value: USER_STATUS.ACTIVE },
+  { label: 'Pending', value: USER_STATUS.PENDING },
+  { label: 'Suspended', value: USER_STATUS.SUSPENDED },
+  { label: 'Blocked', value: USER_STATUS.BLOCKED }
+];
+
+export const USER_PERMISSION_OPTIONS = [
+  { label: 'Guest', value: PERMISSIONS.GUEST },
+  { label: 'Admin', value: PERMISSIONS.ADMIN },
+  { label: 'Maintainer', value: PERMISSIONS.MAINTAINER }
 ];

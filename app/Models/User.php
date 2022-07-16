@@ -35,6 +35,8 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
+        'status',
+        'permission',
         'reset_password_token',
         'email_verified_at'
     ];

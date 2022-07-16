@@ -33,8 +33,8 @@ class UserService
         }
         $user = Auth::user();
         $tokenVerified = "1";
-        if (empty($user->email_verified_at) || $user->confirmation_token !== $tokenVerified || $user->status !== StatusType::ACTIVE) {
-            throw new UnauthorizedException();
+        if ($user->status !== StatusType::ACTIVE) {
+          throw new UnauthorizedException();
         }
         $accessToken = $user->createToken('authToken')->accessToken;
         return ['user' => $user, 'access_token' => $accessToken];
@@ -134,11 +134,16 @@ class UserService
     }
 
     /**
-     * Get all users
+     * Get all users order by created_at by default
      */
     function getUsers(mixed $body = [])
     {
-        return User::all();
+        return User::orderByDesc('created_at')->get();
+    }
+
+    function create(mixed $body = [])
+    {
+      return User::create($body);
     }
 
     function updateUser(mixed $body = [])

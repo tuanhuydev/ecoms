@@ -3,11 +3,11 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Traits\TransformCamelTrait;
+use App\Http\Traits\TransformArrayTrait;
 
 class TaskResource extends JsonResource
 {
-    use TransformCamelTrait;
+    use TransformArrayTrait;
     /**
      * Transform the resource into an array.
      *
@@ -16,8 +16,8 @@ class TaskResource extends JsonResource
      */
     public function toArray($request)
     {
-      $result = $this->transformCamel($this->resource->toArray());
-      $result['createdBy'] = $this->transformCamel($this->getCreatedBy()->toArray());
+      $result = $this->toCamel($this->resource->toArray());
+      $result['createdBy'] = $this->toCamel($this->getCreatedBy()->toArray());
       return $result;
     }
 }

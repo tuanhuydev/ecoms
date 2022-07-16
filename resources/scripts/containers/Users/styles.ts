@@ -31,7 +31,11 @@ const getStyles = () => {
     }
   };
 
-  return { gridStyles, toolbarStyles };
+  const gridContainerStyles: SxProps = {
+    maxHeight: 'calc(100vh - 96px)'
+  };
+
+  return { gridStyles, toolbarStyles, gridContainerStyles };
 };
 
 export default getStyles;
