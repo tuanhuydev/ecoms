@@ -10,11 +10,11 @@ const httpClient: AxiosInstance = axios.create({
 });
 
 const httpClientWithAuth: AxiosInstance = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  baseURL: API_URL
+  // headers: { 'Content-Type': 'application/json' }
 });
+
+httpClientWithAuth.defaults.headers.common['Content-Type'] = 'application/json';
 
 httpClientWithAuth.interceptors.request.use((config: AxiosRequestConfig) => {
   const { headers, ...restConfig } = config;

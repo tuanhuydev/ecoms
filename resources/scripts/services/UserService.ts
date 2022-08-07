@@ -12,6 +12,10 @@ class UserService {
     return httpClientWithAuth.patch(UserService.path, data);
   }
 
+  static saveUser(data: Partial<User>) {
+    return httpClientWithAuth.post(UserService.path, data);
+  }
+
   // static getTaskById(id: string) {
   //   return httpClient.get(`${TaskService.path}/${id}`);
   // }

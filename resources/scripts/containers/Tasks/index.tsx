@@ -246,6 +246,7 @@ const Tasks = () => {
         <Box className="w-25 mr-4">
           <Input
             autoComplete="off"
+            type="search"
             disabled={isLoading}
             placeholder="Search task"
             icon={<SearchOutlinedIcon />}
