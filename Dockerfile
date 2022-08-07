@@ -19,34 +19,20 @@ RUN docker-php-ext-install pdo pdo_mysql
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# create user group with
-RUN addgroup -gid 1001 -system appgroup
+# Install node dependencies
+RUN npm install -g yarn webpack webpack-cli
 
-# create user with id
-RUN adduser -system appuser -u 1001
+# Setup working directory
+WORKDIR /var/www
 
-# switch to appuser to run the app
-RUN chown -R appuser:appgroup /var/www/html
+# Install project dependencies
+COPY src/core/package.json src/core/yarn.lock ./
 
-WORKDIR /var/www/html
+RUN yarn install
 
 # Copy source code
 COPY src/core ./
 
-# USER appuser
+# Allow permission for whole app
+RUN chown -R www-data:www-data /var/www
 
-# Install node dependencies
-RUN npm install -g yarn webpack webpack-cli
-
-RUN yarn install
-
-# RUN yarn run build
-
-# TODO: Create system user to run Composer and Artisan Commands
-# RUN useradd -G www-data,root -u 1000 -d /home/sidehand sidehand
-# RUN mkdir -p /home/sidehand/.composer && \
-#     chown -R sidehand:sidehand /home/sidehand 
-
-# USER sidehand
-
- 

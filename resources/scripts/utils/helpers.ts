@@ -25,3 +25,15 @@ export const snakeToCamel = (str: string): string => {
   });
   return transformedTerms.join('');
 };
+
+/**
+ * Validate date by getTime is number
+ * @params {any} date
+ * @return {boolean}
+ */
+export const isValidDate = (date: any) => {
+  if (!date) {
+    return false;
+  }
+  return !Number.isNaN(new Date(date).getTime());
+};

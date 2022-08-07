@@ -1,3 +1,4 @@
+import { SEVERITY, TASK_STATUS, USER_STATUS } from './enums';
 import { User } from 'scripts/interfaces/User';
 
 export const APP_URL = process.env.APP_ENV === 'local' ? 'http://localhost' : process.env.APP_URL;
@@ -25,7 +26,8 @@ export const ROUTE_PATHS = {
 
 export const PERMISSIONS = {
   GUEST: 'GUEST',
-  ADMIN: 'ADMIN'
+  ADMIN: 'ADMIN',
+  MAINTAINER: 'MAINTAINER'
 };
 
 export const STATUSES = {
@@ -34,3 +36,29 @@ export const STATUSES = {
   SUSPENDED: { value: 'SUSPENDED', color: '#EF6C00' },
   BLOCKED: { value: 'BLOCKED', color: '#EF6C00' }
 };
+
+export const TASK_STATUS_OPTIONS = [
+  { label: 'Backlog', value: TASK_STATUS.BACKLOG },
+  { label: 'Progress', value: TASK_STATUS.PROGRESS },
+  { label: 'Done', value: TASK_STATUS.DONE }
+];
+
+export const TASK_SEVERITY_OPTIONS = [
+  { label: 'Medium', value: SEVERITY.MEDIUM },
+  { label: 'Low', value: SEVERITY.LOW },
+  { label: 'High', value: SEVERITY.HIGH },
+  { label: 'Critical', value: SEVERITY.CRITICAL }
+];
+
+export const USER_STATUS_OPTIONS = [
+  { label: 'Active', value: USER_STATUS.ACTIVE },
+  { label: 'Pending', value: USER_STATUS.PENDING },
+  { label: 'Suspended', value: USER_STATUS.SUSPENDED },
+  { label: 'Blocked', value: USER_STATUS.BLOCKED }
+];
+
+export const USER_PERMISSION_OPTIONS = [
+  { label: 'Guest', value: PERMISSIONS.GUEST },
+  { label: 'Admin', value: PERMISSIONS.ADMIN },
+  { label: 'Maintainer', value: PERMISSIONS.MAINTAINER }
+];

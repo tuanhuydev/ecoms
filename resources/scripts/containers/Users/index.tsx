@@ -1,33 +1,43 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { LOADING_STATE, USER_STATUS } from 'scripts/configs/enums';
 import { User } from 'scripts/interfaces/User';
-import { selectUsers, userActions } from '@store/slices/userSlice';
+import {
+  selectCurrentUser,
+  selectFilteredUsers,
+  selectLoadingUser,
+  selectUserFilter,
+  userActions
+} from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
-import BaseSelect from '@components/base/Select';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { useSnackbar } from 'notistack';
+import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
+import Box from '@mui/material/Box';
+import ConfirmBox from '@components/base/ConfirmBox';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
 import Input from '@components/base/Input';
 import PageContainer from '@components/base/PageContainer';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
-import React, { useEffect, useState } from 'react';
-import styles from './styles.module.scss';
-
-const MOCK_OPTIONS = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-];
+import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import UserForm from '@components/pages/Users/UserForm';
+import getStyles from './styles';
 
 const Users = () => {
-  const [tableData, setTableData] = useState({
-    loading: false,
-    rows: [],
-    page: 1,
-    pageSize: 10
-  });
   const dispatch = useDispatch();
-  const users: User[] = selectUsers();
-  // const loading: LOADING_STATE = selectLoadingUser();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const loadingState: string = selectLoadingUser();
+  const users: User[] = selectFilteredUsers();
+  const currentUser: User = selectCurrentUser();
+  const userFilter: DefaultObjectType = selectUserFilter();
+  const styles = getStyles();
+
+  const [openModal, setOpenModal] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<Partial<User>>();
+  const [search, setSearch] = useState<string>('');
 
   useEffect(() => {
     if (!users.length) {
@@ -36,34 +46,38 @@ const Users = () => {
   }, []);
 
   useEffect(() => {
-    setTableData((prevState) => ({ ...prevState, rows: users }));
-  }, [users.length]);
+    const debounceSearch = setTimeout(() => {
+      dispatch(userActions.setFilter({ ...userFilter, search }));
+    }, 300);
+    return () => clearTimeout(debounceSearch);
+  }, [search]);
+
+  useEffect(() => {
+    if (loadingState === LOADING_STATE.FAIL) {
+      enqueueSnackbar('Error', { variant: 'error', autoHideDuration: 1000 });
+    } else if (loadingState === LOADING_STATE.SUCCESS) {
+      enqueueSnackbar('Success', { variant: 'success', autoHideDuration: 1000 });
+    }
+  }, [loadingState]);
 
   // Table configuration
   const columns: GridColDef[] = [
     {
       field: 'fullName',
       headerName: 'Name',
-      width: 150,
-      resizable: false,
-      editable: false,
-      sortable: false
+      minWidth: 150,
+      flex: 1
     },
     {
       field: 'email',
       headerName: 'Email',
-      width: 300,
-      resizable: false,
-      editable: false,
-      sortable: false
+      minWidth: 300,
+      flex: 1
     },
     {
       field: 'permission',
       headerName: 'Permission',
       width: 300,
-      resizable: false,
-      editable: false,
-      sortable: false,
       renderCell: ({ value }: GridRenderCellParams) => (
         <div className='text-capitalize text-primary-blue'>{value.toLowerCase() ?? '-'}</div>
       )
@@ -73,9 +87,6 @@ const Users = () => {
       field: 'status',
       headerName: 'Status',
       width: 300,
-      resizable: false,
-      editable: false,
-      sortable: false,
       renderCell: ({ value }: GridRenderCellParams) => {
         return (
           <div className={`text-capitalize text-status-${value.toLowerCase()}`}>{value.toLowerCase() ?? '-'}</div>
@@ -83,19 +94,25 @@ const Users = () => {
       }
     },
     {
-      field: null,
+      field: 'id',
       headerName: 'Actions',
       width: 250,
-      resizable: false,
-      editable: false,
-      sortable: false,
       renderCell: (params: GridRenderCellParams) => (
         <div className='flex'>
-          <IconButton onClick={handleEdit(params.id as string)}>
+          <IconButton
+            onClick={handleEdit(params.id as string)}
+            disabled={isLoading}>
             <EditOutlinedIcon />
           </IconButton>
-          <IconButton onClick={handleDelete(params.id as string)}>
-            <DeleteOutlinedIcon />
+          <IconButton
+            onClick={handleOpenModal(params)}
+            disabled={
+              isLoading ||
+              params.row.status === USER_STATUS.BLOCKED ||
+              params.row.userId === currentUser.userId
+            }
+          >
+            <BlockOutlinedIcon />
           </IconButton>
         </div>
       )
@@ -103,41 +120,95 @@ const Users = () => {
   ];
 
   const handleEdit = (userId: string) => () => {
-    console.log('Edit', userId);
+    // console.log('Edit', userId);
   };
 
-  const handleDelete = (userId: string) => () => {
-    console.log('Delete', userId);
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
+
+  const handleOpenModal = (params: GridRenderCellParams) => () => {
+    setOpenModal(true);
+    setSelectedUser(params.row);
+  };
+
+  const handleSubmitModal = () => {
+    if (openModal) {
+      handleCloseModal();
+    }
+    const updateData = {
+      userId: selectedUser.userId,
+      status: USER_STATUS.BLOCKED
+    };
+    dispatch(userActions.patchUser(updateData));
+  };
+
+  const handleSearchTask: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const handleToggleUserForm = (value: boolean = false) => {
+    setOpenForm(value);
+  };
+
+  const saveUser = (data: any) => {
+    console.log(data);
+  };
+
+  const isLoading = loadingState === LOADING_STATE.LOADING;
+
+  const MemoUserForm = useMemo(() => {
+    return (
+      <UserForm open={openForm} onClose={() => handleToggleUserForm(false)} onSubmit={saveUser} />
+    );
+  }, [openForm]);
 
   return (
-    <PageContainer title='Users'>
-      <div className="container flex flex-column">
-        <div className="flex justify-between py-6 px-3 bg-white">
-          <div className="flex">
-            <Input name="search" className="border-0 border-radius-4 mr-2" placeholder="Search" />
-            <BaseSelect options={MOCK_OPTIONS} placeholder="Permission" className="mr-2" />
-            <BaseSelect options={MOCK_OPTIONS} placeholder="Status" className="mr-2"/>
-            <div className={styles.selectedFilter}></div>
-          </div>
-          <button className='button create flex items-center'>
-            <PersonAddAltOutlinedIcon className='mr-1' />
-            Add
-          </button>
-        </div>
-        <div className="bg-white flex-1">
+    <PageContainer title='Users' loading={isLoading}>
+      <div className="container flex flex-column flex-1">
+        <Box sx={styles.toolbarStyles}>
+          <Box className="w-25 mr-4">
+            <Input
+              autoComplete="off"
+              disabled={isLoading}
+              placeholder="Search task"
+              icon={<SearchOutlinedIcon />}
+              value={search}
+              onChange={handleSearchTask}
+            />
+          </Box>
+          <Box>
+            <button
+              className='button create flex items-center'
+              disabled={isLoading}
+              onClick={() => handleToggleUserForm(true)}>
+              <PersonAddAltOutlinedIcon className='mr-1' />
+                Add
+            </button>
+          </Box>
+        </Box>
+        <Box className="bg-white flex-1 px-4 overflow-auto" sx={styles.gridContainerStyles}>
           <DataGrid
+            loading={isLoading}
             columns={columns}
-            rows={tableData.rows}
+            rows={users}
             getRowId={(row) => row.userId}
             rowHeight={50}
             autoHeight
-            checkboxSelection
             disableSelectionOnClick
             disableColumnMenu
+            sx={styles.gridStyles}
           />
-        </div>
+        </Box>
       </div>
+      <ConfirmBox
+        title="Confirm"
+        open={openModal}
+        message="Are you sure to perform action ?"
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitModal}
+      />
+      {MemoUserForm}
     </PageContainer>
   );
 };

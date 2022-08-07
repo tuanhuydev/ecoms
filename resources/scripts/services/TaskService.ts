@@ -1,27 +1,27 @@
 import { Task } from '../interfaces/Task';
-import httpClient from '../configs/httpClient';
+import { httpClientWithAuth } from '../configs/httpClient';
 
 class TaskService {
   static path: string = '/tasks';
 
   static getTasks() {
-    return httpClient.get(TaskService.path);
+    return httpClientWithAuth.get(TaskService.path);
   }
 
-  static getTaskById(id: string) {
-    return httpClient.get(`${TaskService.path}/${id}`);
+  static getTaskById(id: number) {
+    return httpClientWithAuth.get(`${TaskService.path}/${id}`);
   }
 
   static createTask(task: Partial<Task>) {
-    return httpClient.post(TaskService.path, task);
+    return httpClientWithAuth.post(TaskService.path, task);
   }
 
   static updateTask(data: any) {
-    return httpClient.patch(TaskService.path, data);
+    return httpClientWithAuth.patch(TaskService.path, data);
   }
 
-  static deleteTask(id: string) {
-    return httpClient.delete(`${TaskService.path}/${id}`);
+  static deleteTask(id: number) {
+    return httpClientWithAuth.delete(`${TaskService.path}/${id}`);
   }
 }
 

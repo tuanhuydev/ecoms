@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\api;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Services\TaskService;
 use Illuminate\Validation\Rules\Enum;
+use App\Http\Resources\TaskResource;
+
 
 class TaskController extends Controller
 {
@@ -17,62 +20,65 @@ class TaskController extends Controller
         $this->taskService = $taskService;
     }
 
-    /**
-     * Get all tasks
-     * 
-     * @param Request $request
-     *
-     */
-    public function getAllTasks(Request $request) 
+  /**
+   * Get all tasks
+   *
+   * @param Request $request
+   * @return JsonResponse
+   */
+    public function getAllTasks(Request $request): JsonResponse
     {
-        return response()->json(['tasks' => $this->taskService->getAll()]);
+      $tasks = $this->taskService->getAll($request);
+      return response()->json(['tasks' => TaskResource::collection($tasks)]);
     }
 
-    /**
-     * Get task data by id
-     * 
-     * @param Request $request
-     *
-     */
-    public function getTaskById(string $id) 
+  /**
+   * Get task data by id
+   *
+   * @param string $id
+   * @return JsonResponse
+   */
+    public function getTaskById(string $id): JsonResponse
     {
-        return response()->json(['task' => $this->taskService->getById($id)]);
+      $newTask = $this->taskService->getById($id);
+        return response()->json(['task' => new TaskResource($newTask)]);
     }
 
 
     /**
      * Create new task
-     * 
+     *
      * @param Request $request
      *
      */
-    public function createTask(Request $request) 
+    public function createTask(Request $request): JsonResponse
     {
         $validatedData = $request->validate([
             'title' => 'required|max:255',
         ]);
+        $validatedData['created_by'] = $request->user()->id;
         $newTask = $this->taskService->create($validatedData);
         return response()->json(['id' => $newTask->id]);
     }
 
-    /**
-     * Create new task
-     * 
-     * @param Request $request
-     *
-     */
-    public function deleteTask(string $id) 
+  /**
+   * Create new task
+   *
+   * @param string $id
+   * @return JsonResponse
+   */
+    public function deleteTask(string $id): JsonResponse
     {
         return response()->json(['success' => $this->taskService->delete($id)]);
     }
 
-    /**
-     * Update task
-     * 
-     * @param Request $request
-     *
-     */
-    public function updateTask(Request $request) 
+  /**
+   * Update task
+   *
+   * @param Request $request
+   * @return JsonResponse
+   */
+    public function updateTask(Request $request): JsonResponse
     {
         // TODO: handle validation fail
         $validatedData = $request->validate([

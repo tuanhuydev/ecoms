@@ -12,3 +12,23 @@ export enum TASK_STATUS {
   PROGRESS = 'PROGRESS',
   DONE = 'DONE'
 }
+
+export enum SEVERITY {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  CRITICAL = 'CRITICAL'
+}
+
+export enum USER_STATUS {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  BLOCKED = 'BLOCKED'
+}
+
+export enum USER_PERMISSION {
+  GUEST= 'GUEST',
+  ADMIN= 'ADMIN',
+  MAINTAINER= 'MAINTAINER'
+};

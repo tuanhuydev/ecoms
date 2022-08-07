@@ -22,19 +22,19 @@ class UserService
      * -> Check user's existence
      * -> Compare user's hashed password
      * -> Generate access token and return
-     * 
+     *
      * @param string $email
      * @param string $password
      */
-    function signIn(string $email, string $password): array 
+    function signIn(string $email, string $password): array
     {
         if (!Auth::attempt(['email' => $email, 'password' => $password])) {
             throw new UnauthorizedException();
         }
         $user = Auth::user();
         $tokenVerified = "1";
-        if (empty($user->email_verified_at) || $user->confirmation_token !== $tokenVerified || $user->status !== StatusType::ACTIVE) {
-            throw new UnauthorizedException();
+        if ($user->status !== StatusType::ACTIVE) {
+          throw new UnauthorizedException();
         }
         $accessToken = $user->createToken('authToken')->accessToken;
         return ['user' => $user, 'access_token' => $accessToken];
@@ -45,7 +45,7 @@ class UserService
      *  -> Hash password
      *  -> Create new user
      *  -> Send confirmation email
-     * 
+     *
      * @param mixed body
      * @return User
      */
@@ -69,7 +69,7 @@ class UserService
      * -> Check confirmation_token field value
      * -> update user email_verified_at to current time
      * -> save user's info.
-     * 
+     *
      * @param mixed body
      * @return User
      */
@@ -80,7 +80,7 @@ class UserService
         }
         if (strcmp(($user->confirmation_token), $body['token']) !== 0) {
             throw new UnauthorizedException();
-        } 
+        }
         $user->email_verified_at = Carbon::now();
         $user->confirmation_token = 1;
         $user->status = StatusType::ACTIVE;
@@ -93,7 +93,7 @@ class UserService
      * -> Check confirmation_token field value
      * -> update user email_verified_at to current time
      * -> save user's info.
-     * 
+     *
      * @param mixed body
      * @return User
      */
@@ -106,8 +106,8 @@ class UserService
         $user->reset_password_token = $token;
         $user->status = StatusType::SUSPENDED;
         Mail::to($user->email)->send(new ForgotPassword($token));
-        
-        return $user->save(); 
+
+        return $user->save();
     }
 
     /**
@@ -116,7 +116,7 @@ class UserService
      * -> Hash new password
      * -> Update user meta fields
      * -> Save user
-     * 
+     *
      * @param mixed body
      * @return User
      */
@@ -134,12 +134,29 @@ class UserService
     }
 
     /**
-     * Get all users
+     * Get all users order by created_at by default
      */
     function getUsers(mixed $body = [])
     {
-        return User::all();
+        return User::orderByDesc('created_at')->get();
     }
 
-    
+    function create(mixed $body = [])
+    {
+      return User::create($body);
+    }
+
+    function updateUser(mixed $body = [])
+    {
+      $user = User::find($body['userId']);
+      if (!$user) {
+        return 0;
+      }
+      foreach($body as $key => $value) {
+        if ($key !== 'userId') {
+          $user[$key] = $value;
+        }
+      }
+      return $user->save();
+    }
 }

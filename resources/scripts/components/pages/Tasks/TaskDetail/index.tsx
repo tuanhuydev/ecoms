@@ -1,207 +1,258 @@
+import { APP_URL, TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { AppDispatch } from '@store/index';
-import { AxiosResponse } from 'axios';
-import { TASK_STATUS } from '../../../../configs/enums';
+import { LOADING_STATE, TASK_STATUS } from '../../../../configs/enums';
 import { Task } from '../../../../interfaces/Task';
-import { amber, blue, green, grey } from '@mui/material/colors';
+import { formatDistance } from 'date-fns';
+import { isValidDate } from 'scripts/utils/helpers';
 import { newTaskSchema } from '@containers/Tasks/schemas';
-import { styled, useTheme } from '@mui/material/styles';
-import { taskActions } from '@store/slices/taskSlice';
+import { selectTaskById, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
 import { useForm, useFormState, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Box, { BoxProps } from '@mui/system/Box';
+import Box from '@mui/system/Box';
 import Button from '@mui/material/Button';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+import CircularProgress from '@mui/material/CircularProgress';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
+import EditOffOutlinedIcon from '@mui/icons-material/EditOffOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import FormDatePicker from '@components/form/FormDatePicker';
 import FormSelect from '@components/form/FormSelect';
 import FormTextarea from '@components/form/FormTextarea';
 import IconButton from '@mui/material/IconButton';
-import React, { Fragment, useEffect } from 'react';
-import TaskService from '../../../../services/TaskService';
-import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
-import styles from './styles.module.scss';
+import React, { Fragment, useEffect, useState } from 'react';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import getStyles from './styles';
 
 export interface TaskDetailProps extends DrawerProps {
   task: Task;
   onClose: () => void;
 }
 
-interface StyledDrawerProps extends ToolbarProps {
-  status?: TASK_STATUS;
-}
-
-const StyledDrawer = styled(Drawer)<DrawerProps>(() => ({
-  '& .MuiDrawer-paper': {
-    width: 400
-  }
-}));
-
-const statusOptions = [
-  { value: TASK_STATUS.BACKLOG, label: 'Backlog' },
-  { value: TASK_STATUS.PROGRESS, label: 'In Progress' },
-  { value: TASK_STATUS.DONE, label: 'Done' }
-];
-
-const StyledToolbar = styled(Toolbar)<StyledDrawerProps>(({ theme, status = TASK_STATUS.BACKLOG }) => {
-  const statusColor = status === TASK_STATUS.DONE
-    ? green[400]
-    : status === TASK_STATUS.PROGRESS
-      ? amber[400]
-      : blue[400];
-  return {
-    backgroundColor: statusColor,
-    color: theme.palette.common.white,
-    minHeight: 32,
-    height: 32,
-    display: 'flex',
-    justifyContent: 'space-between',
-
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(0)
-    }
-  };
-});
-
-const StyledFieldGroup = styled(Box)<BoxProps>(({ theme }) => ({
-  marginBottom: theme.spacing(0.75),
-  fontSize: theme.typography.htmlFontSize,
-  label: {
-    display: 'inline-block',
-    color: grey[500],
-    minWidth: 42,
-    fontWeight: theme.typography.fontWeightLight,
-    fontSize: theme.typography.fontSize,
-    marginRight: theme.spacing(1.125),
-    marginBottom: theme.spacing(0.5)
-  }
-}));
-
 const TaskDetail = (props: TaskDetailProps) => {
-  const { task, onClose, ...restProps } = props;
-  const theme = useTheme();
+  const { task: currentTask, onClose, ...restProps } = props;
+  const styles = getStyles();
+
   const dispatch: AppDispatch = useDispatch();
+  const task: Task = selectTaskById(currentTask.id);
+  const editable = !!task;
+  const loading = selectTaskLoading();
+
+  const [editMode, setEditMode] = useState(false);
 
   // React hook form
-  const { control, setValue, getValues, trigger } = useForm({
+  const { control, setValue, getValues, trigger, reset } = useForm({
     defaultValues: {
       title: '',
       description: '',
-      status: statusOptions[0]
+      acceptance: '',
+      dueDate: '',
+      status: TASK_STATUS_OPTIONS[0],
+      severity: TASK_SEVERITY_OPTIONS[0]
     },
     resolver: yupResolver(newTaskSchema)
   });
   const taskStatus = useWatch({ control, name: 'status' });
+
   const { isDirty } = useFormState({ control });
-  const handleUpdateTask = async () => {
-    try {
-      const validated = await trigger();
-      if (validated) {
-        const { status, ...restTask }: any = getValues();
-        const { data }: AxiosResponse = await TaskService.updateTask({
-          ...restTask,
-          status: status.value
-        });
-        if (data?.success) {
-          dispatch(taskActions.updateTask({
-            ...restTask,
-            status: status.value
-          } as Task));
-        }
+
+  const handleSave = async () => {
+    const validated = await trigger();
+    if (validated) {
+      const { status, severity, dueDate, ...restTask }: any = getValues();
+      let dateString = '';
+      if (isValidDate(dueDate)) {
+        dateString = new Date(dueDate).toISOString();
       }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
+      dispatch(taskActions.saveTask({
+        ...restTask,
+        status: status.value,
+        severity: severity.value,
+        dueDate: dateString
+      }));
     }
   };
 
+  /**
+   * Copy content to clipboard
+   * But only for localhost for https domain
+   * @param content
+   */
+  const handleCopy = (content: string) => {
+    navigator.clipboard.writeText(content);
+  };
+
+  const copyTaskId = (taskId: number) => () => {
+    handleCopy(taskId.toString());
+  };
+
+  const copyTaskLink = (taskId: number) => () => {
+    handleCopy(`${APP_URL}/admin/tasks/${taskId.toString()}`);
+  };
+
+  const copyTaskBranch = (taskTitle: string) => () => {
+    const nonSpecialCharactersString = taskTitle.trim().toLowerCase().replace(/[^\w\s]/g, '');
+    const formatedString = nonSpecialCharactersString.split(/\s+/).join('-');
+    handleCopy(formatedString);
+  };
+
+  const toogleEditMode = () => {
+    if (editMode) {
+      reset();
+    }
+    setEditMode((prevState) => !prevState);
+  };
+
   useEffect(() => {
-    if (task) {
+    if (task && !editMode) {
       // Conflict react-hook-form type so have to mark as any
       Object.entries(task).forEach(([key, value]: [key: string, value: any]) => {
         if (key === 'status') {
-          setValue(key, statusOptions.find((option) => option.value === value));
+          setValue(key, TASK_STATUS_OPTIONS.find((option) => option.value === value));
+        } else if (key === 'severity') {
+          setValue(key, TASK_SEVERITY_OPTIONS.find((option) => option.value === value));
+        } else if (key === 'dueDate') {
+          setValue((key as any), isValidDate(task[key]) ? new Date(task[key]) : '');
         } else {
           setValue((key as any), task[key as keyof Task]);
         }
       });
     }
-  }, [task, setValue]);
+  }, [task, setValue, editMode]);
 
   useEffect(() => {
-    const timeoutUpdate = setTimeout(() => {
-      if (isDirty) {
-        handleUpdateTask();
-      }
-    }, 300);
-    return () => {
-      clearTimeout(timeoutUpdate);
-    };
-  }, [isDirty]);
+    if (loading === LOADING_STATE.SUCCESS) {
+      setEditMode(false);
+    }
+  }, [loading]);
 
   const taskIsDone = taskStatus.value === TASK_STATUS.DONE;
-  const taskIsProgress = taskStatus.value === TASK_STATUS.PROGRESS;
+
+  const headerbuttonConfig: any = {
+    size: 'small',
+    disableRipple: true,
+    sx: { mr: 0.5 },
+    disableFocusRipple: true
+  };
 
   return <Fragment>
-    <StyledDrawer {...restProps} anchor="right" onClose={onClose}>
-      <StyledToolbar variant='dense' status={taskStatus.value}>
-        <Box sx={{
-          backgroundColor: taskIsDone ? green[700] : taskIsProgress ? amber[700] : blue[700],
-          padding: theme.spacing(0, 0.5),
-          fontSize: theme.typography.fontSize,
-          display: 'flex',
-          alignItems: 'center',
-          height: '100%'
-        }}>
-            Task:
+    <Drawer {...restProps} anchor="right" onClose={onClose} sx={styles.drawerStyles}>
+      <Box sx={styles.toolbarStyles(taskStatus.value)}>
+        <Box sx={styles.titleStyles(taskStatus.value)}>
+          Task&nbsp;
           <Button
             variant="text"
-            sx={{ backgroundColor: 'transparent', color: theme.palette.common.white, padding: 0, minWidth: '1rem' }}
+            onClick={copyTaskId(task?.id)}
+            sx={styles.taskIdStyles}
           >#{task?.id}</Button>
         </Box>
-        <IconButton size="small" disableRipple onClick={onClose} sx={{ borderRadius: theme.shape.borderRadius }}>
-          <CloseOutlinedIcon style={{ fill: theme.palette.common.white, width: 14, height: 14 }} />
-        </IconButton>
-      </StyledToolbar>
-      <Box sx={{ padding: theme.spacing(0, 0.75) }}>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <Box>
+            <IconButton
+              {...headerbuttonConfig}
+              onClick={copyTaskLink(task?.id)}>
+              <ShareOutlinedIcon sx={styles.headerButtonIconStyles} />
+            </IconButton>
+            <IconButton {...headerbuttonConfig} onClick={copyTaskBranch(task?.title)}>
+              <CodeOutlinedIcon sx={styles.headerButtonIconStyles} />
+            </IconButton>
+            {
+              editable && !editMode && (
+                <IconButton {...headerbuttonConfig} onClick={toogleEditMode}>
+                  <EditOutlinedIcon sx={styles.headerButtonIconStyles} />
+                </IconButton>)
+            }
+            {
+              editable && editMode && (
+                <IconButton {...headerbuttonConfig} onClick={toogleEditMode}>
+                  <EditOffOutlinedIcon sx={styles.headerButtonIconStyles} />
+                </IconButton>
+              )
+            }
+            {
+              editable && editMode && isDirty && (
+                <IconButton {...headerbuttonConfig} disabled={loading === LOADING_STATE.LOADING} onClick={handleSave}>
+                  { loading === LOADING_STATE.LOADING
+                    ? (<CircularProgress classes={{ colorPrimary: 'text-white' }} size={14} />)
+                    : (<CheckOutlinedIcon sx={styles.headerButtonIconStyles} />)}
+                </IconButton>
+              )
+            }
+          </Box>
+          <Box sx={styles.titleStyles(taskStatus.value)}>
+            <IconButton size="small" disableRipple={true} disableFocusRipple={true} onClick={onClose}>
+              <CloseOutlinedIcon sx={styles.headerButtonIconStyles} />
+            </IconButton>
+          </Box>
+        </Box>
+      </Box>
+      <Box sx={styles.textareaStyles(editMode)}>
         <FormTextarea
           name="title"
           placeholder="Title"
           control={control}
-          onBlur={handleUpdateTask}
-          className={styles.task__title}
-          disabled={taskIsDone}
+          disabled={taskIsDone || !editMode}
         />
-        <StyledFieldGroup>
-          <label>Author:</label>
-          Huy Nguyen Tuan
-        </StyledFieldGroup>
-        <StyledFieldGroup sx={{ display: 'flex' }}>
-          <label>Status:</label>
-          <Box sx={{ flexGrow: 1 }}>
-            <FormSelect
-              name="status"
-              control={control}
-              options={statusOptions}
-            />
-          </Box>
-        </StyledFieldGroup>
-        {/* <StyledFieldGroup>
-          <label>Tags:</label>
-          Render tags
-        </StyledFieldGroup> */}
-        <StyledFieldGroup>
-          <label>Description:</label>
+      </Box>
+      <Box sx={styles.subTitleStyles}>
+        <span className='mr-2'>
+          <label>Created by: </label>
+            &nbsp;{`${task.createdBy.firstName} ${task.createdBy.lastName}`}
+        </span>
+        <span><label>Created at:</label>&nbsp;{formatDistance(new Date(), new Date(task.createdAt))}</span>
+      </Box>
+      <Box sx={styles.inlineFieldGroupStyles}>
+        <Box component="label" sx={styles.labelGroupStyles}>Status:</Box>
+        <Box sx={{ flexGrow: 1 }}>
+          <FormSelect
+            name="status"
+            control={control}
+            options={TASK_STATUS_OPTIONS}
+            disabled={!editMode}
+          />
+        </Box>
+      </Box>
+      <Box sx={styles.inlineFieldGroupStyles}>
+        <Box component="label" sx={styles.labelGroupStyles}>Severity:</Box>
+        <Box sx={{ flexGrow: 1 }}>
+          <FormSelect
+            name="severity"
+            control={control}
+            options={TASK_SEVERITY_OPTIONS}
+            disabled={!editMode}
+          />
+        </Box>
+      </Box>
+      <Box sx={styles.inlineFieldGroupStyles}>
+        <Box component="label" sx={styles.labelGroupStyles}>Due date:</Box>
+        <FormDatePicker name="dueDate" control={control} disabled={taskIsDone || !editMode} />
+      </Box>
+      <Box sx={styles.fieldGroupStyles}>
+        <Box component="label" sx={styles.labelGroupStyles}>Description:</Box>
+        <Box sx={styles.textareaStyles(editMode)}>
           <FormTextarea
             name="description"
             placeholder="Description"
-            onBlur={handleUpdateTask}
             control={control}
-            disabled={taskIsDone}
-            className={styles.task__description}
+            disabled={taskIsDone || !editMode}
           />
-        </StyledFieldGroup>
+        </Box>
       </Box>
-    </StyledDrawer>
+      <Box sx={styles.fieldGroupStyles}>
+        <Box component="label" sx={styles.labelGroupStyles}>Acceptance:</Box>
+        <Box sx={styles.textareaStyles(editMode)}>
+          <FormTextarea
+            name="acceptance"
+            placeholder="Acceptance"
+            control={control}
+            disabled={taskIsDone || !editMode}
+            className='task__description'
+          />
+        </Box>
+      </Box>
+    </Drawer>
   </Fragment>;
 };
 

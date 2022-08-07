@@ -126,7 +126,6 @@ window.onload = function() {
     const queryParamsString = String(window.location.href).split('?')[1];
     const queryParams = qs.parse(queryParamsString);
     const token: string = String(queryParams?.token);
-    // console.log(password, confirmPassword, token);
     const auth = new UpdatePassword(password, confirmPassword, token);
 
     await auth.makeAuth(navigateSignIn, handleFailed, handleFinally);

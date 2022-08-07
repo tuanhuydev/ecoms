@@ -2,9 +2,6 @@
 @import './background';
 
 // FLEX
-.flex {
-  display: flex;
-}
 
 .flex-column {
   flex-direction: column;
@@ -26,6 +23,20 @@
   justify-content: space-between;
 }
 
+// DISPLAY
+$displays: 'block', 'fixed', 'flex', 'grid', 'hidden';
+
+@each $display in $displays {
+  @if $display == 'hidden' {
+    .#{$display} {
+      display: none;
+    }
+  } @else {
+    .#{$display} {
+      display: #{$display};
+    }
+  }
+}
 
 // WIDTH
 $sizes: 25, 50, 75, 100;
@@ -53,7 +64,7 @@ $directions: 'top', 'right', 'bottom', 'left', 'vertical', 'horizontal';
         padding-top: #{$spacer * 0.25} + 'rem';
         padding-bottom: #{$spacer * 0.25} + 'rem';
       }
-      
+
     } @else if $direction == 'horizontal' {
       .mx-#{$spacer} {
         margin-left: #{$spacer * 0.25} + 'rem';
@@ -64,7 +75,7 @@ $directions: 'top', 'right', 'bottom', 'left', 'vertical', 'horizontal';
         padding-left: #{$spacer * 0.25} + 'rem';
         padding-right: #{$spacer * 0.25} + 'rem';
       }
-    } @else {     
+    } @else {
       $short: string.slice($direction, 0, 1);
 
       .m#{$short}-#{$spacer} {
@@ -91,6 +102,7 @@ $borderWidthes: 0, 1, 2, 3, 4, 5, 6, 7, 8;
   }
 }
 
-
-
-
+// OVERFLOW
+.overflow-auto {
+  overflow: auto;
+}
