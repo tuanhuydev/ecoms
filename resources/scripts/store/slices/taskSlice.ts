@@ -1,5 +1,5 @@
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
-import { LOADING_STATE, TASK_STATUS } from '../../configs/enums';
+import { LOADING_STATE, SORT_TYPE, TASK_STATUS } from '../../configs/enums';
 import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Task } from '../../interfaces/Task';
@@ -12,23 +12,32 @@ export interface TaskFilter {
   severity?: string;
 }
 
+export interface TaskSort {
+  field: string;
+  value: SORT_TYPE;
+}
+
 export interface TaskSliceType {
   tasks: Task[];
   loading: string;
   filter: TaskFilter;
+  sort: TaskSort;
 }
 
 const initialState: TaskSliceType = {
   tasks: [],
   loading: LOADING_STATE.IDLE,
-  filter: {}
+  filter: {},
+  sort: {
+    field: 'createdAt',
+    value: SORT_TYPE.DESCENDING
+  }
 };
 
 export const taskSlice = createSlice({
   name: 'tasks',
   initialState: initialState,
   reducers: {
-    fetchTasks() {},
     setLoading(state, action) {
       state.loading = action.payload;
     },
@@ -48,19 +57,25 @@ export const taskSlice = createSlice({
     completeTask(state, action: PayloadAction<number>) {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
-    setTaskFilter(state, { payload }: PayloadAction<DefaultObjectType>) {
+    setTaskFilter(state, { payload }: PayloadAction<TaskFilter>) {
       state.filter = payload;
+    },
+    setTaskSort(state, { payload }: PayloadAction<DefaultObjectType>) {
+      state.sort = payload as TaskSort;
     }
   }
 });
 
 // Actions
+
+const fetchTasks = createAction<DefaultObjectType>('task/fetch');
 const deleteTask = createAction<number>('task/delete');
 const createTask = createAction<any>('task/create');
 const saveTask = createAction<any>('task/save');
 
 export const taskActions = {
   ...taskSlice.actions,
+  fetchTasks,
   deleteTask,
   createTask,
   saveTask
@@ -81,6 +96,8 @@ export const selectTaskById = (id: number) => useSelector((state: RootState) => 
 });
 
 export const selectTaskFilter = (): DefaultObjectType => useSelector((state: RootState) => state.task.filter);
+
+export const selectTaskSort = (): DefaultObjectType => useSelector((state: RootState) => state.task.sort);
 
 export const selectFilteredTasks = (): Task[] => useSelector(({ task: slice }: RootState) => {
   const { tasks, filter } = slice;
