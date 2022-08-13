@@ -1,4 +1,3 @@
-import { USER_PERMISSION } from 'scripts/configs/enums';
 import { grey } from '@mui/material/colors';
 import { useTheme } from '@mui/material';
 import React, { RefObject } from 'react';

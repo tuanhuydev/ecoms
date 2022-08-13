@@ -15,8 +15,11 @@ class TaskService
      */
     public function getAll(Request $request)
     {
-      $tasks = Task::where('created_by',  $request->user()->id)->orderByDesc('created_at')->get();
-      return $tasks;
+      $query = $request->query();
+      if (isset($query['action'])) {
+        return Task::where('created_by',  $request->user()->id)->orderBy(Str::of($query['field'])->snake(), $query['value'])->get();
+      }
+      return Task::where('created_by',  $request->user()->id)->get();
     }
 
      /**
@@ -60,8 +63,10 @@ class TaskService
             if (!empty($data['due_date'])) {
                 $task->due_date = $data['due_date'];
             }
-
-            $task->updated_by = Auth::user()->user_id ?? null;
+            if (!empty($data['severity'])) {
+              $task->severity = $data['severity'];
+          }
+          $task->updated_by = Auth::user()->user_id ?? null;
         }
         return $task->save();
     }

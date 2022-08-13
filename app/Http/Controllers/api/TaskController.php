@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Services\TaskService;
 use Illuminate\Validation\Rules\Enum;
 use App\Http\Resources\TaskResource;
+use BenSampo\Enum\Rules\EnumValue;
+use App\Enums\SeverityType;
 
 
 class TaskController extends Controller
@@ -87,7 +89,8 @@ class TaskController extends Controller
             'description' => 'nullable',
             'status' => "in:BACKLOG,PROGRESS,DONE",
             'due_date' => 'nullable',
-            'updated_by' => 'nullable' // Should required as user uuid string
+            'severity' =>  ['required', new EnumValue(SeverityType::class)],
+            'updated_by' => 'unique:users,id'
         ]);
         return response()->json(['success' => $this->taskService->update($validatedData)]);
     }

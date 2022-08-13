@@ -4,10 +4,10 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import { taskActions } from '../slices/taskSlice';
 import TaskService from '../../services/TaskService';
 
-export function * getTasks() {
+export function * getTasks(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
-    const { data }: AxiosResponse = yield call(TaskService.getTasks);
+    const { data }: AxiosResponse = yield call(TaskService.getTasks, action.payload);
     yield put({ type: taskActions.setTasks.type, payload: data.tasks });
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
   } catch (error) {
