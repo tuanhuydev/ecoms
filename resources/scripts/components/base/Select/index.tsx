@@ -4,12 +4,13 @@ import React, { RefObject } from 'react';
 import Select from 'react-select';
 
 const BaseSelect = React.forwardRef((props: any, ref: RefObject<any>) => {
-  const { disabled, ...restProps } = props;
+  const { disabled, styles = {}, ...restProps } = props;
   const theme = useTheme();
   const customStyles = {
     container: (provided: any) => ({
       ...provided,
-      borderColor: grey[200]
+      borderColor: grey[200],
+      ...styles?.container
     }),
     control: (provided: any) => ({
       ...provided,
@@ -21,7 +22,8 @@ const BaseSelect = React.forwardRef((props: any, ref: RefObject<any>) => {
       boxShadow: 'none',
       '&:hover': {
         borderColor: grey[200]
-      }
+      },
+      ...styles?.control
     }),
     indicatorSeparator: () => ({
       display: 'none'
@@ -36,6 +38,24 @@ const BaseSelect = React.forwardRef((props: any, ref: RefObject<any>) => {
       fontWeight: theme.typography.fontWeightRegular,
       fontSize: theme.typography.pxToRem(12),
       color: grey[400]
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      fontSize: theme.typography.pxToRem(14),
+      ...styles?.menu
+    }),
+    dropdownIndicator: (provided: any) => ({
+      ...provided,
+      color: grey[400],
+      ...styles?.dropdownIndicator
+    }),
+    valueContainer: (provided: any) => ({
+      ...provided,
+      ...styles?.valueContainer
+    }),
+    input: (provided: any) => ({
+      ...provided,
+      ...styles?.input
     })
   };
   return (

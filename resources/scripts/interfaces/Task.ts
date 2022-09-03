@@ -1,5 +1,5 @@
 import { SEVERITY, TASK_STATUS } from 'scripts/configs/enums';
-import { User } from './User';
+import { User } from './Model';
 
 export interface Task {
   id: number;

@@ -6,7 +6,7 @@ import { LOADING_STATE, SEVERITY, SORT_TYPE, TASK_STATUS } from '../../configs/e
 import { TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { Task } from '../../interfaces/Task';
 import { newTaskSchema } from './schemas';
-import { selectCurrentUser } from '@store/slices/userSlice';
+import { selectCurrentAccount } from '@store/slices/userSlice';
 import {
   selectFilteredTasks,
   selectTaskFilter,
@@ -75,7 +75,7 @@ const Tasks = () => {
   const taskSort = selectTaskSort();
   const taskSortOption = TaskSortByOptions.find((option) => option.value === taskSort.field);
 
-  const currentUser = selectCurrentUser();
+  const currentAccount = selectCurrentAccount();
   const loading: string = selectTaskLoading();
   const isLoading = loading === LOADING_STATE.LOADING;
 
@@ -100,7 +100,7 @@ const Tasks = () => {
       title,
       status: TASK_STATUS.BACKLOG,
       severity: SEVERITY.LOW,
-      createdBy: currentUser,
+      createdBy: currentAccount,
       createdAt: new Date().toISOString(),
       description: '',
       acceptance: '',

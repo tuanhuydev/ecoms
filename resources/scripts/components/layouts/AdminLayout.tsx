@@ -1,8 +1,8 @@
+import { Account } from 'scripts/interfaces/Model';
 import { AppDispatch } from '@store/index';
 import { Outlet } from 'react-router-dom';
-import { User } from 'scripts/interfaces/User';
 import { adminRoutes } from 'scripts/configs/routes';
-import { selectCurrentUser } from '@store/slices/userSlice';
+import { selectCurrentAccount } from '@store/slices/userSlice';
 import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
 import { useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
@@ -37,12 +37,12 @@ const ContentProps = {
 const AdminLayout = () => {
   const openSidebar = selectOpenSidebar();
   const dispatch: AppDispatch = useDispatch();
-  const currentUser: User = selectCurrentUser();
+  const currentAccount: Account = selectCurrentAccount();
 
   // Filter sidebar links base on user's permissions
   const renderSideLinks = Object.entries(adminRoutes)
     // eslint-disable-next-line no-unused-vars
-    .filter(([key, values]) => values.permissions.includes(currentUser.permission.toUpperCase()))
+    .filter(([key, values]) => values.permissions.includes(currentAccount.user.permission.toUpperCase()))
     .map(([key, route]) => {
       return (
         <SideNavItem

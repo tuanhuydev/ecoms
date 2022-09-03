@@ -1,53 +1,29 @@
+import { Account, User } from 'scripts/interfaces/Model';
 import { SignIn } from '@services/AuthService';
-import { User } from 'scripts/interfaces/User';
-import { selectCurrentUser } from '@store/slices/userSlice';
+import { Typography } from '@mui/material';
+import { USER_AVAILABILITY_OPTIONS } from 'scripts/configs/constants';
+import { selectCurrentAccount } from '@store/slices/userSlice';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
+import BaseSelect from '../Select';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Logout from '@mui/icons-material/Logout';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import React, { Fragment, useEffect } from 'react';
-import Settings from '@mui/icons-material/Settings';
-import styled from '@emotion/styled';
-
-const StyledBadge = styled(Badge)(() => ({
-  '& .MuiBadge-badge': {
-    backgroundColor: '#44b700',
-    color: '#44b700',
-    '&::after': {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      borderRadius: '50%',
-      animation: 'ripple 1.2s infinite ease-in-out',
-      border: '1px solid currentColor',
-      content: '""'
-    }
-  },
-  '@keyframes ripple': {
-    '0%': {
-      transform: 'scale(.8)',
-      opacity: 1
-    },
-    '100%': {
-      transform: 'scale(2.4)',
-      opacity: 0
-    }
-  }
-}));
+import getStyles from './styles';
 
 const AccountMenu = () => {
+  const currentAccount: Account = selectCurrentAccount();
+  const user: User = currentAccount.user;
+  const selectedAvailability = USER_AVAILABILITY_OPTIONS.find((option) => option.value === currentAccount.availability);
+  const styles = getStyles();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const user = selectCurrentUser();
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+
   const handleClose = () => setAnchorEl(null);
 
   const handleLogout = () => {
@@ -55,11 +31,15 @@ const AccountMenu = () => {
     window.location.href = '/';
   };
 
+  const handleChangeAvailability = (option: any) => {
+    console.log(option);
+  };
+
   useEffect(() => {
-    if (!user) {
+    if (!currentAccount) {
       handleLogout();
     }
-  }, [user]);
+  }, [currentAccount]);
 
   return (
     <Fragment>
@@ -71,61 +51,46 @@ const AccountMenu = () => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
       >
-        <StyledBadge
+        <Badge
           overlap="circular"
+          sx={styles.statusBadgeStyles(currentAccount.availability)}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           variant="dot"
         >
-          <Avatar alt={(user as User).firstName} sx={{ width: 32, height: 32 }} src={(user as User)?.avatar} />
-        </StyledBadge>
+          <Avatar alt={user.firstName} sx={styles.avatarSize} src={user?.avatar} />
+        </Badge>
       </IconButton>
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
         onClose={handleClose}
-        onClick={handleClose}
         PaperProps={{
           elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1
-            },
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0
-            }
-          }
+          sx: styles.paperStyles
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        <Grid container sx={{ px: 1, pb: 0.5, pt: 1 }}>
+          <Grid item xs={3} sx={styles.avatarStyles}>
+            <Avatar alt={user.firstName} sx={styles.avatarSize} src={user?.avatar} />
+          </Grid>
+          <Grid item xs={9}>
+            <Typography variant='subtitle1' sx={styles.nameStyles} noWrap>
+              {`${user.firstName} ${user.lastName}`}
+            </Typography>
+            <Typography variant='body2' sx={styles.emailStyles} noWrap>{user.email}</Typography>
+            <BaseSelect
+              options={USER_AVAILABILITY_OPTIONS}
+              onChange={handleChangeAvailability}
+              defaultValue={selectedAvailability}
+              placeholder="Select status"
+              styles={styles.selectStyles}
+            />
+          </Grid>
+        </Grid>
+        <MenuItem onClick={handleLogout} sx={styles.signOutStyles}>Sign Out</MenuItem>
       </Menu>
     </Fragment>
   );

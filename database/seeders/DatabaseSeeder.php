@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\OauthClientSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\PersonalAccessClientSeeder;
+use Database\Seeders\AccountSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,10 +17,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            OauthClientSeeder::class,
-            UserSeeder::class,
-            PersonalAccessClientSeeder::class,
-        ]);
+      $this->call([
+        OauthClientSeeder::class,
+        UserSeeder::class,
+        PersonalAccessClientSeeder::class,
+        AccountSeeder::class
+      ]);
     }
 }

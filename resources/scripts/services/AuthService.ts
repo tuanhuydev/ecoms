@@ -1,15 +1,15 @@
+import { Account } from 'scripts/interfaces/Model';
 import { AxiosResponse } from 'axios';
 import { DefaultObjectType } from '../interfaces/Meta';
-import { User } from 'scripts/interfaces/User';
 import Cookie from 'js-cookie';
 import httpClient from '../configs/httpClient';
 
 abstract class Auth {
   static getAuth() {
-    const user: string = localStorage.getItem('user');
+    const account: string = localStorage.getItem('credential');
     const accessToken = Cookie.get('securityId');
-    if (user && accessToken) {
-      return { user: JSON.parse(user) as User, accessToken };
+    if (account && accessToken) {
+      return { account: JSON.parse(account) as Account, accessToken };
     }
     return false;
   }
@@ -19,8 +19,8 @@ abstract class Auth {
     Cookie.remove('securityId');
   }
 
-  static setAuth(user: DefaultObjectType, accessToken: string) {
-    localStorage.setItem('user', JSON.stringify(user));
+  static setAuth(account: DefaultObjectType, accessToken: string) {
+    localStorage.setItem('credential', JSON.stringify(account));
     Cookie.set('securityId', accessToken, { expires: 7, sameSite: 'strict' });
   }
 
@@ -68,8 +68,8 @@ class SignIn extends Auth {
         '/auth/sign-in',
         { email: this.email, password: this.password }
       );
-      const { user, access_token: accessToken } = data;
-      if (user && accessToken) SignIn.setAuth(user, accessToken);
+      const { account, accessToken } = data;
+      if (account && accessToken) SignIn.setAuth(account, accessToken);
 
       if (onDone) onDone();
     } catch (err) {

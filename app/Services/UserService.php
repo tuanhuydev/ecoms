@@ -5,18 +5,28 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Account;
 use Illuminate\Support\Str;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\NotFoundException;
+use App\Exceptions\InvalidParamException;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SignUpConfirm;
 use App\Mail\ForgotPassword;
 use Carbon\Carbon;
 use App\Enums\StatusType;
-
+use App\Enums\AccountAvailabilityType;
+use App\Services\AccountService;
+use Illuminate\Support\Facades\DB;
 
 class UserService
 {
+  private AccountService $accountService;
+
+  function __construct(AccountService $accountService)
+  {
+    $this->accountService = $accountService;
+  }
     /**
      * Authenticate user using email and password
      * -> Check user's existence
@@ -28,16 +38,26 @@ class UserService
      */
     function signIn(string $email, string $password): array
     {
+      return DB::transaction(function() use($email, $password) {
+        // Check auth user
         if (!Auth::attempt(['email' => $email, 'password' => $password])) {
             throw new UnauthorizedException();
         }
+
         $user = Auth::user();
-        $tokenVerified = "1";
-        if ($user->status !== StatusType::ACTIVE) {
+        $userAccount = Account::with('user')->where('user_id', $user->id)->first();
+
+        // Check user's account abilities
+        if (!$userAccount || (isset($userAccount) && $userAccount->status !== StatusType::ACTIVE)) {
           throw new UnauthorizedException();
         }
+        // User should be available on signing in
+        $userAccount->availability = AccountAvailabilityType::AVAILABLE;
+        $userAccount->save();
+
         $accessToken = $user->createToken('authToken')->accessToken;
-        return ['user' => $user, 'access_token' => $accessToken];
+        return ['user' => $userAccount, 'access_token' => $accessToken];
+      });
     }
 
     /**
@@ -143,7 +163,19 @@ class UserService
 
     function create(mixed $body = [])
     {
-      return User::create($body);
+      return DB::transaction(function() use ($body) {
+        $newUser = User::create($body);
+        $newAccount = $this->accountService->create($newUser->id);
+        return $newUser;
+      });
+    }
+
+    function getOne(string $userId)
+    {
+      if (empty($userId)) {
+        throw new InvalidParamException();
+      }
+      return User::find($userId)->first();
     }
 
     function updateUser(mixed $body = [])

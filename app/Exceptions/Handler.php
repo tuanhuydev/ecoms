@@ -5,6 +5,9 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use App\Exceptions\UnauthorizedException;
+use App\Exceptions\InvalidParamException;
+use App\Exceptions\CreationException;
+use App\Exceptions\NotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,10 +39,10 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->renderable(function (UnauthorizedException $e, $request) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 401);
-        });
+      $this->renderable(function (UnauthorizedException $e, $request) {
+        return response()->json([
+          'message' => 'Unauthorized'
+        ], 401);
+      });
     }
 }

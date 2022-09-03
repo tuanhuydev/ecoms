@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Services\UserService;
 use Illuminate\View\View;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\AccountResource;
 
 class AuthController extends Controller
 {
@@ -20,7 +21,7 @@ class AuthController extends Controller
     /**
      * Render auth page's view
      * conditional render base on $type
-     *  
+     *
      * @param string $type
      * @return View
      */
@@ -33,62 +34,61 @@ class AuthController extends Controller
                 'title' => $title,
             ];
             return view('pages.auth', $data);
-        } 
-        return redirect()->route('home');       
+        }
+        return redirect()->route('home');
     }
 
     /**
      * Distrubute request to correct function
-     * 
+     *
      * @param Request $request
      * @param string $type
      */
-    public function auth(Request $request, string $type ) 
+    public function auth(Request $request, string $type )
     {
-        $type = $request->type;
-        switch($type) {
-            case 'sign-in':
-                return $this->signIn($request);
-            case 'sign-up':
-                return $this->signUp($request);
-            case 'verify-account':
-                return $this->verifyAccount($request);
-            case 'forgot-password':
-                return $this->forgotPassword($request);
-            case 'update-password':
-                return $this->updatePassword($request);
-            default:
-                throw new Error();
-        }
+      $type = $request->type;
+      switch($type) {
+        case 'sign-in':
+            return $this->signIn($request);
+        case 'sign-up':
+            return $this->signUp($request);
+        case 'verify-account':
+            return $this->verifyAccount($request);
+        case 'forgot-password':
+            return $this->forgotPassword($request);
+        case 'update-password':
+            return $this->updatePassword($request);
+        default:
+            throw new Error();
+      }
     }
 
 
     /**
      * Validate and call service to sign user in
-     * 
+     *
      * @param Request $request
      * @return Response
-     * 
+     *
      */
-    private function signIn(Request $request) 
+    private function signIn(Request $request)
     {
         $body = $request->validate([
             'email' => 'required|max:50',
             'password' => 'required|min:8|max:16',
         ]);
-
-        $result = $this->userService->signIn($body['email'], $body['password']);
-        return response()->json(['user' => new UserResource($result['user']), 'access_token' => $result['access_token']]);
+        $credential = $this->userService->signIn($body['email'], $body['password']);
+        return response()->json(['account' => new AccountResource($credential['user']), 'accessToken' => $credential['access_token']]);
     }
 
     /**
      * Validate and call service to sign user in
-     * 
+     *
      * @param Request $request
      * @return Response
-     * 
+     *
      */
-    private function signUp(Request $request) 
+    private function signUp(Request $request)
     {
         $body = $request->validate([
             'first_name' => 'required|max:50',
@@ -103,10 +103,10 @@ class AuthController extends Controller
 
     /**
      * Verify user's account base on userId and token
-     * 
+     *
      * @param Request $request
      * @return Response
-     * 
+     *
      */
     private function verifyAccount(Request $request)
     {

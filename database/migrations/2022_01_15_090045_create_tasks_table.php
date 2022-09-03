@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateTasksTable extends Migration
 {
-    
+
     private $tableName = 'tasks';
-    
+
     /**
      * Run the migrations.
      *

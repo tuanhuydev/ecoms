@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\Article;
 use App\Models\Task;
+use App\Models\Account;
 use App\Models\Traits\HasUuid;
 use App\Models\Traits\HasConfirmationToken;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -75,5 +76,9 @@ class User extends Authenticatable
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function account() {
+      return $this->hasOne(Account::class);
     }
 }
