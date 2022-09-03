@@ -1,6 +1,6 @@
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { USER_PERMISSION_OPTIONS, USER_STATUS_OPTIONS } from 'scripts/configs/constants';
-import { User } from 'scripts/interfaces/User';
+import { User } from 'scripts/interfaces/Model';
 import { httpClientWithAuth } from 'scripts/configs/httpClient';
 import { selectLoadingUser, userActions } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';

@@ -1,5 +1,5 @@
-import { SEVERITY, TASK_STATUS, USER_STATUS } from './enums';
-import { User } from 'scripts/interfaces/User';
+import { Account, User } from 'scripts/interfaces/Model';
+import { SEVERITY, TASK_STATUS, USER_AVAILABILITY, USER_STATUS } from './enums';
 
 export const APP_URL = process.env.APP_ENV === 'local' ? 'http://localhost' : process.env.APP_URL;
 
@@ -14,6 +14,14 @@ export const EMPTY_USER: User = {
   firstName: '',
   lastName: '',
   email: ''
+};
+export const EMPTY_ACCOUNT: Account = {
+  accountId: '',
+  age: 0,
+  status: '',
+  availability: '',
+  userId: '',
+  user: undefined
 };
 
 export const ROUTE_PATHS = {
@@ -61,4 +69,11 @@ export const USER_PERMISSION_OPTIONS = [
   { label: 'Guest', value: PERMISSIONS.GUEST },
   { label: 'Admin', value: PERMISSIONS.ADMIN },
   { label: 'Maintainer', value: PERMISSIONS.MAINTAINER }
+];
+
+export const USER_AVAILABILITY_OPTIONS = [
+  { label: 'Available', value: USER_AVAILABILITY.AVAILABLE },
+  { label: 'Away', value: USER_AVAILABILITY.AWAY },
+  { label: 'Busy', value: USER_AVAILABILITY.BUSY },
+  { label: 'Offline', value: USER_AVAILABILITY.OFFLINE }
 ];

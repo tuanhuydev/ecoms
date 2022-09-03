@@ -1,5 +1,5 @@
 import { SxProps } from '@mui/system';
-import { amber, blue, green } from '@mui/material/colors';
+import { blue } from '@mui/material/colors';
 import { useTheme } from '@mui/material';
 
 const getStyles = () => {

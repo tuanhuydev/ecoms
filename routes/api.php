@@ -39,6 +39,7 @@ Route::group([
   'prefix' => 'users'
 ] ,function() {
     Route::get('/', [UserController::class, 'getUsers'])->name('users.getUsers');
+    Route::get('/{id}', [UserController::class, 'getUser'])->name('users.getUser');
     Route::post('/', [UserController::class, 'createUser'])->name('users.createUser');
     Route::patch('/', [UserController::class, 'updateUser'])->name('users.updateUser');
 });
