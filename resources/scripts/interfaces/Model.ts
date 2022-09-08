@@ -15,5 +15,4 @@ export interface Account {
   status: string;
   availability: string;
   userId: string;
-  user: User
 }

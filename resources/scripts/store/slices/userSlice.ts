@@ -1,22 +1,22 @@
-import { Account, User } from '../../interfaces/Model';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
-import { EMPTY_ACCOUNT, EMPTY_ARRAY } from 'scripts/configs/constants';
+import { EMPTY_ARRAY, EMPTY_USER } from 'scripts/configs/constants';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
+import { User } from '../../interfaces/Model';
 import { useSelector } from 'react-redux';
 import cloneDeep from 'lodash/cloneDeep';
 
 export interface UserSliceType {
   users: User[];
-  currentAccount?: Account;
+  currentUser?: User;
   loading: string,
   filter: DefaultObjectType
 }
 
 const initialState: UserSliceType = {
   users: EMPTY_ARRAY,
-  currentAccount: EMPTY_ACCOUNT,
+  currentUser: EMPTY_USER,
   loading: LOADING_STATE.IDLE,
   filter: {}
 };
@@ -28,8 +28,8 @@ export const userSlice = createSlice({
     setLoading(state: any, action: PayloadAction<LOADING_STATE>) {
       state.loading = action.payload;
     },
-    setCurrentUser(state: any, action: PayloadAction<Account>) {
-      state.currentAccount = action.payload;
+    setCurrentUser(state: any, action: PayloadAction<User>) {
+      state.currentUser = action.payload;
     },
     setUsers(state: any, action: PayloadAction<User[]>) {
       state.users = action.payload;
@@ -60,7 +60,7 @@ const patchUser = createAction<Partial<User>>('user/patch');
 export const userActions = { ...userSlice.actions, fetchUsers, patchUser, saveUser };
 
 // selector
-export const selectCurrentAccount = () => useSelector((state: RootState) => state.user.currentAccount);
+export const selectCurrentUser = () => useSelector((state: RootState) => state.user.currentUser);
 export const selectUsers = () => useSelector((state: RootState) => state.user.users);
 export const selectLoadingUser = () => useSelector((state: RootState) => state.user.loading);
 export const selectUserFilter = () => useSelector((state: RootState) => state.user.filter);

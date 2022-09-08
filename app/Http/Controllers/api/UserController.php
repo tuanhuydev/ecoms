@@ -10,6 +10,8 @@ use App\Http\Traits\TransformArrayTrait;
 use App\Exceptions\NotFoundException;
 use App\Exceptions\InvalidParamException;
 use Illuminate\Support\Facades\Validator;
+use BenSampo\Enum\Rules\EnumValue;
+use App\Enums\StatusType;
 use Throwable;
 
 class UserController extends Controller
@@ -47,7 +49,7 @@ class UserController extends Controller
           'phone' => 'required|max:20',
           'password' => 'required|min:8|max:16|same:confirmPassword',
           'confirmPassword' => 'required|min:8|max:16',
-          'status' => 'required|in:PENDING,ACTIVE,SUSPENDED,BLOCKED',
+          'status' => ['required', new EnumValue(StatusType::class)],
           'permission' => 'required|in:GUEST,ADMIN,MAINTAINER'
         ]);
         $validatedData['created_by'] = $request->user()->id;
@@ -63,16 +65,18 @@ class UserController extends Controller
 
     function updateUser(Request $request): \Illuminate\Http\JsonResponse
     {
-      $validatedData = $request->validate([
-        'userId' => 'required',
-      ]);
-      $loggedUserId =$request->user()->id;
-      if ($loggedUserId === $validatedData['userId']) {
-        return response()->json(['success' => false ]);
+      if (empty($request->id)) {
+        throw new InvalidParamException();
       }
-      if ($request->status) {
-        $validatedData['status'] = $request->status;
-      }
-      return response()->json(['success' => $this->userService->updateUser($validatedData)]);
+
+      $validatedData = $this->toSnake($request->validate([
+        'firstName' => 'nullable|max:50',
+        'lastName' => 'nullable|max:50',
+        'email' => 'nullable|max:50',
+        'phone' => 'nullable|max:20',
+        'dueDate' => 'nullable',
+        'status' => ['nullable', new EnumValue(StatusType::class)],
+      ]));
+      return response()->json(['success' => $this->userService->updateUser($request->id, $validatedData)]);
     }
 }

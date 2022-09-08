@@ -46,7 +46,7 @@ const getStyles = () => {
     return {
       '& .MuiBadge-badge': {
         backgroundColor: `${colorMap[availability]}`,
-        color: '#44b700',
+        color: `${colorMap[availability]}`,
 
         '&::after': {
           position: 'absolute',

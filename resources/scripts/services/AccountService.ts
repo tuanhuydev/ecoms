@@ -2,10 +2,12 @@ import { Account } from 'scripts/interfaces/Model';
 import { httpClientWithAuth } from '../configs/httpClient';
 
 class AccountService {
-  static path: string = '/account';
+  path: string = '/accounts';
 
-  static updateAccount(data: Partial<Account>) {
-    return httpClientWithAuth.patch(AccountService.path, data);
+  public patchAccount = (data: Partial<Account>) => {
+    const { accountId, ...restData } = data;
+    const url = `${this.path}/${accountId}`;
+    return httpClientWithAuth.patch(url, restData);
   }
 }
 

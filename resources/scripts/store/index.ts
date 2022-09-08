@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import accountSlice from './slices/accountSlice';
 import createSagaMiddleware from 'redux-saga';
 import metaSlice from './slices/metaSlice';
 import rootSaga from './sagas/rootSaga';
@@ -12,7 +13,8 @@ export const store = configureStore({
   reducer: {
     user: userSlice,
     meta: metaSlice,
-    task: taskSlice
+    task: taskSlice,
+    account: accountSlice
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware)
 });

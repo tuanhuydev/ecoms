@@ -3,7 +3,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { LOADING_STATE, USER_STATUS } from 'scripts/configs/enums';
 import {
-  selectCurrentAccount,
+  selectCurrentUser,
   selectFilteredUsers,
   selectLoadingUser,
   selectUserFilter,
@@ -30,7 +30,7 @@ const Users = () => {
 
   const loadingState: string = selectLoadingUser();
   const users: User[] = selectFilteredUsers();
-  const currentAccount: Account = selectCurrentAccount();
+  const currentUser: User = selectCurrentUser();
   const userFilter: DefaultObjectType = selectUserFilter();
   const styles = getStyles();
 
@@ -109,7 +109,7 @@ const Users = () => {
             disabled={
               isLoading ||
               params.row.status === USER_STATUS.BLOCKED ||
-              params.row.userId === currentAccount.userId
+              params.row.userId === currentUser.userId
             }
           >
             <BlockOutlinedIcon />

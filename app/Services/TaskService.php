@@ -47,37 +47,22 @@ class TaskService
      * @return boolean
      *
      */
-    public function update($data)
+    public function update($id, mixed $body)
     {
-        $task = Task::find($data['id']);
-        if ($task) {
-            if (!empty($data['title'])) {
-                $task->title = $data['title'];
-            }
-            if (!empty($data['description'])) {
-                $task->description = $data['description'];
-            }
-            if (!empty($data['status'])) {
-                $task->status = $data['status'];
-            }
-            if (!empty($data['due_date'])) {
-                $task->due_date = $data['due_date'];
-            }
-            if (!empty($data['severity'])) {
-              $task->severity = $data['severity'];
-          }
-          $task->updated_by = Auth::user()->user_id ?? null;
-        }
-        return $task->save();
+      $task = Task::find($id);
+      if (empty($task)) {
+        return false;
+      }
+      return $task->update($body);
     }
 
 
     public function delete(string $id)
     {
-        $task = Task::find($id);
-        if (!empty($task)) {
-            return $task->delete();
-        }
+      $task = Task::find($id);
+      if (empty($task)) {
         return false;
+      }
+      return $task->delete();
     }
 }
