@@ -25,12 +25,12 @@ class Account extends Model
     protected $fillable = [
       'user_id',
       'status',
-      'vailability',
+      'availability',
       'age',
   ];
 
     public function user()
     {
-      return $this->belongsTo(User::class);
+      return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -178,17 +178,12 @@ class UserService
       return User::find($userId)->first();
     }
 
-    function updateUser(mixed $body = [])
+    function updateUser(string $id, mixed $body = [])
     {
-      $user = User::find($body['userId']);
-      if (!$user) {
-        return 0;
+      $user = User::find($id);
+      if (empty($user)) {
+        return false;
       }
-      foreach($body as $key => $value) {
-        if ($key !== 'userId') {
-          $user[$key] = $value;
-        }
-      }
-      return $user->save();
+      return $user->update($body);
     }
 }

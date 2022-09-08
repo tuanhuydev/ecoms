@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\AccountResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         // remove wrap data with data attributes
         UserResource::withoutWrapping();
         TaskResource::withoutWrapping();
+        AccountResource::withoutWrapping();
     }
 }

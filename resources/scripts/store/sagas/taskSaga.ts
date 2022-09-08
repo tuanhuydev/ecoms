@@ -4,10 +4,12 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import { taskActions } from '../slices/taskSlice';
 import TaskService from '../../services/TaskService';
 
+const taskService = new TaskService();
+
 export function * getTasks(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
-    const { data }: AxiosResponse = yield call(TaskService.getTasks, action.payload);
+    const { data }: AxiosResponse = yield call(taskService.getTasks, action.payload);
     yield put({ type: taskActions.setTasks.type, payload: data.tasks });
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
   } catch (error) {
@@ -18,7 +20,7 @@ export function * getTasks(action: any) {
 export function * createTask(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
-    const { data }: AxiosResponse = yield call(TaskService.createTask, action.payload);
+    const { data }: AxiosResponse = yield call(taskService.createTask, action.payload);
     if (data?.id) {
       const newTask = {
         ...action.payload,
@@ -37,7 +39,7 @@ export function * createTask(action: any) {
 export function * deleteTask(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
-    const { data }: AxiosResponse = yield call(TaskService.deleteTask, action.payload);
+    const { data }: AxiosResponse = yield call(taskService.deleteTask, action.payload);
     if (data.success) {
       yield put({ type: taskActions.removeTask.type, payload: action.payload });
       yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
@@ -52,7 +54,7 @@ export function * deleteTask(action: any) {
 export function * saveTask(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
-    const { data }: AxiosResponse = yield call(TaskService.updateTask, action.payload);
+    const { data }: AxiosResponse = yield call(taskService.updateTask, action.payload);
     if (data.success) {
       yield put({ type: taskActions.updateTask.type, payload: action.payload });
       yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });

@@ -5,16 +5,19 @@ namespace App\Http\Controllers\api;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Traits\TransformArrayTrait;
 use App\Http\Controllers\Controller;
 use App\Services\TaskService;
 use Illuminate\Validation\Rules\Enum;
+use App\Exceptions\InvalidParamException;
 use App\Http\Resources\TaskResource;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\SeverityType;
-
+use Throwable;
 
 class TaskController extends Controller
 {
+    use TransformArrayTrait;
     protected TaskService $taskService;
 
     function __construct(TaskService $taskService)
@@ -71,7 +74,7 @@ class TaskController extends Controller
    */
     public function deleteTask(string $id): JsonResponse
     {
-        return response()->json(['success' => $this->taskService->delete($id)]);
+      return response()->json(['success' => $this->taskService->delete($id)]);
     }
 
   /**
@@ -82,16 +85,18 @@ class TaskController extends Controller
    */
     public function updateTask(Request $request): JsonResponse
     {
-        // TODO: handle validation fail
-        $validatedData = $request->validate([
-            'id' => 'required',
-            'title' => 'nullable',
-            'description' => 'nullable',
-            'status' => "in:BACKLOG,PROGRESS,DONE",
-            'due_date' => 'nullable',
-            'severity' =>  ['required', new EnumValue(SeverityType::class)],
-            'updated_by' => 'unique:users,id'
-        ]);
-        return response()->json(['success' => $this->taskService->update($validatedData)]);
+      if (empty($request->id)) {
+        throw new InvalidParamException();
+      }
+      $validatedData = $request->validate([
+        'title' => 'nullable',
+        'description' => 'nullable',
+        'acceptance' => 'nullable',
+        'status' => "nullable|in:BACKLOG,PROGRESS,DONE",
+        'dueDate' => 'nullable',
+        'severity' =>  ['nullable', new EnumValue(SeverityType::class)],
+      ]);
+      $validatedData['createdBy'] = $request->user()->id;
+      return response()->json(['success' => $this->taskService->update($request->id, $this->toSnake($validatedData))]);
     }
 }

@@ -4,15 +4,17 @@ import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { userActions } from '@store/slices/userSlice';
 import UserService from '@services/UserService';
 
+const userService = new UserService();
 export function * getUsers() {
   try {
     yield put({ type: userActions.setLoading.type, payload: LOADING_STATE.LOADING });
-    const { data }: AxiosResponse = yield call(UserService.getUsers);
+    const { data }: AxiosResponse = yield call(userService.getUsers);
     if (data.length) {
       yield put({ type: userActions.setUsers.type, payload: data });
     }
     yield put({ type: userActions.setLoading.type, payload: LOADING_STATE.IDLE });
   } catch (error) {
+    console.log(error);
     yield put({ type: userActions.setLoading.type, payload: LOADING_STATE.FAIL });
   }
 }
@@ -20,7 +22,7 @@ export function * getUsers() {
 export function * patchUser(action: any) {
   try {
     yield put({ type: userActions.setLoading.type, payload: LOADING_STATE.LOADING });
-    const { data }: AxiosResponse = yield call(UserService.updateUser, action.payload);
+    const { data }: AxiosResponse = yield call(userService.updateUser, action.payload);
     if (data.success === '1') {
       yield put({ type: userActions.updateUser.type, payload: action.payload });
       yield put({ type: userActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
@@ -37,7 +39,7 @@ export function * patchUser(action: any) {
 export function * saveUser(action: any) {
   try {
     yield put({ type: userActions.setLoading.type, payload: LOADING_STATE.LOADING });
-    const { data }: AxiosResponse = yield call(UserService.saveUser, action.payload);
+    const { data }: AxiosResponse = yield call(userService.saveUser, action.payload);
     if (data?.id) {
       yield put({ type: userActions.addUser.type, payload: { ...action.payload, userId: data.id } });
       yield put({ type: userActions.setLoading.type, payload: LOADING_STATE.SUCCESS });

@@ -20,8 +20,7 @@ export const EMPTY_ACCOUNT: Account = {
   age: 0,
   status: '',
   availability: '',
-  userId: '',
-  user: undefined
+  userId: ''
 };
 
 export const ROUTE_PATHS = {

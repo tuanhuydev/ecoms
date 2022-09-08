@@ -2,7 +2,9 @@ import { Account, User } from 'scripts/interfaces/Model';
 import { SignIn } from '@services/AuthService';
 import { Typography } from '@mui/material';
 import { USER_AVAILABILITY_OPTIONS } from 'scripts/configs/constants';
-import { selectCurrentAccount } from '@store/slices/userSlice';
+import { accountActions, selectCurrentAccount } from '@store/slices/accountSlice';
+import { selectCurrentUser } from '@store/slices/userSlice';
+import { useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';
 import BaseSelect from '../Select';
@@ -14,11 +16,12 @@ import React, { Fragment, useEffect } from 'react';
 import getStyles from './styles';
 
 const AccountMenu = () => {
+  const currentUser: User = selectCurrentUser();
   const currentAccount: Account = selectCurrentAccount();
-  const user: User = currentAccount.user;
   const selectedAvailability = USER_AVAILABILITY_OPTIONS.find((option) => option.value === currentAccount.availability);
   const styles = getStyles();
 
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -32,7 +35,7 @@ const AccountMenu = () => {
   };
 
   const handleChangeAvailability = (option: any) => {
-    console.log(option);
+    dispatch(accountActions.patchAccount({ accountId: currentAccount.accountId, availability: option.value }));
   };
 
   useEffect(() => {
@@ -57,7 +60,7 @@ const AccountMenu = () => {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           variant="dot"
         >
-          <Avatar alt={user.firstName} sx={styles.avatarSize} src={user?.avatar} />
+          <Avatar alt={currentUser.firstName} sx={styles.avatarSize} src={currentUser?.avatar} />
         </Badge>
       </IconButton>
       <Menu
@@ -74,13 +77,13 @@ const AccountMenu = () => {
       >
         <Grid container sx={{ px: 1, pb: 0.5, pt: 1 }}>
           <Grid item xs={3} sx={styles.avatarStyles}>
-            <Avatar alt={user.firstName} sx={styles.avatarSize} src={user?.avatar} />
+            <Avatar alt={currentUser.firstName} sx={styles.avatarSize} src={currentUser?.avatar} />
           </Grid>
           <Grid item xs={9}>
             <Typography variant='subtitle1' sx={styles.nameStyles} noWrap>
-              {`${user.firstName} ${user.lastName}`}
+              {`${currentUser.firstName} ${currentUser.lastName}`}
             </Typography>
-            <Typography variant='body2' sx={styles.emailStyles} noWrap>{user.email}</Typography>
+            <Typography variant='body2' sx={styles.emailStyles} noWrap>{currentUser.email}</Typography>
             <BaseSelect
               options={USER_AVAILABILITY_OPTIONS}
               onChange={handleChangeAvailability}

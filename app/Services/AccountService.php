@@ -26,4 +26,24 @@ class AccountService
     ];
     return Account::create($account);
   }
+
+  public function update(string $accountId, mixed $body)
+  {
+    if (empty($accountId)) {
+      throw new InvalidParamException();
+    }
+    $account = Account::find($accountId);
+    if (empty($account)) {
+      return false;
+    }
+    return $account->update($body);
+  }
+
+  public function isCurrentUSerAccount(string $accountId, string $userId) {
+    if (empty($accountId) || empty($userId)) {
+      throw new InvalidParamException();
+    }
+    $account = Account::find($accountId);
+    return $account->user->id === $userId;
+  }
 }

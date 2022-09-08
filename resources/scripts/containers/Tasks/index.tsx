@@ -1,12 +1,11 @@
 import { AppDispatch } from '@store/index';
-import { AxiosResponse } from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { LOADING_STATE, SEVERITY, SORT_TYPE, TASK_STATUS } from '../../configs/enums';
 import { TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { Task } from '../../interfaces/Task';
 import { newTaskSchema } from './schemas';
-import { selectCurrentAccount } from '@store/slices/userSlice';
+import { selectCurrentUser } from '@store/slices/userSlice';
 import {
   selectFilteredTasks,
   selectTaskFilter,
@@ -41,7 +40,6 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Skeleton from '@mui/material/Skeleton';
 import SouthOutlinedIcon from '@mui/icons-material/SouthOutlined';
 import TaskDetail from '@components/pages/Tasks/TaskDetail';
-import TaskService from '../../services/TaskService';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';
 import omit from 'lodash/omit';
@@ -75,7 +73,7 @@ const Tasks = () => {
   const taskSort = selectTaskSort();
   const taskSortOption = TaskSortByOptions.find((option) => option.value === taskSort.field);
 
-  const currentAccount = selectCurrentAccount();
+  const currentUser = selectCurrentUser();
   const loading: string = selectTaskLoading();
   const isLoading = loading === LOADING_STATE.LOADING;
 
@@ -100,7 +98,7 @@ const Tasks = () => {
       title,
       status: TASK_STATUS.BACKLOG,
       severity: SEVERITY.LOW,
-      createdBy: currentAccount,
+      createdBy: currentUser,
       createdAt: new Date().toISOString(),
       description: '',
       acceptance: '',
@@ -112,8 +110,7 @@ const Tasks = () => {
 
   const handleCompleteTask = (task: Task) => async () => {
     const taskStatus = task.status === TASK_STATUS.DONE ? TASK_STATUS.BACKLOG : TASK_STATUS.DONE;
-    const { data }: AxiosResponse = await TaskService.updateTask({ id: task.id, status: taskStatus });
-    if (data?.success) dispatch(taskActions.updateTask({ ...task, status: taskStatus }));
+    dispatch(taskActions.updateTask({ ...task, status: taskStatus }));
   };
 
   const handleDeleteTask = () => {

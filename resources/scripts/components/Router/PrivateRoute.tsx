@@ -1,7 +1,7 @@
 import { APP_URL } from '../../configs/constants';
-import { Account } from 'scripts/interfaces/Model';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { SignIn } from '../../services/AuthService';
+import { accountActions } from '@store/slices/accountSlice';
 import { useDispatch } from 'react-redux';
 import { userActions } from '@store/slices/userSlice';
 
@@ -11,8 +11,9 @@ const PrivateRoute = ({ children }: {children: JSX.Element}) => {
   if (!auth) {
     window.location.href = `${APP_URL}/auth/sign-in`;
   }
-  const currentAccount: Account = (auth as DefaultObjectType).account;
-  dispatch(userActions.setCurrentUser(currentAccount));
+  const { user, ...restAccount } = (auth as DefaultObjectType).account;
+  dispatch(userActions.setCurrentUser(user));
+  dispatch(accountActions.setCurrentAccount(restAccount));
   return children;
 };
 
