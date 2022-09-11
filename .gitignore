@@ -7,6 +7,6 @@ public/css/**/*
 public/fonts/**/*
 public/images/**/*
 public/js/**/*
-
+public/storage
 # Environments
 .env

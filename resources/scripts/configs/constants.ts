@@ -1,7 +1,8 @@
 import { Account, User } from 'scripts/interfaces/Model';
 import { SEVERITY, TASK_STATUS, USER_AVAILABILITY, USER_STATUS } from './enums';
 
-export const APP_URL = process.env.APP_ENV === 'local' ? 'http://localhost' : process.env.APP_URL;
+export const IS_DEV_ENV = process.env.APP_ENV === 'local';
+export const APP_URL = IS_DEV_ENV ? 'http://localhost' : process.env.APP_URL;
 
 export const API_URL = `${APP_URL}/api`;
 

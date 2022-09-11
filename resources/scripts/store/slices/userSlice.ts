@@ -54,10 +54,10 @@ export const userSlice = createSlice({
 
 // Actions
 const fetchUsers = createAction('user/fetch');
-const saveUser = createAction<Partial<User>>('user/save');
+const postUser = createAction<Partial<User>>('user/post');
 const patchUser = createAction<Partial<User>>('user/patch');
 
-export const userActions = { ...userSlice.actions, fetchUsers, patchUser, saveUser };
+export const userActions = { ...userSlice.actions, fetchUsers, patchUser, postUser };
 
 // selector
 export const selectCurrentUser = () => useSelector((state: RootState) => state.user.currentUser);
