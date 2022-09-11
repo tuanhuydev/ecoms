@@ -37,3 +37,8 @@ export const isValidDate = (date: any) => {
   }
   return !Number.isNaN(new Date(date).getTime());
 };
+
+export const findOptionByValue = (options: Array<any>, value: any, valueKey: string = 'value') => {
+  if (!options.length) return null;
+  return options.find((option: any) => option[valueKey] === value);
+};

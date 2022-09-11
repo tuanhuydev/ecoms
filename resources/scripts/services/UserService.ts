@@ -14,7 +14,7 @@ class UserService {
     return httpClientWithAuth.patch(url, restData);
   }
 
-  public saveUser(data: Partial<User>) {
+  public saveUser = (data: Partial<User>) => {
     return httpClientWithAuth.post(this.path, data);
   }
 }

@@ -47,6 +47,7 @@ class UserController extends Controller
           'lastName' => 'required|max:50',
           'email' => 'required|max:50',
           'phone' => 'required|max:20',
+          'avatar' => 'nullable',
           'password' => 'required|min:8|max:16|same:confirmPassword',
           'confirmPassword' => 'required|min:8|max:16',
           'status' => ['required', new EnumValue(StatusType::class)],
@@ -74,6 +75,7 @@ class UserController extends Controller
         'lastName' => 'nullable|max:50',
         'email' => 'nullable|max:50',
         'phone' => 'nullable|max:20',
+        'avatar' => 'nullable',
         'dueDate' => 'nullable',
         'status' => ['nullable', new EnumValue(StatusType::class)],
       ]));
