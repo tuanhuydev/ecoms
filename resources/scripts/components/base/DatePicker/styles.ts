@@ -5,7 +5,9 @@ const getStyles = () => {
   const textFieldStyles: SxProps = {
     '&.MuiTextField-root': {
       backgroundColor: grey[50],
-      flexGrow: 1
+      flexGrow: 1,
+      borderRadius: 1,
+      border: `1px solid ${grey[200]}`
     },
     '& .MuiInputBase-input': {
       height: 32,

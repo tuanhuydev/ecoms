@@ -11,6 +11,7 @@ const BaseDatePicker = (props: any) => {
   return (<LocalizationProvider dateAdapter={AdapterDateFns}>
     <DatePicker
       {...props}
+
       renderInput={(params) => (
         <TextField {...params} sx={styles.textFieldStyles} />
       )}
