@@ -3,6 +3,7 @@ import { AppDispatch } from '@store/index';
 import { LOADING_STATE, TASK_STATUS } from '../../../../configs/enums';
 import { Task } from '../../../../interfaces/Task';
 import { formatDistance } from 'date-fns';
+import { isFunction } from 'lodash';
 import { isValidDate } from 'scripts/utils/helpers';
 import { newTaskSchema } from '@containers/Tasks/schemas';
 import { selectTaskById, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
@@ -26,12 +27,12 @@ import React, { Fragment, useEffect, useState } from 'react';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import getStyles from './styles';
 
-export interface TaskDetailProps extends DrawerProps {
+export interface TaskFormProps extends DrawerProps {
   task: Task;
   onClose: () => void;
 }
 
-const TaskDetail = (props: TaskDetailProps) => {
+const TaskForm = (props: TaskFormProps) => {
   const { task: currentTask, onClose, ...restProps } = props;
   const styles = getStyles();
 
@@ -105,6 +106,11 @@ const TaskDetail = (props: TaskDetailProps) => {
     setEditMode((prevState) => !prevState);
   };
 
+  const handleClose = (event: any, reason: string) => {
+    if (loading === LOADING_STATE.LOADING || reason === 'backdropClick') return;
+    if (isFunction(onClose)) onClose();
+  };
+
   useEffect(() => {
     if (task && !editMode) {
       // Conflict react-hook-form type so have to mark as any
@@ -138,7 +144,7 @@ const TaskDetail = (props: TaskDetailProps) => {
   };
 
   return <Fragment>
-    <Drawer {...restProps} anchor="right" onClose={onClose} sx={styles.drawerStyles}>
+    <Drawer {...restProps} anchor="right" onClose={handleClose} sx={styles.drawerStyles}>
       <Box sx={styles.toolbarStyles(taskStatus.value)}>
         <Box sx={styles.titleStyles(taskStatus.value)}>
           Task&nbsp;
@@ -256,4 +262,4 @@ const TaskDetail = (props: TaskDetailProps) => {
   </Fragment>;
 };
 
-export default TaskDetail;
+export default TaskForm;
