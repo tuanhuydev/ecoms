@@ -20,7 +20,8 @@ const routes: RouteObject[] = [
           { index: true, element: <Navigate to={ROUTE_PATHS.OVERVIEW} /> },
           { path: ROUTE_PATHS.OVERVIEW, element: <Overview /> },
           { path: ROUTE_PATHS.USERS, element: <Users /> },
-          { path: ROUTE_PATHS.TASKS, element: <Tasks /> }
+          { path: ROUTE_PATHS.TASKS, element: <Tasks /> },
+          { path: `${ROUTE_PATHS.TASKS}/:id`, element: <Tasks /> }
         ]
       }
     ]

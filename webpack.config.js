@@ -16,7 +16,7 @@ const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const mode = isDevelopment ? 'development' : 'production';
-const devtool = isDevelopment ? 'eval-source-map' : 'hidden-source-map';
+const devtool = isDevelopment ? 'source-map' : 'hidden-source-map';
 const watchOptions = {
   ignored: /node_modules/,
   aggregateTimeout: 500

@@ -14,6 +14,7 @@ import {
   taskActions
 } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { yupResolver } from '@hookform/resolvers/yup';
 import BaseSelect from '@components/base/Select';
@@ -39,7 +40,7 @@ import React, { ChangeEventHandler, useEffect, useState } from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Skeleton from '@mui/material/Skeleton';
 import SouthOutlinedIcon from '@mui/icons-material/SouthOutlined';
-import TaskDetail from '@components/pages/Tasks/TaskDetail';
+import TaskForm from '@components/pages/Tasks/TaskForm';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';
 import omit from 'lodash/omit';
@@ -66,7 +67,10 @@ const TaskSortByOptions = [
 
 const Tasks = () => {
   const styles = getStyles();
+  // Hook
   const dispatch: AppDispatch = useDispatch();
+  const params = useParams();
+  const navigate = useNavigate();
 
   const tasks: Task[] = selectFilteredTasks();
   const taskFilter = selectTaskFilter();
@@ -138,7 +142,7 @@ const Tasks = () => {
       case SEVERITY.CRITICAL:
         return (<KeyboardDoubleArrowUpOutlinedIcon color='error' />);
       default:
-        return (<DragHandleIcon color='primary'/>);
+        return (<DragHandleIcon color='primary' />);
     }
   };
 
@@ -244,7 +248,7 @@ const Tasks = () => {
     }));
   };
 
-  const handleChangeOrderSelect = ({ value: field }: { value: SORT_TYPE}) => {
+  const handleChangeOrderSelect = ({ value: field }: { value: SORT_TYPE }) => {
     dispatch(taskActions.setTaskSort({ ...taskSort, field }));
   };
 
@@ -264,6 +268,18 @@ const Tasks = () => {
   useEffect(() => {
     dispatch(taskActions.fetchTasks(taskSort as DefaultObjectType));
   }, [taskSort]);
+
+  useEffect(() => {
+    const { id } = params;
+    if (id) {
+      const deepLinkingTask: Task = tasks.find((task: Task) => task.id === Number(id));
+      if (deepLinkingTask) {
+        setSelectedTask(deepLinkingTask);
+      }
+      const cleanUrl = location.pathname.substring(0, location.pathname.length - 2);
+      navigate(cleanUrl, { replace: true });
+    }
+  }, [tasks.length]);
 
   return (
     <PageContainer title='Tasks' loading={isLoading}>
@@ -308,7 +324,7 @@ const Tasks = () => {
             onChange={handleChangeOrderSelect}
           />
           <IconButton size="small" sx={{ ml: 1 }} onClick={handleChangeOrderValue}>
-            { isAscending ? <NorthOutlinedIcon fontSize="small" /> : <SouthOutlinedIcon fontSize="small" />}
+            {isAscending ? <NorthOutlinedIcon fontSize="small" /> : <SouthOutlinedIcon fontSize="small" />}
           </IconButton>
         </Box>
       </Box>
@@ -332,7 +348,7 @@ const Tasks = () => {
             />
           </form>
         </Box>{renderTaskList()}</Box>
-      {selectedTask && (<TaskDetail open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />)}
+      {selectedTask && (<TaskForm open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />)}
       {deleteTaskId && (<Menu
         anchorEl={menuAnchor}
         open={openMenu}

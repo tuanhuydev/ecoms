@@ -30,23 +30,20 @@ const PageContainer = ({
   /**
    * Check current path match defined path
    * Check current path match defined route with path
+   * Must allow wildcard pass the validation
    * Check user able to access current path by their permission
    */
   const isRouteAvailable = Object.values(ROUTE_PATHS).some((path) => {
-    if (matchPath(pathname, path)) {
+    /**
+     * case sensitive to escapse full match
+     * end to avoid path's end checking
+     */
+    if (matchPath({ path: path, caseSensitive: true, end: false }, pathname)) {
       return !!Object.values(adminRoutes).find((adminRoute) =>
         adminRoute.path === path && adminRoute.permissions.includes(userPermission.toUpperCase()));
     }
     return false;
   });
-
-  // <Box sx={{ px: 2 }}>
-  //   <Skeleton animation="pulse"></Skeleton>
-  //   <Skeleton animation="pulse"></Skeleton>
-  //   <Skeleton animation="pulse"></Skeleton>
-  //   <Skeleton animation="pulse"></Skeleton>
-  //   <Skeleton animation="pulse"></Skeleton>
-  // </Box>;
 
   return (
     isRouteAvailable
