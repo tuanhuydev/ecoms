@@ -7,14 +7,17 @@ const getStyles = () => {
 
   const textareaStyles: SxProps = {
     fontFamily: theme.typography.fontFamily,
-    border: 'none',
     outline: 'none',
     resize: 'none',
     width: '100%',
     p: '0.875rem',
     m: 0,
     borderRadius: 1,
+    border: '1px solid transparent',
     backgroundColor: grey[50],
+    '&:not(:disabled)': {
+      borderColor: grey[200]
+    },
     '&:focus': {
       '&:not(:disabled)': {
         backgroundColor: grey[200]

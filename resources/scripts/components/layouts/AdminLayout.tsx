@@ -1,6 +1,6 @@
 import { AppDispatch } from '@store/index';
 import { Outlet } from 'react-router-dom';
-import { User } from 'scripts/interfaces/User';
+import { User } from 'scripts/interfaces/Model';
 import { adminRoutes } from 'scripts/configs/routes';
 import { selectCurrentUser } from '@store/slices/userSlice';
 import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';

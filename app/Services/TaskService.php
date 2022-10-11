@@ -15,8 +15,11 @@ class TaskService
      */
     public function getAll(Request $request)
     {
-      $tasks = Task::where('created_by',  $request->user()->id)->orderByDesc('created_at')->get();
-      return $tasks;
+      $query = $request->query();
+      if (isset($query['action'])) {
+        return Task::where('created_by',  $request->user()->id)->orderBy(Str::of($query['field'])->snake(), $query['value'])->get();
+      }
+      return Task::where('created_by',  $request->user()->id)->get();
     }
 
      /**
@@ -44,35 +47,22 @@ class TaskService
      * @return boolean
      *
      */
-    public function update($data)
+    public function update($id, mixed $body)
     {
-        $task = Task::find($data['id']);
-        if ($task) {
-            if (!empty($data['title'])) {
-                $task->title = $data['title'];
-            }
-            if (!empty($data['description'])) {
-                $task->description = $data['description'];
-            }
-            if (!empty($data['status'])) {
-                $task->status = $data['status'];
-            }
-            if (!empty($data['due_date'])) {
-                $task->due_date = $data['due_date'];
-            }
-
-            $task->updated_by = Auth::user()->user_id ?? null;
-        }
-        return $task->save();
+      $task = Task::find($id);
+      if (empty($task)) {
+        return false;
+      }
+      return $task->update($body);
     }
 
 
     public function delete(string $id)
     {
-        $task = Task::find($id);
-        if (!empty($task)) {
-            return $task->delete();
-        }
+      $task = Task::find($id);
+      if (empty($task)) {
         return false;
+      }
+      return $task->delete();
     }
 }

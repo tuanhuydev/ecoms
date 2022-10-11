@@ -8,3 +8,11 @@ export interface User {
   permission?: string;
   status?: string;
 };
+
+export interface Account {
+  accountId: string;
+  age: number;
+  status: string;
+  availability: string;
+  userId: string;
+}

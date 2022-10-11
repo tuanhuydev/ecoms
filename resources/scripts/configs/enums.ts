@@ -32,3 +32,15 @@ export enum USER_PERMISSION {
   ADMIN= 'ADMIN',
   MAINTAINER= 'MAINTAINER'
 };
+
+export enum SORT_TYPE {
+  ASCENDING = 'ASC',
+  DESCENDING = 'DESC'
+}
+
+export enum USER_AVAILABILITY {
+  AVAILABLE = 'AVAILABLE',
+  AWAY = 'AWAY',
+  BUSY = 'BUSY',
+  OFFLINE = 'OFFLINE',
+}

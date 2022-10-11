@@ -1,14 +1,20 @@
 import { AppDispatch } from '@store/index';
-import { AxiosResponse } from 'axios';
 import { Controller, useForm } from 'react-hook-form';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
-import { LOADING_STATE, SEVERITY, TASK_STATUS } from '../../configs/enums';
+import { LOADING_STATE, SEVERITY, SORT_TYPE, TASK_STATUS } from '../../configs/enums';
 import { TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { Task } from '../../interfaces/Task';
 import { newTaskSchema } from './schemas';
 import { selectCurrentUser } from '@store/slices/userSlice';
-import { selectFilteredTasks, selectTaskFilter, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
+import {
+  selectFilteredTasks,
+  selectTaskFilter,
+  selectTaskLoading,
+  selectTaskSort,
+  taskActions
+} from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { yupResolver } from '@hookform/resolvers/yup';
 import BaseSelect from '@components/base/Select';
@@ -27,13 +33,14 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import NorthOutlinedIcon from '@mui/icons-material/NorthOutlined';
 import PageContainer from '@components/base/PageContainer';
 import Radio from '@mui/material/Radio';
 import React, { ChangeEventHandler, useEffect, useState } from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Skeleton from '@mui/material/Skeleton';
-import TaskDetail from '@components/pages/Tasks/TaskDetail';
-import TaskService from '../../services/TaskService';
+import SouthOutlinedIcon from '@mui/icons-material/SouthOutlined';
+import TaskForm from '@components/pages/Tasks/TaskForm';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';
 import omit from 'lodash/omit';
@@ -52,20 +59,36 @@ const TaskSeverityOptions = [
   ...TASK_SEVERITY_OPTIONS
 ];
 
+const TaskSortByOptions = [
+  { label: 'Date', value: 'createdAt' },
+  { label: 'Status', value: 'status' },
+  { label: 'Severity', value: 'severity' }
+];
+
 const Tasks = () => {
   const styles = getStyles();
+  // Hook
   const dispatch: AppDispatch = useDispatch();
+  const params = useParams();
+  const navigate = useNavigate();
+
   const tasks: Task[] = selectFilteredTasks();
   const taskFilter = selectTaskFilter();
+  const taskSort = selectTaskSort();
+  const taskSortOption = TaskSortByOptions.find((option) => option.value === taskSort.field);
+
   const currentUser = selectCurrentUser();
   const loading: string = selectTaskLoading();
-  const { enqueueSnackbar } = useSnackbar();
+  const isLoading = loading === LOADING_STATE.LOADING;
 
   const [selectedTask, setSelectedTask] = useState<Task>();
   const [deleteTaskId, setDeleteTaskId] = useState<number | null>(null);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [search, setSearch] = useState('');
   const openMenu = Boolean(menuAnchor);
+
+  const { enqueueSnackbar } = useSnackbar();
+  const isAscending = taskSort.value === String(SORT_TYPE.ASCENDING);
 
   // Form
   const { control, getValues, handleSubmit, reset } = useForm({
@@ -91,8 +114,7 @@ const Tasks = () => {
 
   const handleCompleteTask = (task: Task) => async () => {
     const taskStatus = task.status === TASK_STATUS.DONE ? TASK_STATUS.BACKLOG : TASK_STATUS.DONE;
-    const { data }: AxiosResponse = await TaskService.updateTask({ id: task.id, status: taskStatus });
-    if (data?.success) dispatch(taskActions.updateTask({ ...task, status: taskStatus }));
+    dispatch(taskActions.updateTask({ ...task, status: taskStatus }));
   };
 
   const handleDeleteTask = () => {
@@ -120,7 +142,7 @@ const Tasks = () => {
       case SEVERITY.CRITICAL:
         return (<KeyboardDoubleArrowUpOutlinedIcon color='error' />);
       default:
-        return (<DragHandleIcon color='primary'/>);
+        return (<DragHandleIcon color='primary' />);
     }
   };
 
@@ -219,11 +241,16 @@ const Tasks = () => {
     }
   };
 
-  useEffect(() => {
-    if (!tasks.length) {
-      dispatch(taskActions.fetchTasks());
-    }
-  }, []);
+  const handleChangeOrderValue = () => {
+    dispatch(taskActions.setTaskSort({
+      ...taskSort,
+      value: isAscending ? SORT_TYPE.DESCENDING : SORT_TYPE.ASCENDING
+    }));
+  };
+
+  const handleChangeOrderSelect = ({ value: field }: { value: SORT_TYPE }) => {
+    dispatch(taskActions.setTaskSort({ ...taskSort, field }));
+  };
 
   useEffect(() => {
     if (loading === LOADING_STATE.FAIL) {
@@ -238,7 +265,21 @@ const Tasks = () => {
     return () => clearTimeout(debounceSearch);
   }, [search]);
 
-  const isLoading = loading === LOADING_STATE.LOADING;
+  useEffect(() => {
+    dispatch(taskActions.fetchTasks(taskSort as DefaultObjectType));
+  }, [taskSort]);
+
+  useEffect(() => {
+    const { id } = params;
+    if (id) {
+      const deepLinkingTask: Task = tasks.find((task: Task) => task.id === Number(id));
+      if (deepLinkingTask) {
+        setSelectedTask(deepLinkingTask);
+      }
+      const cleanUrl = location.pathname.substring(0, location.pathname.length - 2);
+      navigate(cleanUrl, { replace: true });
+    }
+  }, [tasks.length]);
 
   return (
     <PageContainer title='Tasks' loading={isLoading}>
@@ -254,15 +295,16 @@ const Tasks = () => {
             onChange={handleSearchTask}
           />
         </Box>
-        <Box sx={{ mr: 2 }}>
-          <BaseSelect
-            name='status'
-            options={TaskStatusOptions}
-            defaultValue={TaskStatusOptions[0]}
-            disabled={isLoading}
-            onChange={handleChangeFilterSelect('status')} />
-        </Box>
-        <Box sx={{ mr: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mr: 3 }}>
+          <Box sx={{ mr: 1 }}>Filter by:</Box>
+          <Box sx={{ mr: 1 }}>
+            <BaseSelect
+              name='status'
+              options={TaskStatusOptions}
+              defaultValue={TaskStatusOptions[0]}
+              disabled={isLoading}
+              onChange={handleChangeFilterSelect('status')} />
+          </Box>
           <BaseSelect
             name='severity'
             options={TaskSeverityOptions}
@@ -270,6 +312,20 @@ const Tasks = () => {
             disabled={isLoading}
             onChange={handleChangeFilterSelect('severity')}
           />
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ mr: 1 }}>Order by</Box>
+          <BaseSelect
+            name='order'
+            options={TaskSortByOptions}
+            defaultValue={TaskSortByOptions[0]}
+            disabled={isLoading}
+            value={taskSortOption}
+            onChange={handleChangeOrderSelect}
+          />
+          <IconButton size="small" sx={{ ml: 1 }} onClick={handleChangeOrderValue}>
+            {isAscending ? <NorthOutlinedIcon fontSize="small" /> : <SouthOutlinedIcon fontSize="small" />}
+          </IconButton>
         </Box>
       </Box>
       <Box sx={styles.listContainerStyles}>
@@ -292,7 +348,7 @@ const Tasks = () => {
             />
           </form>
         </Box>{renderTaskList()}</Box>
-      {selectedTask && (<TaskDetail open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />)}
+      {selectedTask && (<TaskForm open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />)}
       {deleteTaskId && (<Menu
         anchorEl={menuAnchor}
         open={openMenu}

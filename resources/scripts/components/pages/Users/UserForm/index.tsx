@@ -1,6 +1,9 @@
+import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { USER_PERMISSION_OPTIONS, USER_STATUS_OPTIONS } from 'scripts/configs/constants';
-import { User } from 'scripts/interfaces/User';
+import { User } from 'scripts/interfaces/Model';
+import { createSchema, editSchema } from './schema';
+import { findOptionByValue } from 'scripts/utils/helpers';
 import { httpClientWithAuth } from 'scripts/configs/httpClient';
 import { selectLoadingUser, userActions } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
@@ -24,62 +27,66 @@ import React, { Fragment, useEffect, useState } from 'react';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import getStyles from './styles';
 import isFunction from 'lodash/isFunction';
-import schema from './schema';
 
 export interface UserFormInterface {
-  onClose: () => void;
+  onClose: Function;
   onSubmit: Function;
   open: boolean;
   user?: User;
 }
-const UserForm = ({ onClose, user, open = false }: UserFormInterface) => {
-  const styles = getStyles();
 
-  const loadingState = selectLoadingUser();
-  const isLoading = loadingState === LOADING_STATE.LOADING;
-  const editable = !!user;
+const DEFAULT_FORM = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  bio: '',
+  password: '',
+  confirmPassword: '',
+  status: USER_STATUS_OPTIONS[0],
+  permission: USER_PERMISSION_OPTIONS[0]
+};
 
+const headerbuttonConfig: DefaultObjectType = {
+  size: 'small',
+  disableRipple: true,
+  sx: { mr: 0.5 },
+  disableFocusRipple: true
+};
+
+const UserForm = ({ onClose, onSubmit, user, open = false }: UserFormInterface) => {
   const dispatch = useDispatch();
+  const styles = getStyles();
+  const editable = !!user;
+  const loading = selectLoadingUser() === LOADING_STATE.LOADING;
 
-  // Form handling
-  const { control, handleSubmit, reset } = useForm({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      bio: '',
-      password: '',
-      confirmPassword: '',
-      status: USER_STATUS_OPTIONS[0],
-      permission: USER_PERMISSION_OPTIONS[0]
-    },
-    resolver: yupResolver(schema)
+  // Form
+  const { control, handleSubmit, setValue, reset } = useForm({
+    defaultValues: DEFAULT_FORM,
+    resolver: yupResolver(editable ? editSchema : createSchema)
   });
   const { isDirty } = useFormState({ control });
 
   // State
   const [editing, setEditing] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [uploadFile, setUploadFile] = useState(null);
-  const [previewAvatar, setupAvatar] = useState(null);
-
-  const handleClose = () => {
-    if (isLoading) {
-      return;
-    }
-    reset();
-    if (isFunction(onClose)) {
-      resetState();
-      onClose();
-    }
-  };
+  const [file, setUploadFile] = useState(null);
+  const [previewAvatar, setAvatar] = useState(null);
+  const [avatarChanged, setAvatarChanged] = useState(false);
 
   const resetState = () => {
     setEditing(false);
-    setSubmitting(false);
     setUploadFile(null);
-    setupAvatar(null);
+    setAvatarChanged(false);
+  };
+  const handleClose = () => {
+    if (loading) return;
+    // Reset current form data
+    reset();
+    // Reset all states
+    resetState();
+    setAvatar(null);
+    // Callback
+    if (isFunction(onClose)) onClose();
   };
 
   const uploadAvatar = (uploadFile: File) => {
@@ -87,35 +94,43 @@ const UserForm = ({ onClose, user, open = false }: UserFormInterface) => {
     const formData = new FormData();
     formData.append('avatar', uploadFile, uploadFile.name);
     return httpClientWithAuth.post('upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  };
+
+  const handleSubmitForm = async (data: any) => {
+    if (loading) return;
+    dispatch(userActions.setLoading(LOADING_STATE.LOADING));
+    const formData = data;
+    // perform upload if file exist
+    formData.avatar = previewAvatar;
+    if (file) {
+      const { data: uploadedObject } = await uploadAvatar(file);
+      formData.avatar = uploadedObject.path;
+    }
+    onSubmit(formData);
+    handleClose();
+  };
+
+  const mapUserToForm = (user: User) => {
+    if (user?.avatar) {
+      setAvatar(user.avatar);
+    }
+    Object.entries(user).forEach(([key, value]: [key: any, value: any]) => {
+      if (key === 'status') {
+        setValue(key, findOptionByValue(USER_STATUS_OPTIONS, value));
+      } else if (key === 'permission') {
+        setValue(key, findOptionByValue(USER_PERMISSION_OPTIONS, value));
+      } else {
+        setValue(key, value);
       }
     });
   };
 
-  const submitForm = async ({ status, permission, firstName, lastName, ...restFormData }: any) => {
-    setSubmitting(true);
-    const payload = {
-      ...restFormData,
-      firstName: firstName,
-      lastName: lastName,
-      fullName: `${firstName} ${lastName}`,
-      status: status.value,
-      permission: permission.value
-    };
-    if (uploadFile) {
-      const { data: fileUrl } = await uploadAvatar(uploadFile);
-      payload.avatar = fileUrl;
-    }
-    dispatch(userActions.saveUser(payload));
-  };
-
-  const mapUserToForm = (user: User) => {
-    // Map user to form
-    console.log('mapUserToForm');
-  };
-
   const toogleEditing = (value: boolean) => () => {
+    if (!value) {
+      resetState();
+    }
     setEditing(value);
   };
   const onChangeFile = (event: any) => {
@@ -125,37 +140,21 @@ const UserForm = ({ onClose, user, open = false }: UserFormInterface) => {
   };
 
   useEffect(() => {
-    if (user) {
-      mapUserToForm(user);
-    } else {
-      setEditing(true);
-    }
+    if (editable) mapUserToForm(user);
+    setEditing(!editable);
   }, [open]);
 
   useEffect(() => {
-    if (loadingState === LOADING_STATE.SUCCESS && submitting) {
-      setSubmitting(!submitting);
-      handleClose();
-    }
-  }, [loadingState]);
-
-  useEffect(() => {
-    if (uploadFile) {
-      // create the preview
-      const objectUrl = URL.createObjectURL(uploadFile);
-      setupAvatar(objectUrl);
-
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setAvatar(previewUrl);
+      if (!avatarChanged) {
+        setAvatarChanged(!avatarChanged);
+      }
       // free memory when ever this component is unmounted
-      return () => URL.revokeObjectURL(objectUrl);
+      return () => URL.revokeObjectURL(previewUrl);
     }
-  }, [uploadFile]);
-
-  const headerbuttonConfig: any = {
-    size: 'small',
-    disableRipple: true,
-    sx: { mr: 0.5 },
-    disableFocusRipple: true
-  };
+  }, [file]);
 
   const title = user ? `User #${user.userId}` : 'New User';
 
@@ -181,19 +180,19 @@ const UserForm = ({ onClose, user, open = false }: UserFormInterface) => {
                   </IconButton>)
               }
               {
-                editable && editing && ( // record editable and user is editing
+                editable && editing && avatarChanged && ( // record editable and user is editing
                   <IconButton {...headerbuttonConfig} onClick={toogleEditing(false)}>
                     <EditOffOutlinedIcon sx={styles.headerButtonIconStyles} />
                   </IconButton>
                 )
               }
               {
-                editing && isDirty && (
+                ((editing && isDirty) || avatarChanged) && (
                   <IconButton
                     {...headerbuttonConfig}
-                    disabled={isLoading}
-                    onClick={handleSubmit(submitForm)}>
-                    { isLoading
+                    disabled={loading}
+                    onClick={handleSubmit(handleSubmitForm)}>
+                    { loading
                       ? (<CircularProgress classes={{ colorPrimary: 'text-white' }} size={14} />)
                       : (<CheckOutlinedIcon sx={styles.headerButtonIconStyles} />)}
                   </IconButton>
@@ -259,24 +258,27 @@ const UserForm = ({ onClose, user, open = false }: UserFormInterface) => {
                 placeholder="Type phone..."
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormInput
-                control={control}
-                disabled={!editing}
-                name="password"
-                placeholder="Type password..."
-                label='Password'
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormInput
-                control={control}
-                disabled={!editing}
-                name="confirmPassword"
-                label='Confirm Password'
-                placeholder="Type password..."
-              />
-            </Grid>
+            { !editable && (<>
+              <Grid item xs={12}>
+                <FormInput
+                  control={control}
+                  disabled={!editing}
+                  name="password"
+                  placeholder="Type password..."
+                  label='Password'
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormInput
+                  control={control}
+                  disabled={!editing}
+                  name="confirmPassword"
+                  label='Confirm Password'
+                  placeholder="Type password..."
+                />
+              </Grid>
+            </>
+            )}
             <Grid item xs={6}>
               <FormSelect
                 control={control}

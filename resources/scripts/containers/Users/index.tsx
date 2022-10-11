@@ -1,7 +1,8 @@
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, useGridApiRef } from '@mui/x-data-grid';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { LOADING_STATE, USER_STATUS } from 'scripts/configs/enums';
-import { User } from 'scripts/interfaces/User';
+import { User } from 'scripts/interfaces/Model';
+import { httpClientWithAuth } from 'scripts/configs/httpClient';
 import {
   selectCurrentUser,
   selectFilteredUsers,
@@ -25,19 +26,24 @@ import UserForm from '@components/pages/Users/UserForm';
 import getStyles from './styles';
 
 const Users = () => {
+  // Hooks
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
+  // Selectors
   const loadingState: string = selectLoadingUser();
   const users: User[] = selectFilteredUsers();
   const currentUser: User = selectCurrentUser();
   const userFilter: DefaultObjectType = selectUserFilter();
   const styles = getStyles();
 
+  // State
   const [openModal, setOpenModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<Partial<User>>();
+  const [selectedUser, setSelectedUser] = useState<User>();
   const [search, setSearch] = useState<string>('');
+
+  const isLoading = loadingState === LOADING_STATE.LOADING;
 
   useEffect(() => {
     if (!users.length) {
@@ -120,7 +126,10 @@ const Users = () => {
   ];
 
   const handleEdit = (userId: string) => () => {
-    // console.log('Edit', userId);
+    if (!userId) return;
+    const selectedUser: User = users.find((user: User) => user.userId === userId);
+    setSelectedUser(selectedUser);
+    setOpenForm(true);
   };
 
   const handleCloseModal = () => {
@@ -137,7 +146,7 @@ const Users = () => {
       handleCloseModal();
     }
     const updateData = {
-      userId: selectedUser.userId,
+      userId: currentUser.userId,
       status: USER_STATUS.BLOCKED
     };
     dispatch(userActions.patchUser(updateData));
@@ -148,18 +157,35 @@ const Users = () => {
   };
 
   const handleToggleUserForm = (value: boolean = false) => {
+    if (!value) {
+      setSelectedUser(null);
+    }
     setOpenForm(value);
   };
 
-  const saveUser = (data: any) => {
-    console.log(data);
-  };
+  const saveUser = async (data: any) => {
+    const { status, permission, ...restData } = data;
+    const payload = {
+      ...restData,
+      status: status.value,
+      permission: permission.value
+    };
 
-  const isLoading = loadingState === LOADING_STATE.LOADING;
+    if (payload?.userId) {
+      dispatch(userActions.patchUser(payload));
+    } else {
+      dispatch(userActions.postUser(payload));
+    }
+  };
 
   const MemoUserForm = useMemo(() => {
     return (
-      <UserForm open={openForm} onClose={() => handleToggleUserForm(false)} onSubmit={saveUser} />
+      <UserForm
+        open={openForm}
+        user={selectedUser}
+        onClose={() => handleToggleUserForm(false)}
+        onSubmit={saveUser}
+      />
     );
   }, [openForm]);
 

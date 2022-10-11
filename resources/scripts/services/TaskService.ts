@@ -1,27 +1,38 @@
+import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { Task } from '../interfaces/Task';
 import { httpClientWithAuth } from '../configs/httpClient';
 
 class TaskService {
-  static path: string = '/tasks';
+  public readonly path: string = '/tasks';
 
-  static getTasks() {
-    return httpClientWithAuth.get(TaskService.path);
+  getTasks = (sorter?: DefaultObjectType) => {
+    if (sorter) {
+      return httpClientWithAuth.get(this.path, {
+        params: {
+          ...sorter,
+          action: 'sort'
+        }
+      });
+    }
+    return httpClientWithAuth.get(this.path);
   }
 
-  static getTaskById(id: number) {
-    return httpClientWithAuth.get(`${TaskService.path}/${id}`);
+  public getTaskById = (id: number) => {
+    return httpClientWithAuth.get(`${this.path}/${id}`);
   }
 
-  static createTask(task: Partial<Task>) {
-    return httpClientWithAuth.post(TaskService.path, task);
+  public createTask = (task: Partial<Task>) => {
+    return httpClientWithAuth.post(this.path, task);
   }
 
-  static updateTask(data: any) {
-    return httpClientWithAuth.patch(TaskService.path, data);
+  public updateTask = (data: any) => {
+    const { id, ...restData } = data;
+    const url = `${this.path}/${id}`;
+    return httpClientWithAuth.patch(url, restData);
   }
 
-  static deleteTask(id: number) {
-    return httpClientWithAuth.delete(`${TaskService.path}/${id}`);
+  public deleteTask = (id: number) => {
+    return httpClientWithAuth.delete(`${this.path}/${id}`);
   }
 }
 
