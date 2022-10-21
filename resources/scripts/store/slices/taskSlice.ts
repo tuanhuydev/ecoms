@@ -1,10 +1,9 @@
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
-import { LOADING_STATE, SORT_TYPE, TASK_STATUS } from '../../configs/enums';
-import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
+import { LOADING_STATE, SORT_TYPE } from '../../configs/enums';
+import { PayloadAction, createAction, createSlice, current } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { Task } from '../../interfaces/Task';
 import { useSelector } from 'react-redux';
-import cloneDeep from 'lodash/cloneDeep';
 
 export interface TaskFilter {
   search?: string;
@@ -12,25 +11,46 @@ export interface TaskFilter {
   severity?: string;
 }
 
-export interface TaskSort {
+export interface TaskSorter {
   field: string;
   value: SORT_TYPE;
+}
+
+export interface TaskPaginator {
+  total?: number;
+  hasMorePage?: boolean;
+  currentPage?: number;
+  lastPage?: number;
+  perPage?: number
+}
+
+export interface TaskParams {
+  filter?: TaskFilter;
+  sorter?: TaskSorter;
+  paginator?: TaskPaginator;
 }
 
 export interface TaskSliceType {
   tasks: Task[];
   loading: string;
-  filter: TaskFilter;
-  sort: TaskSort;
+  params: TaskParams;
 }
 
-const initialState: TaskSliceType = {
+export const initialState: TaskSliceType = {
   tasks: [],
   loading: LOADING_STATE.IDLE,
-  filter: {},
-  sort: {
-    field: 'createdAt',
-    value: SORT_TYPE.DESCENDING
+  params: {
+    sorter: {
+      field: 'createdAt',
+      value: SORT_TYPE.DESCENDING
+    },
+    paginator: {
+      total: 0,
+      hasMorePage: false,
+      currentPage: 1,
+      lastPage: 1,
+      perPage: 20
+    }
   }
 };
 
@@ -41,8 +61,15 @@ export const taskSlice = createSlice({
     setLoading(state, action) {
       state.loading = action.payload;
     },
-    setTasks(state, action) {
-      state.tasks = action.payload;
+    setTasks(state, { payload }) {
+      const currentTaskIds = current(state.tasks).map((currentTask: Task) => currentTask.id);
+      if (payload?.length) {
+        payload.forEach((task: Task) => {
+          if (!currentTaskIds.includes(task.id)) {
+            state.tasks.push(task);
+          }
+        });
+      }
     },
     addTask(state, action: PayloadAction<Task>) {
       state.tasks.unshift(action.payload);
@@ -57,11 +84,13 @@ export const taskSlice = createSlice({
     completeTask(state, action: PayloadAction<number>) {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
-    setTaskFilter(state, { payload }: PayloadAction<TaskFilter>) {
-      state.filter = payload;
-    },
-    setTaskSort(state, { payload }: PayloadAction<DefaultObjectType>) {
-      state.sort = payload as TaskSort;
+    setTaskParams(state, { payload }: PayloadAction<TaskParams>) {
+      if (payload.filter || payload.sorter) {
+        state.tasks = [];
+        state.params.paginator = initialState.params.paginator;
+      }
+      state.params = { ...current(state.params), ...payload };
+      return state;
     }
   }
 });
@@ -86,39 +115,13 @@ export const selectTaskLoading = (): string => useSelector((state: RootState) =>
 
 export const selectAllTasks = (): Task[] => useSelector((state: RootState) => state.task.tasks);
 
-export const selectBacklogTasks = (): Task[] => useSelector((state: RootState) =>
-  state.task.tasks.filter((task: Task) =>
-    task.status === TASK_STATUS.BACKLOG)
-);
-
 export const selectTaskById = (id: number) => useSelector((state: RootState) => {
   return state.task.tasks.find((task: Task) => task.id === id);
 });
 
-export const selectTaskFilter = (): DefaultObjectType => useSelector((state: RootState) => state.task.filter);
-
-export const selectTaskSort = (): DefaultObjectType => useSelector((state: RootState) => state.task.sort);
-
-export const selectFilteredTasks = (): Task[] => useSelector(({ task: slice }: RootState) => {
-  const { tasks, filter } = slice;
-  let filteredTasks = cloneDeep(tasks);
-
-  if (filter?.status) {
-    filteredTasks = filteredTasks.filter((task) => task.status === filter.status);
-  }
-
-  if (filter?.severity) {
-    filteredTasks = filteredTasks.filter((task) => task.severity === filter.severity);
-  }
-
-  if (filter?.search) {
-    filteredTasks = filteredTasks.filter((task) => {
-      const taskTitle = task.title.toLowerCase().trim();
-      return taskTitle.includes(filter.search);
-    });
-  }
-
-  return filteredTasks;
-});
+export const selectTaskParams = (): TaskParams => useSelector((state: RootState) => state.task.params);
+export const selectTaskFilter = (): TaskFilter => useSelector((state: RootState) => state.task.params.filter);
+export const selectTaskSorter = (): TaskSorter => useSelector((state: RootState) => state.task.params.sorter);
+export const selectTaskPaginator = (): TaskPaginator => useSelector((state: RootState) => state.task.params.paginator);
 
 export default taskSlice.reducer;

@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use App\Models\User;
+use Laravel\Scout\Searchable;
+
 
 class Task extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -41,4 +43,30 @@ class Task extends Model
     protected $casts = [
         'due_date' => 'datetime',
     ];
+
+     /**
+     * Get the value used to index the model.
+     *
+     * @return mixed
+     */
+    public function getScoutKey()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+      return [
+      'title' => $this->title,
+      'status' => $this->status,
+      'due_date' => $this->due_date,
+      'created_at' => $this->created_at,
+      'severity' => $this->severity
+      ];
+    }
 }

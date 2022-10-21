@@ -10,6 +10,7 @@
       "jsx": "react",
       "moduleResolution": "node",
       "allowSyntheticDefaultImports": true,
+      "downlevelIteration": true,
       "skipLibCheck": true,
       "paths": {
         "@assets/*": ["./assets/*"],

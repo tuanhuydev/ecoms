@@ -1,8 +1,7 @@
-import { DataGrid, GridColDef, GridRenderCellParams, useGridApiRef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { LOADING_STATE, USER_STATUS } from 'scripts/configs/enums';
 import { User } from 'scripts/interfaces/Model';
-import { httpClientWithAuth } from 'scripts/configs/httpClient';
 import {
   selectCurrentUser,
   selectFilteredUsers,

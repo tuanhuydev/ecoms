@@ -3,9 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\TaskResource;
-use App\Http\Resources\AccountResource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,8 +25,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         // remove wrap data with data attributes
-        UserResource::withoutWrapping();
-        TaskResource::withoutWrapping();
-        AccountResource::withoutWrapping();
+        JsonResource::withoutWrapping();
     }
 }

@@ -14,7 +14,8 @@ const getStyles = () => {
 
   const toolbarStyles: SxProps = {
     ...quickSearchStyles,
-    display: 'flex'
+    display: 'flex',
+    flexWrap: 'wrap'
   };
 
   const listContainerStyles: SxProps = {
@@ -87,6 +88,11 @@ const getStyles = () => {
   const skeletonStyles: SxProps = {
     flex: 1
   };
+  const selectStyles: any = {
+    container: {
+      width: '10rem'
+    }
+  };
 
   return {
     toolbarStyles,
@@ -100,7 +106,8 @@ const getStyles = () => {
     createButtonStyles,
     typographyStyles,
     emptyRecordStyles,
-    skeletonStyles
+    skeletonStyles,
+    selectStyles
   };
 };
 

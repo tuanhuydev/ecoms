@@ -12,6 +12,7 @@ use Illuminate\Validation\Rules\Enum;
 use App\Exceptions\InvalidParamException;
 use App\Http\Resources\TaskResource;
 use BenSampo\Enum\Rules\EnumValue;
+use Illuminate\Pagination\Paginator;
 use App\Enums\SeverityType;
 use Throwable;
 
@@ -31,10 +32,19 @@ class TaskController extends Controller
    * @param Request $request
    * @return JsonResponse
    */
-    public function getAllTasks(Request $request): JsonResponse
+    public function getAllTasks(Request $request)
     {
       $tasks = $this->taskService->getAll($request);
-      return response()->json(['tasks' => TaskResource::collection($tasks)]);
+      return response()->json([
+        'tasks' => TaskResource::collection($tasks),
+        'pagination' => [
+          'total' => $tasks->total(),
+          'hasMorePage' => $tasks->hasMorePages(),
+          'currentPage' => $tasks->currentPage(),
+          'lastPage'=> $tasks->lastPage(),
+          'perPage' => $tasks->perPage()
+        ]
+      ]);
     }
 
   /**
