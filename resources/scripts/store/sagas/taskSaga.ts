@@ -11,6 +11,7 @@ export function * getTasks(action: any) {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
     const { data }: AxiosResponse = yield call(taskService.getTasks, action.payload);
     yield put({ type: taskActions.setTasks.type, payload: data.tasks });
+    yield put({ type: taskActions.setTaskParams.type, payload: { paginator: data.pagination } });
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
   } catch (error) {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.FAIL });

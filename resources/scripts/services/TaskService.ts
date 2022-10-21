@@ -1,20 +1,12 @@
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { Task } from '../interfaces/Task';
+import { TaskParams } from '@store/slices/taskSlice';
 import { httpClientWithAuth } from '../configs/httpClient';
 
 class TaskService {
   public readonly path: string = '/tasks';
 
-  getTasks = (sorter?: DefaultObjectType) => {
-    if (sorter) {
-      return httpClientWithAuth.get(this.path, {
-        params: {
-          ...sorter,
-          action: 'sort'
-        }
-      });
-    }
-    return httpClientWithAuth.get(this.path);
+  getTasks = (params?: TaskParams) => {
+    return httpClientWithAuth.get(this.path, { params });
   }
 
   public getTaskById = (id: number) => {

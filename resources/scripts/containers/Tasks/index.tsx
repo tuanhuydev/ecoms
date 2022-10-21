@@ -4,15 +4,22 @@ import { DefaultObjectType } from 'scripts/interfaces/Meta';
 import { LOADING_STATE, SEVERITY, SORT_TYPE, TASK_STATUS } from '../../configs/enums';
 import { TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { Task } from '../../interfaces/Task';
-import { newTaskSchema } from './schemas';
-import { selectCurrentUser } from '@store/slices/userSlice';
 import {
-  selectFilteredTasks,
+  TaskFilter,
+  TaskPaginator,
+  TaskParams,
+  TaskSorter,
+  selectAllTasks,
   selectTaskFilter,
   selectTaskLoading,
-  selectTaskSort,
+  selectTaskPaginator,
+  selectTaskParams,
+  selectTaskSorter,
   taskActions
 } from '@store/slices/taskSlice';
+import { User } from 'scripts/interfaces/Model';
+import { newTaskSchema } from './schemas';
+import { selectCurrentUser } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
@@ -36,7 +43,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NorthOutlinedIcon from '@mui/icons-material/NorthOutlined';
 import PageContainer from '@components/base/PageContainer';
 import Radio from '@mui/material/Radio';
-import React, { ChangeEventHandler, useEffect, useState } from 'react';
+import React, { ChangeEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Skeleton from '@mui/material/Skeleton';
 import SouthOutlinedIcon from '@mui/icons-material/SouthOutlined';
@@ -44,6 +51,7 @@ import TaskForm from '@components/pages/Tasks/TaskForm';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';
 import omit from 'lodash/omit';
+import useDebounce from 'scripts/hooks/useDebounce';
 
 const INITIAL_FORM_VALUES = {
   title: ''
@@ -71,24 +79,46 @@ const Tasks = () => {
   const dispatch: AppDispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
-
-  const tasks: Task[] = selectFilteredTasks();
-  const taskFilter = selectTaskFilter();
-  const taskSort = selectTaskSort();
-  const taskSortOption = TaskSortByOptions.find((option) => option.value === taskSort.field);
-
-  const currentUser = selectCurrentUser();
+  // Selectors
+  const tasks: Task[] = selectAllTasks();
+  const taskParams: TaskParams = selectTaskParams();
+  const taskFilter: TaskFilter = selectTaskFilter();
+  const taskSorter: TaskSorter = selectTaskSorter();
+  const taskPaginator: TaskPaginator = selectTaskPaginator();
+  const currentUser: User = selectCurrentUser();
   const loading: string = selectTaskLoading();
+
+  const taskSortOption = TaskSortByOptions.find((option) => option.value === taskSorter.field);
   const isLoading = loading === LOADING_STATE.LOADING;
 
   const [selectedTask, setSelectedTask] = useState<Task>();
   const [deleteTaskId, setDeleteTaskId] = useState<number | null>(null);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [search, setSearch] = useState('');
+  const debounceSearch: string = useDebounce(search);
   const openMenu = Boolean(menuAnchor);
 
+  const observer = useRef<any>();
+  const currentPage = taskPaginator.currentPage;
+  const hasMorePage = taskPaginator.hasMorePage;
+  const lastItemObserver = useCallback((node: any) => {
+    if (isLoading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMorePage) { // Visible somewhere
+        dispatch(taskActions.setTaskParams({
+          paginator: {
+            ...taskPaginator,
+            currentPage: currentPage + 1
+          }
+        }));
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, taskPaginator.hasMorePage]);
+
   const { enqueueSnackbar } = useSnackbar();
-  const isAscending = taskSort.value === String(SORT_TYPE.ASCENDING);
+  const isAscending = taskSorter.value === String(SORT_TYPE.ASCENDING);
 
   // Form
   const { control, getValues, handleSubmit, reset } = useForm({
@@ -181,7 +211,55 @@ const Tasks = () => {
     }
     return (
       (<List dense>
-        {tasks.map((task) => {
+        {tasks.map((task, index) => {
+          if ((index + 1) === tasks.length) {
+            return (
+              <ListItem
+                sx={styles.listItemStyles}
+                disablePadding
+                ref={lastItemObserver}
+                key={task.id}
+                secondaryAction={(
+                  <IconButton
+                    sx={styles.buttonStyles}
+                    onClick={handleOpenMenu(task.id)}
+                    disabled={isLoading}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                )}
+              >
+                <Radio
+                  onClick={handleCompleteTask(task)}
+                  checked={task?.status === TASK_STATUS.DONE}
+                  sx={styles.buttonStyles}
+                  disabled={isLoading}
+                />
+                <ListItemButton
+                  disableRipple
+                  disabled={isLoading}
+                  sx={styles.buttonStyles}
+                  onClick={handleOpenTask(task)}
+                >
+                  <Typography noWrap sx={styles.typographyStyles}>{task.title}</Typography>
+                  <Box className="flex mr-12">
+                    <Box
+                      sx={styles.labelStyles}>Status:</Box>
+                    <Chip
+                      size="small"
+                      label={task?.status.toLowerCase()}
+                      sx={styles.chipStyles}
+                      color={getTaskStatus(task.status)} />
+                  </Box>
+                  <Box className="flex mr-12">
+                    <Box
+                      sx={styles.labelStyles}>Severity:</Box>
+                    {getSeverityElement(task.severity)}
+                  </Box>
+                </ListItemButton>
+              </ListItem>
+            );
+          }
           return (
             <ListItem
               sx={styles.listItemStyles}
@@ -234,22 +312,26 @@ const Tasks = () => {
 
   const handleChangeFilterSelect = (field: string) => ({ value }: DefaultObjectType) => {
     if (value === 'ALL') {
-      const updatedFilter = omit(taskFilter, [field]);
-      dispatch(taskActions.setTaskFilter(updatedFilter));
+      // Remove Filter in case all filters
+      const removedStatusFilter = omit(taskFilter, [field]);
+      dispatch(taskActions.setTaskParams({ filter: removedStatusFilter }));
     } else {
-      dispatch(taskActions.setTaskFilter({ ...taskFilter, [field]: value }));
+      dispatch(taskActions.setTaskParams({
+        filter: {
+          ...taskFilter,
+          [field]: value
+        }
+      }));
     }
   };
 
   const handleChangeOrderValue = () => {
-    dispatch(taskActions.setTaskSort({
-      ...taskSort,
-      value: isAscending ? SORT_TYPE.DESCENDING : SORT_TYPE.ASCENDING
-    }));
+    const value = isAscending ? SORT_TYPE.DESCENDING : SORT_TYPE.ASCENDING;
+    dispatch(taskActions.setTaskParams({ sorter: { ...taskSorter, value } }));
   };
 
   const handleChangeOrderSelect = ({ value: field }: { value: SORT_TYPE }) => {
-    dispatch(taskActions.setTaskSort({ ...taskSort, field }));
+    dispatch(taskActions.setTaskParams({ sorter: { ...taskSorter, field } }));
   };
 
   useEffect(() => {
@@ -259,16 +341,23 @@ const Tasks = () => {
   }, [loading]);
 
   useEffect(() => {
-    const debounceSearch = setTimeout(() => {
-      dispatch(taskActions.setTaskFilter({ ...taskFilter, search }));
-    }, 300);
-    return () => clearTimeout(debounceSearch);
-  }, [search]);
+    if (debounceSearch.length) {
+      dispatch(taskActions.setTaskParams({
+        filter: {
+          ...taskFilter,
+          search: debounceSearch
+        }
+      }));
+    }
+  }, [debounceSearch]);
 
   useEffect(() => {
-    dispatch(taskActions.fetchTasks(taskSort as DefaultObjectType));
-  }, [taskSort]);
+    if (taskPaginator.currentPage <= taskPaginator.lastPage) {
+      dispatch(taskActions.fetchTasks(taskParams));
+    }
+  }, [taskFilter, taskSorter, taskPaginator.currentPage]);
 
+  // Handle Deeplinking
   useEffect(() => {
     const { id } = params;
     if (id) {
