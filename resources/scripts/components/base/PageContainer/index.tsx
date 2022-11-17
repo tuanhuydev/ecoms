@@ -1,3 +1,4 @@
+import { PageContainerProps } from './interfaces';
 import { ROUTE_PATHS } from 'scripts/configs/constants';
 import { adminRoutes } from 'scripts/configs/routes';
 import { matchPath, useLocation } from 'react-router-dom';
@@ -5,17 +6,10 @@ import { selectCurrentUser } from '@store/slices/userSlice';
 import AvatarMenu from '../AvatarMenu';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { ReactNode } from 'react';
-import Toolbar, { ToolbarProps } from '@mui/material/Toolbar';
+import React from 'react';
+import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';
-
-export interface PageContainerProps {
-  title: string;
-  loading?: boolean;
-  children?: ReactNode;
-  ToolbarProps?: ToolbarProps;
-};
 
 const PageContainer = ({
   title = '',

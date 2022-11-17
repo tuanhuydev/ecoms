@@ -19,10 +19,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen
   }),
   overflowX: 'hidden',
-  width: `calc(${theme.spacing(4)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(3.5)} + 1px)`
-  }
+  width: `calc(${theme.spacing(3.5)} + 1px)`
 });
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
@@ -42,7 +39,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const SideNav = (props: MuiDrawerProps) => {
   const { open = false, children = <></> } = props;
-  return (<Drawer variant="permanent" open={open}>{children}</Drawer>);
+  return (<Drawer variant="permanent" open={open}>
+    <div className="content">
+      {children}
+    </div>
+  </Drawer>);
 };
 
 export default SideNav;

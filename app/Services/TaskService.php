@@ -2,18 +2,17 @@
 
 namespace App\Services;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Task;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\Auth;
 
 class TaskService
 {
     /**
      * Get all active tasks
      */
-    public function getAll(Request $request)
+    public function getAll(Request $request): LengthAwarePaginator
     {
       // TODO: User Permission Enhancement
       $currentUser = $request->user()->id;
@@ -51,16 +50,16 @@ class TaskService
      */
     public function getById(string $id)
     {
-        return Task::find($id);
+      return Task::find($id);
     }
 
     /**
      * Create new task
      * @param Task data
-     * @return string taskId
+     * @return Task
      *
      */
-    public function create($data)
+    public function create($data): Task
     {
         return Task::create($data);
     }
