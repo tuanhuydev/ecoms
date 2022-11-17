@@ -58,7 +58,7 @@ const AdminLayout = () => {
 
   return (
     <Grid {...ContainerProps}>
-      <Grid item xs="auto" zeroMinWidth>
+      <Grid item zeroMinWidth>
         <SideNav open={openSidebar}>
           <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '12px', marginBottom: '12px' }}>
             { openSidebar && (

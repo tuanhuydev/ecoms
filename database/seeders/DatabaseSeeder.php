@@ -7,6 +7,7 @@ use Database\Seeders\OauthClientSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\PersonalAccessClientSeeder;
 use Database\Seeders\AccountSeeder;
+use Database\Seeders\CategorySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,7 +22,8 @@ class DatabaseSeeder extends Seeder
         OauthClientSeeder::class,
         UserSeeder::class,
         PersonalAccessClientSeeder::class,
-        AccountSeeder::class
+        AccountSeeder::class,
+        CategorySeeder::class
       ]);
     }
 }

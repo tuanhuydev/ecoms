@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Traits\TransformArrayTrait;
 
@@ -11,13 +13,16 @@ class TaskResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request  $request
+     * @return array|Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($request): array|\JsonSerializable|Arrayable
     {
-      $result = $this->toCamel($this->resource->toArray());
-      $result['createdBy'] = $this->toCamel($this->getCreatedBy()->toArray());
-      return $result;
+      $taskResource = $this->toCamel($this->resource->toArray());
+      $taskResource['createdBy'] = $this->toCamel($this->getCreatedBy()->toArray());
+      if (!empty($this->category())) {
+        $taskResource['category'] = $this->toCamel($this->category()->toArray());
+      }
+      return $taskResource;
     }
 }

@@ -55,8 +55,8 @@ class TaskController extends Controller
    */
     public function getTaskById(string $id): JsonResponse
     {
-      $newTask = $this->taskService->getById($id);
-        return response()->json(['task' => new TaskResource($newTask)]);
+      $task = $this->taskService->getById($id);
+        return response()->json(['task' => new TaskResource($task)]);
     }
 
 
@@ -71,6 +71,9 @@ class TaskController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
         ]);
+        if ($request->has('categoryId')) {
+          $validatedData['category_id'] = $request->categoryId;
+        }
         $validatedData['created_by'] = $request->user()->id;
         $newTask = $this->taskService->create($validatedData);
         return response()->json(['id' => $newTask->id]);
@@ -92,6 +95,7 @@ class TaskController extends Controller
    *
    * @param Request $request
    * @return JsonResponse
+   * @throws InvalidParamException
    */
     public function updateTask(Request $request): JsonResponse
     {
