@@ -1,6 +1,6 @@
-import { APP_URL } from '../../configs/constants';
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
-import { SignIn } from '../../services/AuthService';
+import { APP_URL } from '@configs/constants';
+import { DefaultObjectType } from '@utils/interfaces';
+import { SignIn } from '@services/AuthService';
 import { accountActions } from '@store/slices/accountSlice';
 import { useDispatch } from 'react-redux';
 import { userActions } from '@store/slices/userSlice';

@@ -1,4 +1,4 @@
-import { Account, User } from 'scripts/interfaces/Model';
+import { Account, User } from '@utils/interfaces';
 import { SignIn } from '@services/AuthService';
 import { Typography } from '@mui/material';
 import { USER_AVAILABILITY_OPTIONS } from 'scripts/configs/constants';

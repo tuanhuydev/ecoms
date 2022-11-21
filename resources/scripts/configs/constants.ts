@@ -1,4 +1,4 @@
-import { Account, User } from 'scripts/interfaces/Model';
+import { Account, User } from '@utils/interfaces';
 import { SEVERITY, TASK_STATUS, USER_AVAILABILITY, USER_STATUS } from './enums';
 
 export const IS_DEV_ENV = process.env.APP_ENV === 'local';

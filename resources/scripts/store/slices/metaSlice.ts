@@ -1,4 +1,4 @@
-import { Meta } from '../../interfaces/Meta';
+import { Meta } from '@utils/interfaces';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { useSelector } from 'react-redux';

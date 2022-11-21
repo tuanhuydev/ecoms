@@ -1,5 +1,5 @@
 import { Controller } from 'react-hook-form';
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType } from '@utils/interfaces';
 import { SxProps } from '@mui/material';
 import Box from '@mui/system/Box';
 import OutlinedInput, { OutlinedInputProps } from '@mui/material/OutlinedInput/OutlinedInput';

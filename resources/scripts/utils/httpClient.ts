@@ -1,4 +1,4 @@
-import { API_URL } from './constants';
+import { API_URL } from '@configs/constants';
 import Cookie from 'js-cookie';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import qs from 'qs';

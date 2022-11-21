@@ -17,6 +17,8 @@
         "@components/*": ["./scripts/components/*"],
         "@containers/*": ["./scripts/containers/*"],
         "@services/*": ["./scripts/services/*"],
+        "@configs/*": ["./scripts/configs/*"],
+        "@utils/*": ["./scripts/utils/*"],
         "@store/*": ["./scripts/store/*"],
       }
     },

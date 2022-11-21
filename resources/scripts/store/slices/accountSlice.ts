@@ -1,4 +1,4 @@
-import { Account } from 'scripts/interfaces/Model';
+import { Account } from '@utils/interfaces';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';

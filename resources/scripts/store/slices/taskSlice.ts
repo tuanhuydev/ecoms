@@ -1,8 +1,7 @@
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType, Task } from '@utils/interfaces';
 import { LOADING_STATE, SORT_TYPE } from '../../configs/enums';
 import { PayloadAction, createAction, createSlice, current } from '@reduxjs/toolkit';
 import { RootState } from '..';
-import { Task } from '../../interfaces/Task';
 import { useSelector } from 'react-redux';
 
 export interface TaskFilter {

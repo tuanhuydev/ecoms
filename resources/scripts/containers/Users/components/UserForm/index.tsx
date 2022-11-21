@@ -1,10 +1,9 @@
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType, User } from '@utils/interfaces';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { USER_PERMISSION_OPTIONS, USER_STATUS_OPTIONS } from 'scripts/configs/constants';
-import { User } from 'scripts/interfaces/Model';
 import { createSchema, editSchema } from './schema';
-import { findOptionByValue } from 'scripts/utils/helpers';
-import { httpClientWithAuth } from 'scripts/configs/httpClient';
+import { findOptionByValue } from '@utils/helpers';
+import { httpClientWithAuth } from '@utils/httpClient';
 import { selectLoadingUser, userActions } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
 import { useForm, useFormState } from 'react-hook-form';

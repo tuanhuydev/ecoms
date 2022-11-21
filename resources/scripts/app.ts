@@ -1,10 +1,6 @@
-import './vendors/images';
-import $ from 'jquery';
-import Loading from './components/Loading';
+import Loading from '@components/Loading';
 
-(function () {
+window.addEventListener('load', function() {
   const loading = Loading.getInstance();
-  $(window).on('load', () => {
-    loading.getEl().fadeOut(200);
-  });
-})();
+  loading.getEl().fadeOut(200);
+});

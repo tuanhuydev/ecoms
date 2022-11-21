@@ -1,8 +1,7 @@
-import { Account } from 'scripts/interfaces/Model';
+import { Account, DefaultObjectType } from '@utils/interfaces';
 import { AxiosResponse } from 'axios';
-import { DefaultObjectType } from '../interfaces/Meta';
 import Cookie from 'js-cookie';
-import httpClient from '../configs/httpClient';
+import httpClient from '@utils/httpClient';
 
 abstract class Auth {
   static getAuth() {

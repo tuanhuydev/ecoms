@@ -1,9 +1,8 @@
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType, User } from '@utils/interfaces';
 import { EMPTY_ARRAY, EMPTY_USER } from 'scripts/configs/constants';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
-import { User } from '../../interfaces/Model';
 import { useSelector } from 'react-redux';
 import cloneDeep from 'lodash/cloneDeep';
 

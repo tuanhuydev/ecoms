@@ -1,9 +1,8 @@
 import { AppDispatch } from '@store/index';
 import { Controller, useForm } from 'react-hook-form';
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType, Task, User } from '@utils/interfaces';
 import { LOADING_STATE, SEVERITY, SORT_TYPE, TASK_STATUS } from '../../configs/enums';
 import { TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
-import { Task } from '../../interfaces/Task';
 import {
   TaskFilter,
   TaskPaginator,
@@ -17,7 +16,6 @@ import {
   selectTaskSorter,
   taskActions
 } from '@store/slices/taskSlice';
-import { User } from 'scripts/interfaces/Model';
 import { newTaskSchema } from './schemas';
 import { selectCurrentUser } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
@@ -48,7 +46,7 @@ import React, { ChangeEventHandler, useCallback, useEffect, useRef, useState } f
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Skeleton from '@mui/material/Skeleton';
 import SouthOutlinedIcon from '@mui/icons-material/SouthOutlined';
-import TaskForm from '@components/pages/Tasks/TaskForm';
+import TaskForm from '@containers/Tasks/components/TaskForm';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';
 import omit from 'lodash/omit';

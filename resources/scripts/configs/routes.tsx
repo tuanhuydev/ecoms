@@ -1,4 +1,4 @@
-import { DefaultObjectType } from '../interfaces/Meta';
+import { DefaultObjectType } from '@utils/interfaces';
 import { PERMISSIONS, ROUTE_PATHS } from './constants';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ListAltIcon from '@mui/icons-material/ListAlt';

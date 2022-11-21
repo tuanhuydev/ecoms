@@ -1,7 +1,6 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType, User } from '@utils/interfaces';
 import { LOADING_STATE, USER_STATUS } from 'scripts/configs/enums';
-import { User } from 'scripts/interfaces/Model';
 import {
   selectCurrentUser,
   selectFilteredUsers,
@@ -21,7 +20,7 @@ import PageContainer from '@components/base/PageContainer';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import UserForm from '@components/pages/Users/UserForm';
+import UserForm from '@containers/Users/components/UserForm';
 import getStyles from './styles';
 
 const Users = () => {

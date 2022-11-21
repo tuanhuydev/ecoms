@@ -1,6 +1,6 @@
 import { AppDispatch } from '@store/index';
-import { Outlet } from 'react-router-dom';
-import { User } from 'scripts/interfaces/Model';
+import { NavLink, Outlet } from 'react-router-dom';
+import { User } from '@utils/interfaces';
 import { adminRoutes } from 'scripts/configs/routes';
 import { selectCurrentUser } from '@store/slices/userSlice';
 import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
@@ -13,7 +13,6 @@ import List from '@mui/material/List';
 import MenuIcon from '@mui/icons-material/Menu';
 import React from 'react';
 import SideNav from '@components/SideNav';
-import SideNavItem from '@components/SideNav/components/SideNavItem';
 import Typography from '@mui/material/Typography';
 
 const ContainerProps = {
@@ -45,12 +44,13 @@ const AdminLayout = () => {
     .filter(([key, values]) => values.permissions.includes(currentUser.permission.toUpperCase()))
     .map(([key, route]) => {
       return (
-        <SideNavItem
+        <NavLink
           key={key}
-          label={key}
           to={route.path}
-          icon={route.icon}
-        />
+        >
+          {route.icon}
+          {key}
+        </NavLink>
       );
     });
 

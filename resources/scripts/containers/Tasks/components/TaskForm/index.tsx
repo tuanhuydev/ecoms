@@ -1,7 +1,7 @@
 import { APP_URL, TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import { AppDispatch } from '@store/index';
-import { LOADING_STATE, TASK_STATUS } from '../../../../configs/enums';
-import { Task } from '../../../../interfaces/Task';
+import { LOADING_STATE, TASK_STATUS } from '@configs/enums';
+import { Task } from '@utils/interfaces';
 import { formatDistance } from 'date-fns';
 import { isFunction } from 'lodash';
 import { isValidDate } from 'scripts/utils/helpers';

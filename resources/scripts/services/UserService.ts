@@ -1,5 +1,5 @@
-import { User } from 'scripts/interfaces/Model';
-import { httpClientWithAuth } from '../configs/httpClient';
+import { User } from '@utils/interfaces';
+import { httpClientWithAuth } from '@utils/httpClient';
 
 class UserService {
   path: string = '/users';
