@@ -21,12 +21,13 @@ const FormSelect = (props: FormSelectProps) => {
   return (
     <Controller
       {...restProps}
-      render={({
-        field: { onChange, onBlur, value, name },
-        fieldState: { error }
-      }) => (
+      render={({ field: { onChange, onBlur, value, name }, fieldState: { error } }) => (
         <>
-          {label && (<Box component="label" sx={styles.labelStyles} aria-label={label}>{label}</Box>)}
+          {label && (
+            <Box component="label" sx={styles.labelStyles} aria-label={label}>
+              {label}
+            </Box>
+          )}
           <Box>
             <BaseSelect
               onChange={onChange}
@@ -37,11 +38,16 @@ const FormSelect = (props: FormSelectProps) => {
               defaultValue={defaultValue}
               disabled={disabled}
             />
-            { error && (<Box component="span" sx={styles.errorStyles}>{error.message}</Box>) }
+            {error && (
+              <Box component="span" sx={styles.errorStyles}>
+                {error.message}
+              </Box>
+            )}
           </Box>
         </>
       )}
-    />);
+    />
+  );
 };
 
 export default FormSelect;

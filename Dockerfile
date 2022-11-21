@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y \
 # PHP OOP extension
 RUN docker-php-ext-install pdo pdo_mysql
 
+# Copy custom setup for php
+COPY ./tools/php/php.ini /usr/local/etc/php
+
 # Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -23,16 +26,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN npm install -g yarn webpack webpack-cli
 
 # Setup working directory
-WORKDIR /var/www
+WORKDIR /var/www/html
 
 # Install project dependencies
-COPY src/core/package.json src/core/yarn.lock ./
+COPY --chown=www-data:www-data src/core/package.json src/core/yarn.lock ./
 
 RUN yarn install
 
 # Copy source code
-COPY src/core ./
-
-# Allow permission for whole app
-RUN chown -R www-data:www-data /var/www
-
+COPY --chown=www-data:www-data src/core ./

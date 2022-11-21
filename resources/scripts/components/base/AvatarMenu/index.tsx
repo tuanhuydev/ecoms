@@ -1,4 +1,4 @@
-import { Account, User } from 'scripts/interfaces/Model';
+import { Account, User } from '@utils/interfaces';
 import { SignIn } from '@services/AuthService';
 import { Typography } from '@mui/material';
 import { USER_AVAILABILITY_OPTIONS } from 'scripts/configs/constants';
@@ -80,10 +80,12 @@ const AccountMenu = () => {
             <Avatar alt={currentUser.firstName} sx={styles.avatarSize} src={currentUser?.avatar} />
           </Grid>
           <Grid item xs={9}>
-            <Typography variant='subtitle1' sx={styles.nameStyles} noWrap>
+            <Typography variant="subtitle1" sx={styles.nameStyles} noWrap>
               {`${currentUser.firstName} ${currentUser.lastName}`}
             </Typography>
-            <Typography variant='body2' sx={styles.emailStyles} noWrap>{currentUser.email}</Typography>
+            <Typography variant="body2" sx={styles.emailStyles} noWrap>
+              {currentUser.email}
+            </Typography>
             <BaseSelect
               options={USER_AVAILABILITY_OPTIONS}
               onChange={handleChangeAvailability}
@@ -93,7 +95,9 @@ const AccountMenu = () => {
             />
           </Grid>
         </Grid>
-        <MenuItem onClick={handleLogout} sx={styles.signOutStyles}>Sign Out</MenuItem>
+        <MenuItem onClick={handleLogout} sx={styles.signOutStyles}>
+          Sign Out
+        </MenuItem>
       </Menu>
     </Fragment>
   );

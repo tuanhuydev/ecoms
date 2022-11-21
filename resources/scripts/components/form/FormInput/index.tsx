@@ -1,5 +1,5 @@
 import { Controller } from 'react-hook-form';
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType } from '@utils/interfaces';
 import { SxProps } from '@mui/material';
 import Box from '@mui/system/Box';
 import OutlinedInput, { OutlinedInputProps } from '@mui/material/OutlinedInput/OutlinedInput';
@@ -14,10 +14,11 @@ export interface FormInputProps extends OutlinedInputProps {
   placeholder?: string;
   disabled?: boolean;
   OutlinedInputProps?: Partial<OutlinedInputProps>;
-};
+}
 
 const FormInput = ({
-  onKeyDown, label,
+  onKeyDown,
+  label,
   OutlinedInputProps = {},
   sx: customStyles = {},
   placeholder = '',
@@ -33,7 +34,11 @@ const FormInput = ({
       render={({ field, fieldState: { error } }) => {
         return (
           <>
-            {label && (<Box sx={labelStyles} component="label" aria-label={label}>{label}</Box>)}
+            {label && (
+              <Box sx={labelStyles} component="label" aria-label={label}>
+                {label}
+              </Box>
+            )}
             <Box sx={{ minHeight: 60 }}>
               <OutlinedInput
                 {...OutlinedInputProps}
@@ -44,7 +49,11 @@ const FormInput = ({
                 sx={styles}
                 onKeyDown={onKeyDown}
               />
-              { error && (<Box component="span" sx={errorStyles}>{error.message}</Box>) }
+              {error && (
+                <Box component="span" sx={errorStyles}>
+                  {error.message}
+                </Box>
+              )}
             </Box>
           </>
         );

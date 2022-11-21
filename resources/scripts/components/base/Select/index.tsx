@@ -58,14 +58,7 @@ const BaseSelect = React.forwardRef((props: any, ref: RefObject<any>) => {
       ...styles?.input
     })
   };
-  return (
-    <Select
-      {...restProps}
-      isDisabled={disabled}
-      ref={ref}
-      styles={customStyles}
-    />
-  );
+  return <Select {...restProps} isDisabled={disabled} ref={ref} styles={customStyles} />;
 });
 
 export default BaseSelect;

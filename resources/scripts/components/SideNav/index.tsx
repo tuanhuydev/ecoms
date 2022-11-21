@@ -1,49 +1,37 @@
-import { CSSObject, Theme, styled } from '@mui/material/styles';
+import { SxProps, useTheme } from '@mui/material';
 import MuiDrawer, { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer';
 import React from 'react';
 
 const DRAWER_WIDTH = 240;
 
-const openedMixin = (theme: Theme): CSSObject => ({
-  width: DRAWER_WIDTH,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen
-  }),
-  overflowX: 'hidden'
-});
-
-const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen
-  }),
-  overflowX: 'hidden',
-  width: `calc(${theme.spacing(3.5)} + 1px)`
-});
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
-  width: DRAWER_WIDTH,
-  flexShrink: 0,
-  whiteSpace: 'nowrap',
-  boxSizing: 'border-box',
-  ...(open && {
-    ...openedMixin(theme),
-    '& .MuiDrawer-paper': openedMixin(theme)
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    '& .MuiDrawer-paper': closedMixin(theme)
-  })
-}));
+const drawerStyles = (open: boolean = false): SxProps => {
+  const { transitions, spacing } = useTheme();
+  const transitionWidth = transitions.create('width', {
+    easing: transitions.easing.sharp,
+    duration: transitions.duration.leavingScreen
+  });
+  const widthCondition = open ? DRAWER_WIDTH : `calc(${spacing(3.5)} + 1px)`;
+  return {
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
+    width: widthCondition,
+    transition: transitionWidth,
+    '& .MuiDrawer-paper': {
+      overflowX: 'hidden',
+      transition: transitionWidth,
+      width: widthCondition
+    }
+  };
+};
 
 const SideNav = (props: MuiDrawerProps) => {
-  const { open = false, children = <></> } = props;
-  return (<Drawer variant="permanent" open={open}>
-    <div className="content">
-      {children}
-    </div>
-  </Drawer>);
+  const { open = true, children = <></> } = props;
+  return (
+    <MuiDrawer sx={drawerStyles(open)} variant="permanent" open={open}>
+      <div className="content">{children}</div>
+    </MuiDrawer>
+  );
 };
 
 export default SideNav;

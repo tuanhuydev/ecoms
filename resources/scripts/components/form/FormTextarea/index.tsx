@@ -15,7 +15,7 @@ export interface FormTextareaProps extends Partial<ControllerProps> {
   disabled?: boolean;
   sx?: SxProps;
   // eslint-disable-next-line no-unused-vars
-  onBlur?: (event: any) => void
+  onBlur?: (event: any) => void;
 }
 
 const FormTextarea = (props: FormTextareaProps) => {
@@ -25,12 +25,14 @@ const FormTextarea = (props: FormTextareaProps) => {
     <Controller
       {...restProps}
       control={control}
-      render={({
-        field: { onChange, onBlur, value, name }
-      }) => {
+      render={({ field: { onChange, onBlur, value, name } }) => {
         return (
           <>
-            {label && (<Box component="label" sx={styles.labelStyles} aria-label={label}>{label}</Box>)}
+            {label && (
+              <Box component="label" sx={styles.labelStyles} aria-label={label}>
+                {label}
+              </Box>
+            )}
             <Textarea
               onBlur={(e) => {
                 onBlur();
@@ -47,10 +49,10 @@ const FormTextarea = (props: FormTextareaProps) => {
               disabled={disabled}
             />
           </>
-
         );
       }}
-    />);
+    />
+  );
 };
 
 export default FormTextarea;

@@ -6,7 +6,7 @@ import TaskService from '../../services/TaskService';
 
 const taskService = new TaskService();
 
-export function * getTasks(action: any) {
+export function* getTasks(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
     const { data }: AxiosResponse = yield call(taskService.getTasks, action.payload);
@@ -18,7 +18,7 @@ export function * getTasks(action: any) {
   }
 }
 
-export function * createTask(action: any) {
+export function* createTask(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
     const { data }: AxiosResponse = yield call(taskService.createTask, action.payload);
@@ -37,7 +37,7 @@ export function * createTask(action: any) {
   }
 }
 
-export function * deleteTask(action: any) {
+export function* deleteTask(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
     const { data }: AxiosResponse = yield call(taskService.deleteTask, action.payload);
@@ -52,7 +52,7 @@ export function * deleteTask(action: any) {
   }
 }
 
-export function * saveTask(action: any) {
+export function* saveTask(action: any) {
   try {
     yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
     const { data }: AxiosResponse = yield call(taskService.updateTask, action.payload);
@@ -67,7 +67,7 @@ export function * saveTask(action: any) {
   }
 }
 
-export default function * taskSaga() {
+export default function* taskSaga() {
   yield takeEvery(taskActions.fetchTasks.type, getTasks);
   yield takeEvery(taskActions.deleteTask.type, deleteTask);
   yield takeEvery(taskActions.createTask.type, createTask);

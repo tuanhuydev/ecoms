@@ -10,7 +10,7 @@ export interface InputClasses {
 
 export interface InputProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   icon?: ReactNode | string;
-  iconPosition?: 'start' | 'end'
+  iconPosition?: 'start' | 'end';
   classes?: InputClasses;
 }
 
@@ -28,7 +28,7 @@ const Input = React.forwardRef((props: InputProps, ref: RefObject<any>) => {
 
   return (
     <div className={rootClasses}>
-      {icon && (<div className={iconClasses}>{icon}</div>)}
+      {icon && <div className={iconClasses}>{icon}</div>}
       <input {...restProps} ref={ref} className={inputClasses} />
     </div>
   );

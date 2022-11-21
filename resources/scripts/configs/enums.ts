@@ -5,7 +5,7 @@ export enum LOADING_STATE {
   LOADING = 'LOADING',
   SUCCESS = 'SUCCESS',
   FAIL = 'FAIL'
-};
+}
 
 export enum TASK_STATUS {
   BACKLOG = 'BACKLOG',
@@ -28,10 +28,10 @@ export enum USER_STATUS {
 }
 
 export enum USER_PERMISSION {
-  GUEST= 'GUEST',
-  ADMIN= 'ADMIN',
-  MAINTAINER= 'MAINTAINER'
-};
+  GUEST = 'GUEST',
+  ADMIN = 'ADMIN',
+  MAINTAINER = 'MAINTAINER'
+}
 
 export enum SORT_TYPE {
   ASCENDING = 'ASC',
@@ -42,5 +42,5 @@ export enum USER_AVAILABILITY {
   AVAILABLE = 'AVAILABLE',
   AWAY = 'AWAY',
   BUSY = 'BUSY',
-  OFFLINE = 'OFFLINE',
+  OFFLINE = 'OFFLINE'
 }

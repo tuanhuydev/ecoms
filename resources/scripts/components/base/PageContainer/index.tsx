@@ -1,6 +1,5 @@
 import { PageContainerProps } from './interfaces';
-import { ROUTE_PATHS } from 'scripts/configs/constants';
-import { adminRoutes } from 'scripts/configs/routes';
+import { ROUTE_PATHS } from '@configs/constants';
 import { matchPath, useLocation } from 'react-router-dom';
 import { selectCurrentUser } from '@store/slices/userSlice';
 import AvatarMenu from '../AvatarMenu';
@@ -11,12 +10,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import getStyles from './styles';
 
-const PageContainer = ({
-  title = '',
-  loading = false,
-  children,
-  ToolbarProps
-}: PageContainerProps) => {
+const PageContainer = ({ title = '', loading = false, routes, children, ToolbarProps }: PageContainerProps) => {
   const { pathname } = useLocation();
   const styles = getStyles();
   const { permission: userPermission } = selectCurrentUser();
@@ -33,21 +27,18 @@ const PageContainer = ({
      * end to avoid path's end checking
      */
     if (matchPath({ path: path, caseSensitive: true, end: false }, pathname)) {
-      return !!Object.values(adminRoutes).find((adminRoute) =>
-        adminRoute.path === path && adminRoute.permissions.includes(userPermission.toUpperCase()));
+      return !!Object.values(routes).find(
+        (adminRoute: any) => adminRoute.path === path && adminRoute.permissions.includes(userPermission.toUpperCase())
+      );
     }
     return false;
   });
 
-  return (
-    isRouteAvailable
-      ? (<Box sx={styles.pageWrapper}>
-        <Toolbar
-          {...ToolbarProps}
-          disableGutters
-          sx={styles.toolbarStyles}>
-          <Typography variant="h6" component="h6"
-            sx={styles.titleStyles} >
+  return isRouteAvailable
+    ? (
+      <Box sx={styles.pageWrapper}>
+        <Toolbar {...ToolbarProps} disableGutters sx={styles.toolbarStyles}>
+          <Typography variant="h6" component="h6" sx={styles.titleStyles}>
             {title}
             {loading && <CircularProgress color="inherit" size={20} sx={styles.spinnerStyles} />}
           </Typography>
@@ -56,10 +47,12 @@ const PageContainer = ({
           </Box>
         </Toolbar>
 
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>{children}</Box>
-      </Box>)
-      : (<h1>Permission Denied</h1>)
-  );
+        <Box sx={styles.contentStyles}>{children}</Box>
+      </Box>
+    )
+    : (
+      <h1>Permission Denied</h1>
+    );
 };
 
 export default PageContainer;

@@ -50,7 +50,7 @@ const config = {
     rules: [
       {
         test: /\.ts(x)?$/,
-        exclude: /node_modules/,
+        exclude: /node_modules|\.d\.ts$|public/,
         use: [
           {
             loader: 'ts-loader',
@@ -150,6 +150,9 @@ const config = {
     removeAvailableModules: !isDevelopment,
     removeEmptyChunks: !isDevelopment,
     usedExports: true
+  },
+  stats: {
+    errorDetails: true
   },
   output: {
     path: path.resolve(__dirname, 'public/'),

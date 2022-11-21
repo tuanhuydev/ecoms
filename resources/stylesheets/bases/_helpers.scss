@@ -1,6 +1,13 @@
 @use 'sass:string';
 @import './background';
 
+// LINE HEIGHT
+@for $i from 1 to 5 {
+  .line-height-#{$i} {
+    line-height: #{$i};
+  }
+}
+
 // FLEX
 
 .flex-column {
@@ -13,6 +20,10 @@
 
 .items-center {
   align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
 }
 
 .justify-center {
@@ -52,7 +63,6 @@ $spacers: 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20;
 $directions: 'top', 'right', 'bottom', 'left', 'vertical', 'horizontal';
 
 @each $spacer in $spacers {
-
   @each $direction in $directions {
     @if $direction == 'vertical' {
       .my-#{$spacer} {
@@ -64,7 +74,6 @@ $directions: 'top', 'right', 'bottom', 'left', 'vertical', 'horizontal';
         padding-top: #{$spacer * 0.25} + 'rem';
         padding-bottom: #{$spacer * 0.25} + 'rem';
       }
-
     } @else if $direction == 'horizontal' {
       .mx-#{$spacer} {
         margin-left: #{$spacer * 0.25} + 'rem';
@@ -86,7 +95,6 @@ $directions: 'top', 'right', 'bottom', 'left', 'vertical', 'horizontal';
         padding-#{$direction}: #{$spacer * 0.25} + 'rem';
       }
     }
-
   }
 }
 

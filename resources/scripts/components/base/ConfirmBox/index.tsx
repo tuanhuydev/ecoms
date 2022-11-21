@@ -47,11 +47,17 @@ const ConfirmBox = ({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      { title && (<DialogTitle id="alert-dialog-title" sx={styles.titleStyles}>{title}</DialogTitle>) }
-      { message && (<DialogContent sx={styles.messageStyles}>{message}</DialogContent>) }
+      {title && (
+        <DialogTitle id="alert-dialog-title" sx={styles.titleStyles}>
+          {title}
+        </DialogTitle>
+      )}
+      {message && <DialogContent sx={styles.messageStyles}>{message}</DialogContent>}
       <DialogActions>
         <Button onClick={handleClose}>{cancelLabel}</Button>
-        <Button onClick={handleSubmit} autoFocus>{submitLabel}</Button>
+        <Button onClick={handleSubmit} autoFocus>
+          {submitLabel}
+        </Button>
       </DialogActions>
     </Dialog>
   );

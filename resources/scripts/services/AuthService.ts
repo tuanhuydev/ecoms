@@ -1,8 +1,7 @@
-import { Account } from 'scripts/interfaces/Model';
+import { Account, DefaultObjectType } from '@utils/interfaces';
 import { AxiosResponse } from 'axios';
-import { DefaultObjectType } from '../interfaces/Meta';
 import Cookie from 'js-cookie';
-import httpClient from '../configs/httpClient';
+import httpClient from '@utils/httpClient';
 
 abstract class Auth {
   static getAuth() {
@@ -56,7 +55,7 @@ class SignIn extends Auth {
     if (this.password.length < 8) {
       error.password.push('The password must be at least 8 characters.');
     }
-    if (Object.values(error).some(value => value.length)) {
+    if (Object.values(error).some((value) => value.length)) {
       throw error;
     }
   }
@@ -64,10 +63,10 @@ class SignIn extends Auth {
   async makeAuth(onDone: Function, onError?: Function, onFinally?: Function) {
     try {
       this.validateFields();
-      const { data }: AxiosResponse = await httpClient.post(
-        '/auth/sign-in',
-        { email: this.email, password: this.password }
-      );
+      const { data }: AxiosResponse = await httpClient.post('/auth/sign-in', {
+        email: this.email,
+        password: this.password
+      });
       const { account, accessToken } = data;
       if (account && accessToken) SignIn.setAuth(account, accessToken);
 
@@ -125,7 +124,7 @@ class SignUp extends Auth {
       error.password.push('The password and confirm password must match.');
     }
 
-    if (Object.values(error).some(value => value.length)) {
+    if (Object.values(error).some((value) => value.length)) {
       throw error;
     }
   }
@@ -176,7 +175,7 @@ class VerifyAccount extends Auth {
       error.password.push('The id field is required.');
     }
 
-    if (Object.values(error).some(value => value.length)) {
+    if (Object.values(error).some((value) => value.length)) {
       throw error;
     }
   }
@@ -210,7 +209,7 @@ class ForgotPassword extends Auth {
       error.email.push('The email field is required.');
     }
 
-    if (Object.values(error).some(value => value.length)) {
+    if (Object.values(error).some((value) => value.length)) {
       throw error;
     }
   }
@@ -218,10 +217,7 @@ class ForgotPassword extends Auth {
   async makeAuth(onDone: Function, onError?: Function, onFinally?: Function) {
     try {
       this.validateFields();
-      const { data }: AxiosResponse = await httpClient.post(
-        '/auth/forgot-password',
-        { email: this.email }
-      );
+      const { data }: AxiosResponse = await httpClient.post('/auth/forgot-password', { email: this.email });
       if (data?.success) {
         if (onDone) onDone();
       }
@@ -262,7 +258,7 @@ class UpdatePassword extends Auth {
       error.password.push('The password must be match with confirm password.');
     }
 
-    if (Object.values(error).some(value => value.length)) {
+    if (Object.values(error).some((value) => value.length)) {
       throw error;
     }
   }
@@ -270,14 +266,11 @@ class UpdatePassword extends Auth {
   async makeAuth(onDone: Function, onError?: Function, onFinally?: Function) {
     try {
       this.validateFields();
-      const { data }: AxiosResponse = await httpClient.post(
-        '/auth/update-password',
-        {
-          password: this.password,
-          confirm_password: this.confirmPassword,
-          token: this.token
-        }
-      );
+      const { data }: AxiosResponse = await httpClient.post('/auth/update-password', {
+        password: this.password,
+        confirm_password: this.confirmPassword,
+        token: this.token
+      });
       if (data?.success) {
         if (onDone) onDone();
       }

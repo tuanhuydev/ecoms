@@ -1,5 +1,5 @@
-import { Account } from 'scripts/interfaces/Model';
-import { httpClientWithAuth } from '../configs/httpClient';
+import { Account } from '@utils/interfaces';
+import { httpClientWithAuth } from '@utils/httpClient';
 
 class AccountService {
   path: string = '/accounts';
@@ -8,7 +8,7 @@ class AccountService {
     const { accountId, ...restData } = data;
     const url = `${this.path}/${accountId}`;
     return httpClientWithAuth.patch(url, restData);
-  }
+  };
 }
 
 export default AccountService;

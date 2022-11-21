@@ -1,8 +1,6 @@
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType, RootState, Task } from '@utils/interfaces';
 import { LOADING_STATE, SORT_TYPE } from '../../configs/enums';
 import { PayloadAction, createAction, createSlice, current } from '@reduxjs/toolkit';
-import { RootState } from '..';
-import { Task } from '../../interfaces/Task';
 import { useSelector } from 'react-redux';
 
 export interface TaskFilter {
@@ -21,7 +19,7 @@ export interface TaskPaginator {
   hasMorePage?: boolean;
   currentPage?: number;
   lastPage?: number;
-  perPage?: number
+  perPage?: number;
 }
 
 export interface TaskParams {
@@ -115,9 +113,10 @@ export const selectTaskLoading = (): string => useSelector((state: RootState) =>
 
 export const selectAllTasks = (): Task[] => useSelector((state: RootState) => state.task.tasks);
 
-export const selectTaskById = (id: number) => useSelector((state: RootState) => {
-  return state.task.tasks.find((task: Task) => task.id === id);
-});
+export const selectTaskById = (id: number) =>
+  useSelector((state: RootState) => {
+    return state.task.tasks.find((task: Task) => task.id === id);
+  });
 
 export const selectTaskParams = (): TaskParams => useSelector((state: RootState) => state.task.params);
 export const selectTaskFilter = (): TaskFilter => useSelector((state: RootState) => state.task.params.filter);

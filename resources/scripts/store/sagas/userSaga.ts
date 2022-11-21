@@ -11,7 +11,7 @@ const idleAction = { type: setLoadingType, payload: LOADING_STATE.IDLE };
 const successAction = { type: setLoadingType, payload: LOADING_STATE.SUCCESS };
 const loadingFail = { type: setLoadingType, payload: LOADING_STATE.FAIL };
 
-export function * getUsers() {
+export function* getUsers() {
   try {
     yield put({ type: userActions.setLoading.type, payload: LOADING_STATE.LOADING });
     const { data }: AxiosResponse = yield call(userService.getUsers);
@@ -26,7 +26,7 @@ export function * getUsers() {
   }
 }
 
-export function * patchUser(action: any) {
+export function* patchUser(action: any) {
   try {
     const { data }: AxiosResponse = yield call(userService.updateUser, action.payload);
     if (data.success) {
@@ -44,7 +44,7 @@ export function * patchUser(action: any) {
   }
 }
 
-export function * postUser(action: any) {
+export function* postUser(action: any) {
   try {
     const { data }: AxiosResponse = yield call(userService.saveUser, action.payload);
     if (data?.id) {
@@ -62,7 +62,7 @@ export function * postUser(action: any) {
   }
 }
 
-export default function * userSaga() {
+export default function* userSaga() {
   yield takeEvery(userActions.fetchUsers.type, getUsers);
   yield takeEvery(userActions.patchUser.type, patchUser);
   yield takeLatest(userActions.postUser.type, postUser);

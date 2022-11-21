@@ -1,7 +1,6 @@
-
 .container {
-  --grey-200: #EEE;
-  --grey-50: #FAFAFA;
+  --grey-200: #eee;
+  --grey-50: #fafafa;
 
   background-color: var(--grey-50);
   display: flex;
@@ -38,5 +37,4 @@
   .rightToLeft {
     direction: rtl;
   }
-
 }
