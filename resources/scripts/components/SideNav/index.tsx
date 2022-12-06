@@ -1,11 +1,11 @@
-import { SxProps, useTheme } from '@mui/material';
-import MuiDrawer, { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer';
+import { Box, SxProps, useTheme } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import React from 'react';
 
 const DRAWER_WIDTH = 240;
 
 const drawerStyles = (open: boolean = false): SxProps => {
-  const { transitions, spacing } = useTheme();
+  const { transitions, spacing, palette } = useTheme();
   const transitionWidth = transitions.create('width', {
     easing: transitions.easing.sharp,
     duration: transitions.duration.leavingScreen
@@ -15,8 +15,11 @@ const drawerStyles = (open: boolean = false): SxProps => {
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
+    backgroundColor: palette.background.default,
     width: widthCondition,
     transition: transitionWidth,
+    overflow: 'hidden',
+    borderRight: `1px solid ${grey[200]}`,
     '& .MuiDrawer-paper': {
       overflowX: 'hidden',
       transition: transitionWidth,
@@ -25,12 +28,16 @@ const drawerStyles = (open: boolean = false): SxProps => {
   };
 };
 
-const SideNav = (props: MuiDrawerProps) => {
-  const { open = true, children = <></> } = props;
+type Props = {
+  open: boolean,
+  children?: JSX.Element |JSX.Element[]
+}
+
+const SideNav = ({ open, children }: Props) => {
   return (
-    <MuiDrawer sx={drawerStyles(open)} variant="permanent" open={open}>
+    <Box sx={drawerStyles(open)}>
       <div className="content">{children}</div>
-    </MuiDrawer>
+    </Box>
   );
 };
 

@@ -367,21 +367,23 @@ const Tasks = () => {
 
   return (
     <PageContainer title="Tasks" loading={isLoading} routes={adminRoutes}>
-      <Grid sx={styles.toolbarStyles} container rowSpacing={{ xs: 1, sm: 1, md: 1, lg: 0 }} columnSpacing={1}>
+      <Grid sx={styles.toolbarStyles} rowSpacing={{ xs: 1, sm: 1, md: 1, lg: 0 }} columnSpacing={1}>
         <Grid item xs={12} lg={4}>
-          <Input
-            autoComplete="off"
-            type="search"
-            disabled={isLoading}
-            placeholder="Search task"
-            icon={<SearchOutlinedIcon />}
-            value={search}
-            onChange={handleSearchTask}
-          />
+          <Box className="mr-4 mb-2 flex-shrink-0">
+            <Input
+              autoComplete="off"
+              type="search"
+              disabled={isLoading}
+              placeholder="Search task"
+              icon={<SearchOutlinedIcon />}
+              value={search}
+              onChange={handleSearchTask}
+            />
+          </Box>
         </Grid>
-        <Grid item xs={12} lg={8} sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box sx={{ mr: 1 }}>Filter by:</Box>
-          <Box sx={{ mr: 1 }}>
+        <Grid item xs={12} lg={8} className="flex items-center flex-wrap">
+          <Box className="mr-4 mb-2 flex-shrink-0">Filter by:</Box>
+          <Box className="mr-4 mb-2 flex-shrink-0">
             <BaseSelect
               name="status"
               options={TaskStatusOptions}
@@ -391,7 +393,7 @@ const Tasks = () => {
               onChange={handleChangeFilterSelect('status')}
             />
           </Box>
-          <Box sx={{ mr: 1 }}>
+          <Box className="mr-4 mb-2 flex-shrink-0">
             <BaseSelect
               name="severity"
               options={TaskSeverityOptions}
@@ -401,19 +403,21 @@ const Tasks = () => {
               onChange={handleChangeFilterSelect('severity')}
             />
           </Box>
-          <Box sx={{ mr: 1 }}>Order by</Box>
-          <BaseSelect
-            name="order"
-            options={TaskSortByOptions}
-            defaultValue={TaskSortByOptions[0]}
-            disabled={isLoading}
-            value={taskSortOption}
-            styles={styles.selectStyles}
-            onChange={handleChangeOrderSelect}
-          />
-          <IconButton size="small" sx={{ ml: 1 }} onClick={handleChangeOrderValue}>
-            {isAscending ? <NorthOutlinedIcon fontSize="small" /> : <SouthOutlinedIcon fontSize="small" />}
-          </IconButton>
+          <Box className="mr-4 mb-2 flex-shrink-0">Order by</Box>
+          <Box className="mr-4 mb-2 flex-shrink-0 flex items-center">
+            <BaseSelect
+              name="order"
+              options={TaskSortByOptions}
+              defaultValue={TaskSortByOptions[0]}
+              disabled={isLoading}
+              value={taskSortOption}
+              styles={styles.selectStyles}
+              onChange={handleChangeOrderSelect}
+            />
+            <IconButton size="small" sx={{ ml: 1 }} onClick={handleChangeOrderValue} aria-labelledby="order by button">
+              {isAscending ? <NorthOutlinedIcon fontSize="small" /> : <SouthOutlinedIcon fontSize="small" />}
+            </IconButton>
+          </Box>
         </Grid>
       </Grid>
       <Box sx={styles.listContainerStyles}>
@@ -441,8 +445,8 @@ const Tasks = () => {
       {selectedTask && <TaskForm open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />}
       {deleteTaskId && (
         <Menu anchorEl={menuAnchor} open={openMenu} onClose={handleCloseMenu}>
-          <MenuItem sx={{ display: 'flex', alignItems: 'center' }} onClick={handleDeleteTask}>
-            <DeleteOutlineIcon fontSize="small" sx={{ mr: 0.5 }} />
+          <MenuItem className='flex items-center' onClick={handleDeleteTask}>
+            <DeleteOutlineIcon fontSize="small" className='mr-3' />
             Delete
           </MenuItem>
         </Menu>
