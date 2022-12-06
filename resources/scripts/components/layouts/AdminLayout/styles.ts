@@ -1,4 +1,5 @@
-import { useTheme } from '@mui/material';
+import { SxProps, useTheme } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 export const containerStyles = {
   width: '100vw',
@@ -15,6 +16,15 @@ export const titleStyles = {
   flexGrow: 1,
   mx: 2,
   fontWeight: 'bold'
+};
+
+export const sideNavContainerStyles = (): SxProps => {
+  const theme = useTheme();
+  return {
+    background: theme.palette.background.default,
+    overflow: 'hidden',
+    borderRight: `1px solid ${grey[200]}`
+  };
 };
 
 export const titleContainerStyles = () => {

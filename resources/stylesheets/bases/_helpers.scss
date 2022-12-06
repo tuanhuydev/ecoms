@@ -33,7 +33,20 @@
 .justify-between {
   justify-content: space-between;
 }
+.flex-wrap {
+  flex-wrap: wrap;
+}
 
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+.flex-shrink-1 {
+  flex-shrink: 1;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
 // DISPLAY
 $displays: 'block', 'fixed', 'flex', 'grid', 'hidden';
 
@@ -51,10 +64,15 @@ $displays: 'block', 'fixed', 'flex', 'grid', 'hidden';
 
 // WIDTH
 $sizes: 25, 50, 75, 100;
-
-@each $size in $sizes {
-  .w-#{$size} {
-    width: #{$size} + '%';
+$prefixs: 'sm:', 'md:', 'lg:';
+@each $prefix in $prefixs {
+  @each $size in $sizes {
+    .w-#{$size} {
+      width: #{$size} + '%';
+    }
+    .#{$prefix}w-#{$size} {
+      width: #{$size} + '%';
+    }
   }
 }
 

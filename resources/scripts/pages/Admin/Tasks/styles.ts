@@ -8,8 +8,8 @@ const getStyles = () => {
 
   const quickSearchStyles: SxProps = {
     backgroundColor: theme.palette.common.white,
-    p: 1,
-    mb: 0.25
+    px: 1,
+    pt: 0.5
   };
 
   const toolbarStyles: SxProps = {
@@ -90,7 +90,7 @@ const getStyles = () => {
   };
   const selectStyles: any = {
     container: {
-      width: '10rem'
+      minWidth: '10rem'
     }
   };
 
