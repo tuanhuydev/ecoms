@@ -1,6 +1,6 @@
 import { AppDispatch, User } from '@utils/interfaces';
 import { Outlet } from 'react-router-dom';
-import { containerStyles, contentStyles, sideNavContainerStyles, titleContainerStyles, titleStyles } from './styles';
+import { containerStyles, contentStyles, titleContainerStyles, titleStyles } from './styles';
 import { selectCurrentUser } from '@store/slices/userSlice';
 import { selectOpenSidebar, setOpenSidebar } from '@store/slices/metaSlice';
 import { useDispatch } from 'react-redux';
@@ -34,12 +34,11 @@ const AdminLayout = ({ routes }: any) => {
 
   return (
     <Grid container spacing={0} sx={containerStyles} wrap="nowrap">
-      {/* <Grid item sx={sideNavContainerStyles()}> */}
       <SideNav open={openSidebar}>
         <Box sx={titleContainerStyles()}>
           {openSidebar && (
             <Typography variant="h5" component="h5" sx={titleStyles}>
-                Sidehand
+              Sidehand
             </Typography>
           )}
           <IconButton onClick={toggleSideNav} sx={{ mx: 0.5 }} aria-label="Toggle SideNav">
@@ -48,7 +47,6 @@ const AdminLayout = ({ routes }: any) => {
         </Box>
         <List>{renderSideLinks}</List>
       </SideNav>
-      {/* </Grid> */}
       <Grid item sx={contentStyles}>
         <Outlet />
       </Grid>

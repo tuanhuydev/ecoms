@@ -18,15 +18,6 @@ export const titleStyles = {
   fontWeight: 'bold'
 };
 
-export const sideNavContainerStyles = (): SxProps => {
-  const theme = useTheme();
-  return {
-    background: theme.palette.background.default,
-    overflow: 'hidden',
-    borderRight: `1px solid ${grey[200]}`
-  };
-};
-
 export const titleContainerStyles = () => {
   const theme = useTheme();
   return {

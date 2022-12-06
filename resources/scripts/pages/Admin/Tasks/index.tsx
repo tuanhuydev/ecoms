@@ -143,7 +143,7 @@ const Tasks = () => {
 
   const handleCompleteTask = (task: Task) => async () => {
     const taskStatus = task.status === TASK_STATUS.DONE ? TASK_STATUS.BACKLOG : TASK_STATUS.DONE;
-    dispatch(taskActions.updateTask({ ...task, status: taskStatus }));
+    dispatch(taskActions.saveTask({ ...task, status: taskStatus }));
   };
 
   const handleDeleteTask = () => {
@@ -198,7 +198,7 @@ const Tasks = () => {
       return (
         <Box>
           {placeholders.map((_: number, index: number) => (
-            <Box sx={{ display: 'flex', mx: 1, mb: 1 }} key={index}>
+            <Box className='flex mx-3 mb-2' key={index}>
               <Skeleton variant="circular" height={40} width={40} sx={{ mr: 1 }} />
               <Skeleton variant="rectangular" height={40} sx={styles.skeletonStyles} />
             </Box>

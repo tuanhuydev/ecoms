@@ -6,7 +6,7 @@ import AccountService from '@services/AccountService';
 
 const accountService = new AccountService();
 
-export function* patchAccount(action: any) {
+export function * patchAccount(action: any) {
   try {
     yield put({ type: accountActions.setLoading.type, payload: LOADING_STATE.LOADING });
     const { data }: AxiosResponse = yield call(accountService.patchAccount, action.payload);
@@ -23,6 +23,6 @@ export function* patchAccount(action: any) {
   }
 }
 
-export default function* accountSaga() {
+export default function * accountSaga() {
   yield takeEvery(accountActions.patchAccount.type, patchAccount);
 }
