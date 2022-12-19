@@ -8,5 +8,9 @@ public/fonts/**/*
 public/images/**/*
 public/js/**/*
 public/storage
+
+# History
+.history/
+
 # Environments
 .env

@@ -83,16 +83,18 @@ class UserService
         return User::find($userId);
     }
 
-    /**
-     * Verify account
-     * -> Check user
-     * -> Check confirmation_token field value
-     * -> update user email_verified_at to current time
-     * -> save user's info.
-     *
-     * @param mixed body
-     * @return User
-     */
+  /**
+   * Verify account
+   * -> Check user
+   * -> Check confirmation_token field value
+   * -> update user email_verified_at to current time
+   * -> save user's info.
+   *
+   * @param mixed body
+   * @return int
+   * @throws NotFoundException
+   * @throws UnauthorizedException
+   */
     function verifyAccount(mixed $body): int {
         $user = User::find($body['id']);
         if (!$user) {
