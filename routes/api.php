@@ -1,14 +1,10 @@
 <?php
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\api\TaskController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\FileController;
 use App\Http\Controllers\api\AccountController;
-use Illuminate\Support\Facades\Mail;
-use  App\Mail\SignUpConfirm;
 
 
 Route::group(['prefix' => 'auth'], function() {
@@ -29,6 +25,7 @@ Route::group([
   'prefix' => 'tasks'
 ], function() {
     Route::get('/', [TaskController::class, 'getAllTasks'])->name('tasks.getAll');
+    Route::get('/categories', [TaskController::class, 'getTaskCategories'])->name('tasks.getTaskCategories');
     Route::post('/', [TaskController::class, 'createTask'])->name('tasks.create');
     Route::patch('/{id}', [TaskController::class, 'updateTask'])->name('tasks.update');
     Route::get('/{id}', [TaskController::class, 'getTaskById'])->name('tasks.getById');

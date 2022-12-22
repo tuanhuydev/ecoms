@@ -9,6 +9,7 @@ import getStyles from './styles';
 export interface FormInputProps extends OutlinedInputProps {
   name: string;
   label?: string;
+  className?: string;
   errors?: DefaultObjectType;
   control?: any;
   placeholder?: string;
@@ -22,6 +23,7 @@ const FormInput = ({
   OutlinedInputProps = {},
   sx: customStyles = {},
   placeholder = '',
+  className = '',
   disabled = false,
   ...restProps
 }: FormInputProps) => {
@@ -39,10 +41,11 @@ const FormInput = ({
                 {label}
               </Box>
             )}
-            <Box sx={{ minHeight: 60 }}>
+            <Box sx={{ minHeight: 60 }} className="w-100">
               <OutlinedInput
                 {...OutlinedInputProps}
                 {...field}
+                className={className}
                 autoComplete="off"
                 disabled={disabled}
                 placeholder={placeholder}

@@ -26,7 +26,7 @@ export function * getTasks(action: any) {
 
 export function * createTask(action: any) {
   try {
-    yield put(taskActions.setLoading(LOADING_STATE.LOADING));
+    yield put(LOADING);
     const { data }: AxiosResponse = yield call(taskService.createTask, action.payload);
     if (data?.id) {
       const newTask = {
@@ -45,7 +45,7 @@ export function * createTask(action: any) {
 
 export function * deleteTask(action: any) {
   try {
-    yield put(taskActions.setLoading(LOADING_STATE.LOADING));
+    yield put(LOADING);
     const { data }: AxiosResponse = yield call(taskService.deleteTask, action.payload);
     if (data.success) {
       yield put({ type: taskActions.removeTask.type, payload: action.payload });
@@ -58,13 +58,28 @@ export function * deleteTask(action: any) {
   }
 }
 
-export function * saveTask(action: any) {
+export function * updateTask(action: any) {
   try {
-    yield put(taskActions.setLoading(LOADING_STATE.LOADING));
+    yield put(LOADING);
     const { data }: AxiosResponse = yield call(taskService.updateTask, action.payload);
     if (data.success) {
-      yield put(taskActions.updateTask(action.payload));
+      const payload = action.payload;
+      yield put(taskActions.setTask(payload));
       yield put(LOADING_SUCCESS);
+    }
+  } catch (error) {
+    yield put(LOADING_FAIL);
+  } finally {
+    yield put(LOADING_IDLE);
+  }
+}
+
+export function * fetchTaskCategories() {
+  try {
+    yield put(LOADING);
+    const { data }: AxiosResponse = yield call(taskService.getTaskCategories);
+    if (data?.categories?.length) {
+      yield put(taskActions.setTaskCategories(data.categories));
     }
   } catch (error) {
     yield put(LOADING_FAIL);
@@ -77,5 +92,6 @@ export default function * taskSaga() {
   yield takeLatest(taskActions.fetchTasks.type, getTasks);
   yield takeLatest(taskActions.deleteTask.type, deleteTask);
   yield takeLatest(taskActions.createTask.type, createTask);
-  yield takeLatest(taskActions.saveTask.type, saveTask);
+  yield takeLatest(taskActions.updateTask.type, updateTask);
+  yield takeLatest(taskActions.fetchTaskCategories.type, fetchTaskCategories);
 }

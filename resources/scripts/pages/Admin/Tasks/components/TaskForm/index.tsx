@@ -1,11 +1,11 @@
-import { APP_URL, TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
-import { AppDispatch, Task } from '@utils/interfaces';
+import { APP_URL, EMPTY_STRING, TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
+import { AppDispatch, Category, Task } from '@utils/interfaces';
 import { LOADING_STATE, TASK_STATUS } from '@configs/enums';
+import { capitalizeString, isValidDate } from 'scripts/utils/helpers';
 import { formatDistance } from 'date-fns';
 import { isFunction } from 'lodash';
-import { isValidDate } from 'scripts/utils/helpers';
 import { newTaskSchema } from '../../schemas';
-import { selectTaskById, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
+import { selectTaskById, selectTaskCategories, selectTaskLoading, taskActions } from '@store/slices/taskSlice';
 import { useDispatch } from 'react-redux';
 import { useForm, useFormState, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -33,13 +33,21 @@ export interface TaskFormProps extends DrawerProps {
 
 const TaskForm = (props: TaskFormProps) => {
   const { task: currentTask, onClose, ...restProps } = props;
+
   const styles = getStyles();
-
-  const dispatch: AppDispatch = useDispatch();
+  // Selectors
   const task: Task = selectTaskById(currentTask.id);
-  const editable = !!task;
   const loading = selectTaskLoading();
+  const categories = selectTaskCategories();
 
+  const isLoading = loading === LOADING_STATE.LOADING;
+  const editable = !!task;
+  const TASK_CATEGORY_OPTIONS = categories.map(({ value, id }: Category) => ({
+    label: capitalizeString(value), value: id
+  })
+  );
+
+  // State
   const [editMode, setEditMode] = useState(false);
 
   // React hook form
@@ -50,27 +58,27 @@ const TaskForm = (props: TaskFormProps) => {
       acceptance: '',
       dueDate: '',
       status: TASK_STATUS_OPTIONS[0],
-      severity: TASK_SEVERITY_OPTIONS[0]
+      severity: TASK_SEVERITY_OPTIONS[0],
+      category: TASK_CATEGORY_OPTIONS[0]
     },
     resolver: yupResolver(newTaskSchema)
   });
+    // Hooks
+  const dispatch: AppDispatch = useDispatch();
   const taskStatus = useWatch({ control, name: 'status' });
-
   const { isDirty } = useFormState({ control });
 
   const handleSave = async () => {
     const validated = await trigger();
     if (validated) {
-      const { status, severity, dueDate, ...restTask }: any = getValues();
-      let dateString = '';
-      if (isValidDate(dueDate)) {
-        dateString = new Date(dueDate).toISOString();
-      }
+      const { status, severity, dueDate, category, ...restTask }: any = getValues();
+      const dateString = isValidDate(dueDate) ? new Date(dueDate).toISOString() : EMPTY_STRING;
       dispatch(
-        taskActions.saveTask({
+        taskActions.updateTask({
           ...restTask,
           status: status.value,
           severity: severity.value,
+          categoryId: category.value,
           dueDate: dateString
         })
       );
@@ -83,7 +91,7 @@ const TaskForm = (props: TaskFormProps) => {
    * @param content
    */
   const handleCopy = (content: string) => {
-    navigator.clipboard.writeText(content);
+    // navigator.clipboard.writeText(content);
   };
 
   const copyTaskId = (taskId: number) => () => {
@@ -111,7 +119,7 @@ const TaskForm = (props: TaskFormProps) => {
   };
 
   const handleClose = (event: any, reason: string) => {
-    if (loading === LOADING_STATE.LOADING || reason === 'backdropClick') return;
+    if (isLoading || reason === 'backdropClick') return;
     if (isFunction(onClose)) onClose();
   };
 
@@ -135,6 +143,7 @@ const TaskForm = (props: TaskFormProps) => {
           setValue(key as any, task[key as keyof Task]);
         }
       });
+      setValue('category', TASK_CATEGORY_OPTIONS.find((option) => option.value === task.categoryId));
     }
   }, [task, setValue, editMode]);
 
@@ -182,12 +191,14 @@ const TaskForm = (props: TaskFormProps) => {
                 </IconButton>
               )}
               {editable && editMode && isDirty && (
-                <IconButton {...headerbuttonConfig} disabled={loading === LOADING_STATE.LOADING} onClick={handleSave}>
-                  {loading === LOADING_STATE.LOADING ? (
-                    <CircularProgress classes={{ colorPrimary: 'text-white' }} size={14} />
-                  ) : (
-                    <CheckOutlinedIcon sx={styles.headerButtonIconStyles} />
-                  )}
+                <IconButton {...headerbuttonConfig} disabled={isLoading} onClick={handleSave}>
+                  {isLoading
+                    ? (
+                      <CircularProgress classes={{ colorPrimary: 'text-white' }} size={14} />
+                    )
+                    : (
+                      <CheckOutlinedIcon sx={styles.headerButtonIconStyles} />
+                    )}
                 </IconButton>
               )}
             </Box>
@@ -224,6 +235,20 @@ const TaskForm = (props: TaskFormProps) => {
           </Box>
           <Box sx={{ flexGrow: 1 }}>
             <FormSelect name="severity" control={control} options={TASK_SEVERITY_OPTIONS} disabled={!editMode} />
+          </Box>
+        </Box>
+        <Box sx={styles.inlineFieldGroupStyles}>
+          <Box component="label" sx={styles.labelGroupStyles}>
+            Category:
+          </Box>
+          <Box sx={{ flexGrow: 1 }}>
+            <FormSelect
+              options={TASK_CATEGORY_OPTIONS}
+              placeholder="Please type"
+              control={control}
+              disabled={!editMode}
+              name="category"
+            />
           </Box>
         </Box>
         <Box sx={styles.inlineFieldGroupStyles}>

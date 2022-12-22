@@ -35,3 +35,6 @@ RUN yarn install
 
 # Copy source code
 COPY --chown=www-data:www-data src/core ./
+
+# Build code
+RUN yarn build

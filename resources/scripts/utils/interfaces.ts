@@ -42,10 +42,16 @@ export interface Task {
   description?: string;
   acceptance?: string;
   dueDate?: string;
+  categoryId?: number;
   severity: SEVERITY;
   status: TASK_STATUS;
   createdBy?: User;
   createdAt?: string;
+}
+
+export interface Category {
+  id: number;
+  value: string;
 }
 
 export type RootState = ReturnType<typeof store.getState>;

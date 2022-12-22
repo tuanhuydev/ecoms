@@ -13,6 +13,9 @@ use App\Models\Account;
 
 class AccountService
 {
+  /**
+   * @throws InvalidParamException
+   */
   public function create(string $userId)
   {
     if (empty($userId)) {
@@ -27,6 +30,9 @@ class AccountService
     return Account::create($account);
   }
 
+  /**
+   * @throws InvalidParamException
+   */
   public function update(string $accountId, mixed $body)
   {
     if (empty($accountId)) {
