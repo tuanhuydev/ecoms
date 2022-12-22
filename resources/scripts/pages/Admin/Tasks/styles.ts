@@ -75,6 +75,11 @@ const getStyles = () => {
     width: 600,
     mr: 2
   };
+
+  const categoryStyles: SxProps = {
+    textTransform: 'capitalize'
+  };
+
   const emptyRecordStyles: SxProps = {
     display: 'flex',
     alignItems: 'center',
@@ -107,7 +112,8 @@ const getStyles = () => {
     typographyStyles,
     emptyRecordStyles,
     skeletonStyles,
-    selectStyles
+    selectStyles,
+    categoryStyles
   };
 };
 

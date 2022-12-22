@@ -2,28 +2,27 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Traits\TransformArrayTrait;
 use App\Http\Controllers\Controller;
 use App\Services\TaskService;
-use Illuminate\Validation\Rules\Enum;
 use App\Exceptions\InvalidParamException;
 use App\Http\Resources\TaskResource;
 use BenSampo\Enum\Rules\EnumValue;
-use Illuminate\Pagination\Paginator;
 use App\Enums\SeverityType;
-use Throwable;
 
 class TaskController extends Controller
 {
     use TransformArrayTrait;
     protected TaskService $taskService;
+    protected CategoryService $categoryService;
 
-    function __construct(TaskService $taskService)
+    function __construct(TaskService $taskService, CategoryService $categoryService)
     {
         $this->taskService = $taskService;
+        $this->categoryService = $categoryService;
     }
 
   /**
@@ -32,7 +31,7 @@ class TaskController extends Controller
    * @param Request $request
    * @return JsonResponse
    */
-    public function getAllTasks(Request $request)
+    public function getAllTasks(Request $request): JsonResponse
     {
       $tasks = $this->taskService->getAll($request);
       return response()->json([
@@ -45,6 +44,11 @@ class TaskController extends Controller
           'perPage' => $tasks->perPage()
         ]
       ]);
+    }
+
+    public function getTaskCategories(Request $request): JsonResponse
+    {
+      return response()->json([ 'categories' => $this->categoryService->getTaskCategories() ]);
     }
 
   /**
@@ -109,6 +113,7 @@ class TaskController extends Controller
         'status' => "nullable|in:BACKLOG,PROGRESS,DONE",
         'dueDate' => 'nullable',
         'severity' =>  ['nullable', new EnumValue(SeverityType::class)],
+        'categoryId' => 'nullable'
       ]);
       $validatedData['createdBy'] = $request->user()->id;
       return response()->json(['success' => $this->taskService->update($request->id, $this->toSnake($validatedData))]);

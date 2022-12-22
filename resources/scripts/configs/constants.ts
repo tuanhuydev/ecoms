@@ -1,5 +1,5 @@
 import { Account, User } from '@utils/interfaces';
-import { SEVERITY, TASK_STATUS, USER_AVAILABILITY, USER_STATUS } from './enums';
+import { SEVERITY, TASK_CATEGORY, TASK_STATUS, USER_AVAILABILITY, USER_STATUS } from './enums';
 
 export const IS_DEV_ENV = process.env.APP_ENV === 'local';
 export const APP_URL = IS_DEV_ENV ? 'http://localhost' : process.env.APP_URL;
@@ -77,3 +77,9 @@ export const USER_AVAILABILITY_OPTIONS = [
   { label: 'Busy', value: USER_AVAILABILITY.BUSY },
   { label: 'Offline', value: USER_AVAILABILITY.OFFLINE }
 ];
+
+// export const TASK_CATEGORY_OPTIONS = [
+//   { label: 'Unassigned', value: TASK_CATEGORY.UNASSIGNED },
+//   { label: 'Issue', value: TASK_CATEGORY.ISSUE },
+//   { label: 'Fix', value: TASK_CATEGORY.FIX }
+// ];

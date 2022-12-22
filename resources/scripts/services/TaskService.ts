@@ -19,23 +19,27 @@ class TaskService {
     return httpClientWithAuth.get(this.path, { params });
   };
 
-  public getTaskById = (id: number) => {
+  getTaskById = (id: number) => {
     return httpClientWithAuth.get(`${this.path}/${id}`);
   };
 
-  public createTask = (task: Partial<Task>) => {
+  createTask = (task: Partial<Task>) => {
     return httpClientWithAuth.post(this.path, task);
   };
 
-  public updateTask = (data: any) => {
+  updateTask = (data: Partial<Task>) => {
     const { id, ...restData } = data;
     const url = `${this.path}/${id}`;
     return httpClientWithAuth.patch(url, restData);
   };
 
-  public deleteTask = (id: number) => {
+  deleteTask = (id: number) => {
     return httpClientWithAuth.delete(`${this.path}/${id}`);
   };
+
+  getTaskCategories = () => {
+    return httpClientWithAuth.get(`${this.path}/categories`);
+  }
 }
 
 export default TaskService;

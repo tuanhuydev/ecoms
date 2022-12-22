@@ -1,5 +1,4 @@
-import { AppDispatch, DefaultObjectType, Task, User } from '@utils/interfaces';
-import { Controller, useForm } from 'react-hook-form';
+import { AppDispatch, Category, DefaultObjectType, Task, User } from '@utils/interfaces';
 import { LOADING_STATE, SEVERITY, SORT_TYPE, TASK_STATUS } from '@configs/enums';
 import { TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import {
@@ -8,6 +7,7 @@ import {
   TaskParams,
   TaskSorter,
   selectAllTasks,
+  selectTaskCategories,
   selectTaskFilter,
   selectTaskLoading,
   selectTaskPaginator,
@@ -19,6 +19,7 @@ import { adminRoutes } from '../../../components/Router';
 import { newTaskSchema } from './schemas';
 import { selectCurrentUser } from '@store/slices/userSlice';
 import { useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -27,6 +28,7 @@ import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
+import FormInput from '@components/form/FormInput';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Input from '@components/base/Input';
@@ -67,16 +69,21 @@ const TaskSortByOptions = [
 ];
 
 const Tasks = () => {
-  const styles = getStyles();
   // Hook
   const dispatch: AppDispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const styles = getStyles();
+
   // Selectors
   const tasks: Task[] = selectAllTasks();
   const taskParams: TaskParams = selectTaskParams();
   const taskFilter: TaskFilter = selectTaskFilter();
   const taskSorter: TaskSorter = selectTaskSorter();
+  const taskCategories: Array<any> = selectTaskCategories();
   const taskPaginator: TaskPaginator = selectTaskPaginator();
   const currentUser: User = selectCurrentUser();
   const loading: string = selectTaskLoading();
@@ -91,21 +98,22 @@ const Tasks = () => {
   const debounceSearch: string = useDebounce(search);
   const openMenu = Boolean(menuAnchor);
 
+  const isAscending = taskSorter.value === String(SORT_TYPE.ASCENDING);
+
+  // Handle lazyloading on tasks
   const observer = useRef<any>();
-  const currentPage = taskPaginator.currentPage;
-  const hasMorePage = taskPaginator.hasMorePage;
   const lastItemObserver = useCallback(
     (node: any) => {
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMorePage) {
+        if (entries[0].isIntersecting && taskPaginator.hasMorePage) {
           // Visible somewhere
           dispatch(
             taskActions.setTaskParams({
               paginator: {
                 ...taskPaginator,
-                currentPage: currentPage + 1
+                currentPage: taskPaginator.currentPage + 1
               }
             })
           );
@@ -116,9 +124,6 @@ const Tasks = () => {
     [loading, taskPaginator.hasMorePage]
   );
 
-  const { enqueueSnackbar } = useSnackbar();
-  const isAscending = taskSorter.value === String(SORT_TYPE.ASCENDING);
-
   // Form
   const { control, getValues, handleSubmit, reset } = useForm({
     defaultValues: INITIAL_FORM_VALUES,
@@ -126,16 +131,14 @@ const Tasks = () => {
   });
 
   const handleCreateTask = () => {
-    const title = getValues('title');
     const newTask = {
-      title,
+      title: getValues('title'),
       status: TASK_STATUS.BACKLOG,
       severity: SEVERITY.LOW,
       createdBy: currentUser,
-      createdAt: new Date().toISOString(),
-      description: '',
-      acceptance: '',
-      dueDate: ''
+      categoryId: taskCategories[0].id, // Unassigned
+      category: taskCategories[0],
+      createdAt: new Date().toISOString()
     };
     dispatch(taskActions.createTask(newTask));
     reset();
@@ -143,7 +146,7 @@ const Tasks = () => {
 
   const handleCompleteTask = (task: Task) => async () => {
     const taskStatus = task.status === TASK_STATUS.DONE ? TASK_STATUS.BACKLOG : TASK_STATUS.DONE;
-    dispatch(taskActions.saveTask({ ...task, status: taskStatus }));
+    dispatch(taskActions.updateTask({ ...task, status: taskStatus }));
   };
 
   const handleDeleteTask = () => {
@@ -191,25 +194,63 @@ const Tasks = () => {
   };
 
   const renderTaskList = () => {
-    if (!tasks.length && loading !== LOADING_STATE.LOADING) {
+    if (!tasks.length && !isLoading) {
       return <Box sx={styles.emptyRecordStyles}>no records</Box>;
     } else if (!tasks.length) {
-      const placeholders: number[] = new Array(10).fill(0);
       return (
         <Box>
-          {placeholders.map((_: number, index: number) => (
-            <Box className='flex mx-3 mb-2' key={index}>
-              <Skeleton variant="circular" height={40} width={40} sx={{ mr: 1 }} />
+          {new Array(10).fill(0).map((_: number, index: number) => (
+            <Box className="flex mx-3 my-2" key={index}>
+              <Skeleton variant="circular" height={40} width={40} className="mr-2" />
               <Skeleton variant="rectangular" height={40} sx={styles.skeletonStyles} />
             </Box>
           ))}
         </Box>
       );
     }
+    const getListItemContent = (task: Task) => {
+      const categoryValue = taskCategories.find((category: Category) => category.id === task.categoryId)?.value;
+      return (
+        <>
+          <Radio
+            onClick={handleCompleteTask(task)}
+            checked={task?.status === TASK_STATUS.DONE}
+            sx={styles.buttonStyles}
+            disabled={isLoading}
+          />
+          <ListItemButton disableRipple disabled={isLoading} sx={styles.buttonStyles} onClick={handleOpenTask(task)}>
+            <Box sx={styles.typographyStyles} className="flex items-center">
+              {task?.categoryId && (
+                <Chip
+                  size="small"
+                  variant="outlined"
+                  className="mr-2"
+                  label={categoryValue?.toLowerCase()}
+                />
+              )}
+              <Typography noWrap>{task.title}</Typography>
+            </Box>
+            <Box className="flex mr-12">
+              <Box sx={styles.labelStyles}>Status:</Box>
+              <Chip
+                size="small"
+                label={task?.status.toLowerCase()}
+                sx={styles.chipStyles}
+                color={getTaskStatus(task.status)}
+              />
+            </Box>
+            <Box className="flex mr-12">
+              <Box sx={styles.labelStyles}>Severity:</Box>
+              {getSeverityElement(task.severity)}
+            </Box>
+          </ListItemButton>
+        </>
+      );
+    };
     return (
       <List dense>
         {tasks.map((task, index) => {
-          if (index + 1 === tasks.length) {
+          if (index + 1 === tasks.length) { // Last item
             return (
               <ListItem
                 sx={styles.listItemStyles}
@@ -222,35 +263,7 @@ const Tasks = () => {
                   </IconButton>
                 }
               >
-                <Radio
-                  onClick={handleCompleteTask(task)}
-                  checked={task?.status === TASK_STATUS.DONE}
-                  sx={styles.buttonStyles}
-                  disabled={isLoading}
-                />
-                <ListItemButton
-                  disableRipple
-                  disabled={isLoading}
-                  sx={styles.buttonStyles}
-                  onClick={handleOpenTask(task)}
-                >
-                  <Typography noWrap sx={styles.typographyStyles}>
-                    {task.title}
-                  </Typography>
-                  <Box className="flex mr-12">
-                    <Box sx={styles.labelStyles}>Status:</Box>
-                    <Chip
-                      size="small"
-                      label={task?.status.toLowerCase()}
-                      sx={styles.chipStyles}
-                      color={getTaskStatus(task.status)}
-                    />
-                  </Box>
-                  <Box className="flex mr-12">
-                    <Box sx={styles.labelStyles}>Severity:</Box>
-                    {getSeverityElement(task.severity)}
-                  </Box>
-                </ListItemButton>
+                {getListItemContent(task)}
               </ListItem>
             );
           }
@@ -265,35 +278,7 @@ const Tasks = () => {
                 </IconButton>
               }
             >
-              <Radio
-                onClick={handleCompleteTask(task)}
-                checked={task?.status === TASK_STATUS.DONE}
-                sx={styles.buttonStyles}
-                disabled={isLoading}
-              />
-              <ListItemButton
-                disableRipple
-                disabled={isLoading}
-                sx={styles.buttonStyles}
-                onClick={handleOpenTask(task)}
-              >
-                <Typography noWrap sx={styles.typographyStyles}>
-                  {task.title}
-                </Typography>
-                <Box className="flex mr-12">
-                  <Box sx={styles.labelStyles}>Status:</Box>
-                  <Chip
-                    size="small"
-                    label={task?.status.toLowerCase()}
-                    sx={styles.chipStyles}
-                    color={getTaskStatus(task.status)}
-                  />
-                </Box>
-                <Box className="flex mr-12">
-                  <Box sx={styles.labelStyles}>Severity:</Box>
-                  {getSeverityElement(task.severity)}
-                </Box>
-              </ListItemButton>
+              {getListItemContent(task)}
             </ListItem>
           );
         })}
@@ -346,24 +331,32 @@ const Tasks = () => {
     }
     dispatch(taskActions.setTaskParams({ filter: newFilter }));
   }, [debounceSearch]);
+
   useEffect(() => {
-    if (taskPaginator.currentPage <= taskPaginator.lastPage) {
+    const { currentPage, lastPage } = taskPaginator;
+    if (currentPage <= lastPage && loading === LOADING_STATE.IDLE) {
       dispatch(taskActions.fetchTasks(taskParams));
     }
   }, [taskFilter, taskSorter, taskPaginator.currentPage]);
 
-  // Handle Deeplinking
   useEffect(() => {
-    const { id } = params;
-    if (id) {
-      const deepLinkingTask: Task = tasks.find((task: Task) => task.id === Number(id));
-      if (deepLinkingTask) {
-        setSelectedTask(deepLinkingTask);
-      }
-      const cleanUrl = location.pathname.substring(0, location.pathname.length - 2);
-      navigate(cleanUrl, { replace: true });
+    if (!taskCategories.length) {
+      dispatch(taskActions.fetchTaskCategories());
     }
-  }, [tasks.length]);
+  }, []);
+
+  // Handle Deeplinking
+  // useEffect(() => {
+  //   const { id } = params;
+  //   if (id) {
+  //     const deepLinkingTask: Task = tasks.find((task: Task) => task.id === Number(id));
+  //     if (deepLinkingTask) {
+  //       setSelectedTask(deepLinkingTask);
+  //     }
+  //     const cleanUrl = location.pathname.substring(0, location.pathname.length - 2);
+  //     navigate(cleanUrl, { replace: true });
+  //   }
+  // }, [tasks.length]);
 
   return (
     <PageContainer title="Tasks" loading={isLoading} routes={adminRoutes}>
@@ -423,20 +416,14 @@ const Tasks = () => {
       <Box sx={styles.listContainerStyles}>
         <Box sx={styles.quickSearchStyles}>
           <form onSubmit={handleSubmit(handleCreateTask)} className="flex items-center flex-wrap">
-            <Controller
+            <FormInput
               name="title"
+              autoComplete="off"
+              className="border-0 border-radius-4 w-100"
+              placeholder="Quick Create Task"
+              sx={{ height: '2.5rem' }}
               control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  autoComplete="off"
-                  disabled={isLoading}
-                  className="border-0 border-radius-4 w-100"
-                  placeholder="Quick Create Task"
-                  style={{ height: '2.5rem' }}
-                />
-              )}
+              disabled={isLoading}
             />
           </form>
         </Box>
@@ -445,8 +432,8 @@ const Tasks = () => {
       {selectedTask && <TaskForm open={!!selectedTask} task={selectedTask} onClose={handleCloseTask} />}
       {deleteTaskId && (
         <Menu anchorEl={menuAnchor} open={openMenu} onClose={handleCloseMenu}>
-          <MenuItem className='flex items-center' onClick={handleDeleteTask}>
-            <DeleteOutlineIcon fontSize="small" className='mr-3' />
+          <MenuItem className="flex items-center" onClick={handleDeleteTask}>
+            <DeleteOutlineIcon fontSize="small" className="mr-3" />
             Delete
           </MenuItem>
         </Menu>
