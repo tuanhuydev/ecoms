@@ -44,3 +44,9 @@ export enum USER_AVAILABILITY {
   BUSY = 'BUSY',
   OFFLINE = 'OFFLINE'
 }
+
+export enum TASK_CATEGORY {
+  UNASSIGNED = 'UNASSIGNED',
+  ISSUE = 'ISSUE',
+  FIX = 'FIX'
+}

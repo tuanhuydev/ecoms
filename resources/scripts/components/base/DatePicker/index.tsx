@@ -1,6 +1,6 @@
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import React from 'react';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import getStyles from './styles';

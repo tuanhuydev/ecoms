@@ -6,6 +6,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Task;
+use App\Models\Category;
+use Symfony\Component\CssSelector\Exception\InternalErrorException;
 
 class TaskService
 {
@@ -53,15 +55,21 @@ class TaskService
       return Task::find($id);
     }
 
-    /**
-     * Create new task
-     * @param Task data
-     * @return Task
-     *
-     */
+  /**
+   * Create new task
+   * @param Task data
+   * @return Task
+   *
+   * @throws InternalErrorException
+   */
     public function create($data): Task
     {
-        return Task::create($data);
+        $task = Task::create($data);
+        $task['category_id'] = $data['category_id'] ?? 1; // Default category Id;
+        if (!$task->save()) {
+          throw new InternalErrorException();
+        }
+        return $task;
     }
 
     /**

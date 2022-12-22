@@ -1,4 +1,5 @@
 import { Controller, ControllerProps } from 'react-hook-form';
+import { DefaultObjectType } from '@utils/interfaces';
 import BaseSelect from '@components/base/Select';
 import Box from '@mui/material/Box';
 import React from 'react';
@@ -8,15 +9,17 @@ export interface FormSelectProps extends Partial<ControllerProps> {
   control: any;
   className?: string;
   placeholder?: string;
+  loadOptions?: DefaultObjectType;
   name: string;
   label?: string;
   disabled?: boolean;
+  creatable?: boolean;
   defaultValue?: any;
-  options: Array<any>;
+  options?: Array<any>;
 }
 
 const FormSelect = (props: FormSelectProps) => {
-  const { options, disabled = false, label, defaultValue, ...restProps } = props;
+  const { options, disabled = false, label, defaultValue, loadOptions = {}, creatable = false, ...restProps } = props;
   const styles = getStyles();
   return (
     <Controller
@@ -35,6 +38,8 @@ const FormSelect = (props: FormSelectProps) => {
               options={options}
               value={value}
               name={name}
+              creatable={creatable}
+              loadOptions={loadOptions}
               defaultValue={defaultValue}
               disabled={disabled}
             />

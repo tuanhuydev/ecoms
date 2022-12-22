@@ -70,7 +70,7 @@ const config = {
             loader: 'css-loader',
             options: {
               modules: true,
-              sourceMap: isDevelopment
+              sourceMap: true
             }
           },
           {
@@ -79,7 +79,7 @@ const config = {
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: isDevelopment
+              sourceMap: true
             }
           }
         ]
@@ -95,7 +95,7 @@ const config = {
             loader: 'css-loader',
             options: {
               modules: false,
-              sourceMap: isDevelopment
+              sourceMap: true
             }
           },
           {
@@ -104,7 +104,7 @@ const config = {
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: isDevelopment
+              sourceMap: true
             }
           }
         ]

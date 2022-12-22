@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use App\Http\Resources\UserResource;
 use App\Http\Traits\TransformArrayTrait;
 use App\Exceptions\NotFoundException;
 use App\Exceptions\InvalidParamException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Validator;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\StatusType;
@@ -24,7 +26,7 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    function getUsers(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    function getUsers(Request $request): AnonymousResourceCollection
     {
       $users = $this->userService->getUsers();
       return UserResource::collection($users);
@@ -39,7 +41,7 @@ class UserController extends Controller
       return new UserResource($user);
     }
 
-    function createUser(Request $request): \Illuminate\Http\JsonResponse
+    function createUser(Request $request): JsonResponse
     {
       try {
         $validatedData = $request->validate([
@@ -64,7 +66,7 @@ class UserController extends Controller
       }
     }
 
-    function updateUser(Request $request): \Illuminate\Http\JsonResponse
+    function updateUser(Request $request): JsonResponse
     {
       if (empty($request->id)) {
         throw new InvalidParamException();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Http\Traits\TransformArrayTrait;
@@ -27,7 +28,7 @@ class AccountController extends Controller
    * @param Request $request
    * @return JsonResponse
    */
-  public function updateAccount(Request $request): \Illuminate\Http\JsonResponse
+  public function updateAccount(Request $request): JsonResponse
   {
     if (empty($request->id)) {
       throw new InvalidParamException();
