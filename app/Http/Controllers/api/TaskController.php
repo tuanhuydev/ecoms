@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Traits\TransformArrayTrait;
 use App\Http\Controllers\Controller;
 use App\Services\TaskService;
-use Illuminate\Validation\Rules\Enum;
 use App\Exceptions\InvalidParamException;
 use App\Http\Resources\TaskResource;
 use BenSampo\Enum\Rules\EnumValue;
 use App\Enums\SeverityType;
-use Throwable;
 
 class TaskController extends Controller
 {
     use TransformArrayTrait;
     protected TaskService $taskService;
+    protected CategoryService $categoryService;
 
-    function __construct(TaskService $taskService)
+    function __construct(TaskService $taskService, CategoryService $categoryService)
     {
         $this->taskService = $taskService;
+        $this->categoryService = $categoryService;
     }
 
   /**
@@ -34,7 +34,21 @@ class TaskController extends Controller
     public function getAllTasks(Request $request): JsonResponse
     {
       $tasks = $this->taskService->getAll($request);
-      return response()->json(['tasks' => TaskResource::collection($tasks)]);
+      return response()->json([
+        'tasks' => TaskResource::collection($tasks),
+        'pagination' => [
+          'total' => $tasks->total(),
+          'hasMorePage' => $tasks->hasMorePages(),
+          'currentPage' => $tasks->currentPage(),
+          'lastPage'=> $tasks->lastPage(),
+          'perPage' => $tasks->perPage()
+        ]
+      ]);
+    }
+
+    public function getTaskCategories(Request $request): JsonResponse
+    {
+      return response()->json([ 'categories' => $this->categoryService->getTaskCategories() ]);
     }
 
   /**
@@ -45,8 +59,8 @@ class TaskController extends Controller
    */
     public function getTaskById(string $id): JsonResponse
     {
-      $newTask = $this->taskService->getById($id);
-        return response()->json(['task' => new TaskResource($newTask)]);
+      $task = $this->taskService->getById($id);
+        return response()->json(['task' => new TaskResource($task)]);
     }
 
 
@@ -61,6 +75,9 @@ class TaskController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|max:255',
         ]);
+        if ($request->has('categoryId')) {
+          $validatedData['category_id'] = $request->categoryId;
+        }
         $validatedData['created_by'] = $request->user()->id;
         $newTask = $this->taskService->create($validatedData);
         return response()->json(['id' => $newTask->id]);
@@ -82,6 +99,7 @@ class TaskController extends Controller
    *
    * @param Request $request
    * @return JsonResponse
+   * @throws InvalidParamException
    */
     public function updateTask(Request $request): JsonResponse
     {
@@ -95,6 +113,7 @@ class TaskController extends Controller
         'status' => "nullable|in:BACKLOG,PROGRESS,DONE",
         'dueDate' => 'nullable',
         'severity' =>  ['nullable', new EnumValue(SeverityType::class)],
+        'categoryId' => 'nullable'
       ]);
       $validatedData['createdBy'] = $request->user()->id;
       return response()->json(['success' => $this->taskService->update($request->id, $this->toSnake($validatedData))]);

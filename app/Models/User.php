@@ -2,17 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use App\Models\Article;
-use App\Models\Task;
-use App\Models\Account;
 use App\Models\Traits\HasUuid;
 use App\Models\Traits\HasConfirmationToken;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 
 class User extends Authenticatable
@@ -22,7 +19,7 @@ class User extends Authenticatable
     protected $primaryKey = 'id';
     protected $keyType = 'string';
 
-    // Prevent save as uuid but return 0
+    // Prevent saving as uuid but return 0
     public $incrementing = false;
 
     /**
@@ -48,6 +45,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
         'password',
         'confirmation_token',
         'reset_password_token',
@@ -63,22 +63,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getFullName() {
+    public function getFullName(): string
+    {
         return ucfirst($this->first_name)." ".ucfirst($this->last_name);
     }
 
 
-    public function articles()
+    public function articles(): HasMany
     {
         return $this->hasMany(Article::class, 'id', 'author_id');
     }
 
-    public function tasks()
+    public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
     }
 
-    public function account() {
+    public function account(): HasOne
+    {
       return $this->hasOne(Account::class);
     }
 }

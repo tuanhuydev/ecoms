@@ -1,5 +1,5 @@
 import { Controller } from 'react-hook-form';
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType } from '@utils/interfaces';
 import { SxProps } from '@mui/material';
 import Box from '@mui/system/Box';
 import OutlinedInput, { OutlinedInputProps } from '@mui/material/OutlinedInput/OutlinedInput';
@@ -9,18 +9,21 @@ import getStyles from './styles';
 export interface FormInputProps extends OutlinedInputProps {
   name: string;
   label?: string;
+  className?: string;
   errors?: DefaultObjectType;
   control?: any;
   placeholder?: string;
   disabled?: boolean;
   OutlinedInputProps?: Partial<OutlinedInputProps>;
-};
+}
 
 const FormInput = ({
-  onKeyDown, label,
+  onKeyDown,
+  label,
   OutlinedInputProps = {},
   sx: customStyles = {},
   placeholder = '',
+  className = '',
   disabled = false,
   ...restProps
 }: FormInputProps) => {
@@ -33,18 +36,27 @@ const FormInput = ({
       render={({ field, fieldState: { error } }) => {
         return (
           <>
-            {label && (<Box sx={labelStyles} component="label" aria-label={label}>{label}</Box>)}
-            <Box sx={{ minHeight: 60 }}>
+            {label && (
+              <Box sx={labelStyles} component="label" aria-label={label}>
+                {label}
+              </Box>
+            )}
+            <Box sx={{ minHeight: 60 }} className="w-100">
               <OutlinedInput
                 {...OutlinedInputProps}
                 {...field}
+                className={className}
                 autoComplete="off"
                 disabled={disabled}
                 placeholder={placeholder}
                 sx={styles}
                 onKeyDown={onKeyDown}
               />
-              { error && (<Box component="span" sx={errorStyles}>{error.message}</Box>) }
+              {error && (
+                <Box component="span" sx={errorStyles}>
+                  {error.message}
+                </Box>
+              )}
             </Box>
           </>
         );

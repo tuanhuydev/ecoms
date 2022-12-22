@@ -2,24 +2,49 @@
 
 namespace App\Services;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Task;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Category;
+use Symfony\Component\CssSelector\Exception\InternalErrorException;
 
 class TaskService
 {
-
     /**
      * Get all active tasks
      */
-    public function getAll(Request $request)
+    public function getAll(Request $request): LengthAwarePaginator
     {
-      $query = $request->query();
-      if (isset($query['action'])) {
-        return Task::where('created_by',  $request->user()->id)->orderBy(Str::of($query['field'])->snake(), $query['value'])->get();
+      // TODO: User Permission Enhancement
+      $currentUser = $request->user()->id;
+      $taskCollection = Task::where('created_by',  $currentUser);
+
+      // Filter
+      if ($request->has('filter')) {
+        $filters = $request->query('filter');
+        if (!empty($filters['search'])) {
+          $taskCollection = Task::search($filters['search'])->where('created_by',  $currentUser);
+        }
+
+        foreach($filters as $key => $value) {
+          if ($key !== 'search') {
+            $taskCollection->where($key, $value);
+          }
+        }
       }
-      return Task::where('created_by',  $request->user()->id)->get();
+
+      // Order
+      if ($request->has('sorter')) {
+        $sorters = $request->query('sorter');
+        $field = Str::of($sorters['field'])->snake();
+        $value = Str::of($sorters['value'])->lower();
+        if ($field && $value) {
+          $taskCollection = $taskCollection->orderBy($field, $value);
+        }
+      }
+      $perPage = $request->has('pageSize') ? (int) $request->query('pageSize') : 20;
+      return $taskCollection->paginate($perPage);
     }
 
      /**
@@ -27,18 +52,24 @@ class TaskService
      */
     public function getById(string $id)
     {
-        return Task::find($id);
+      return Task::find($id);
     }
 
-    /**
-     * Create new task
-     * @param Task data
-     * @return string taskId
-     *
-     */
-    public function create($data)
+  /**
+   * Create new task
+   * @param Task data
+   * @return Task
+   *
+   * @throws InternalErrorException
+   */
+    public function create($data): Task
     {
-        return Task::create($data);
+        $task = Task::create($data);
+        $task['category_id'] = $data['category_id'] ?? 1; // Default category Id;
+        if (!$task->save()) {
+          throw new InternalErrorException();
+        }
+        return $task;
     }
 
     /**

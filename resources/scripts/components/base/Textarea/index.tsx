@@ -3,8 +3,8 @@ import Box from '@mui/material/Box';
 import React, { DetailedHTMLProps, TextareaHTMLAttributes, useEffect, useRef } from 'react';
 import getStyles from './styles';
 
-export interface TextareaProps extends
-  DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> {
+export interface TextareaProps
+  extends DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> {
   value?: string;
   name?: string;
   sx?: SxProps;

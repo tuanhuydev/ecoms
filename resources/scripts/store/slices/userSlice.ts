@@ -1,17 +1,15 @@
-import { DefaultObjectType } from 'scripts/interfaces/Meta';
+import { DefaultObjectType, RootState, User } from '@utils/interfaces';
 import { EMPTY_ARRAY, EMPTY_USER } from 'scripts/configs/constants';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '..';
-import { User } from '../../interfaces/Model';
 import { useSelector } from 'react-redux';
 import cloneDeep from 'lodash/cloneDeep';
 
 export interface UserSliceType {
   users: User[];
   currentUser?: User;
-  loading: string,
-  filter: DefaultObjectType
+  loading: string;
+  filter: DefaultObjectType;
 }
 
 const initialState: UserSliceType = {
@@ -64,17 +62,18 @@ export const selectCurrentUser = () => useSelector((state: RootState) => state.u
 export const selectUsers = () => useSelector((state: RootState) => state.user.users);
 export const selectLoadingUser = () => useSelector((state: RootState) => state.user.loading);
 export const selectUserFilter = () => useSelector((state: RootState) => state.user.filter);
-export const selectFilteredUsers = () => useSelector(({ user: slice }: RootState) => {
-  const { users, filter } = slice;
-  let filteredUsers = cloneDeep(users);
-  if (filter?.search) {
-    filteredUsers = filteredUsers.filter((user: User) => {
-      const firstName = user.firstName.toLowerCase().trim();
-      const lastName = user.lastName.toLowerCase().trim();
-      return firstName.includes(filter.search) || lastName.includes(filter.search);
-    });
-  }
-  return filteredUsers;
-});
+export const selectFilteredUsers = () =>
+  useSelector(({ user: slice }: RootState) => {
+    const { users, filter } = slice;
+    let filteredUsers = cloneDeep(users);
+    if (filter?.search) {
+      filteredUsers = filteredUsers.filter((user: User) => {
+        const firstName = user.firstName.toLowerCase().trim();
+        const lastName = user.lastName.toLowerCase().trim();
+        return firstName.includes(filter.search) || lastName.includes(filter.search);
+      });
+    }
+    return filteredUsers;
+  });
 
 export default userSlice.reducer;

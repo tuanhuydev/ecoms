@@ -21,7 +21,3 @@ export const store = configureStore({
 
 // mounting middleware with store has to be after store definition
 sagaMiddleware.run(rootSaga);
-
-export type RootState = ReturnType<typeof store.getState>;
-
-export type AppDispatch = typeof store.dispatch;

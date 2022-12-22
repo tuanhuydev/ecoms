@@ -3,45 +3,57 @@
 @font-face {
   font-family: $font__sanSerif;
   src: url($path__openSans + 'OpenSans-Regular.ttf') format('ttf');
-  font-style: normal;
+  font-style: 400;
 }
 
 @font-face {
   font-family: $font__sanSerif;
+  font-weight: 300;
   src: url($path__openSans + 'OpenSans-Light.ttf') format('ttf');
 }
 
 @font-face {
   font-family: $font__sanSerif;
+  font-weight: 300;
+  font-style: italic;
   src: url($path__openSans + 'OpenSans-LightItalic.ttf') format('ttf');
 }
 
 @font-face {
   font-family: $font__sanSerif;
+  font-weight: bold;
   src: url($path__openSans + 'OpenSans-Bold.ttf') format('ttf');
 }
 
 @font-face {
   font-family: $font__sanSerif;
+  font-style: italic;
+  font-weight: bold;
   src: url($path__openSans + 'OpenSans-BoldItalic.ttf') format('ttf');
 }
 
 @font-face {
   font-family: $font__sanSerif;
+  font-weight: 500;
   src: url($path__openSans + 'OpenSans-SemiBold.ttf') format('ttf');
 }
 
 @font-face {
   font-family: $font__sanSerif;
+  font-weight: 500;
+  font-style: italic;
   src: url($path__openSans + 'OpenSans-SemiBoldItalic.ttf') format('ttf');
 }
 
 @font-face {
   font-family: $font__sanSerif;
+  font-weight: 700;
   src: url($path__openSans + 'OpenSans-ExtraBold.ttf') format('ttf');
 }
 
 @font-face {
   font-family: $font__sanSerif;
+  font-weight: 700;
+  font-style: italic;
   src: url($path__openSans + 'OpenSans-ExtraBoldItalic.ttf') format('ttf');
 }

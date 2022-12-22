@@ -1,7 +1,6 @@
-import { Account } from 'scripts/interfaces/Model';
+import { Account, RootState } from '@utils/interfaces';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '..';
 import { useSelector } from 'react-redux';
 
 const initialState: any = {

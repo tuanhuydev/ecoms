@@ -8,7 +8,7 @@ if (localStorage.getItem('user') && Cookie.get('accessToken')) {
   window.location.href = `${APP_URL}/admin`;
 }
 
-window.onload = function() {
+window.onload = function () {
   const authForm: HTMLFormElement = document.querySelector("form[id='auth__form']");
 
   if (!authForm) {
@@ -83,9 +83,8 @@ window.onload = function() {
     const lastName: string = (authForm.querySelector("input[name='lastName']") as HTMLInputElement)?.value;
     const email: string = (authForm.querySelector("input[name='email']") as HTMLInputElement)?.value;
     const password: string = (authForm.querySelector("input[name='password']") as HTMLInputElement)?.value;
-    const confirmPassword: string = (
-      authForm.querySelector("input[name='confirmPassword']") as HTMLInputElement
-    )?.value;
+    const confirmPassword: string = (authForm.querySelector("input[name='confirmPassword']") as HTMLInputElement)
+      ?.value;
 
     const auth = new SignUp(firstName, lastName, email, password, confirmPassword);
 
@@ -108,7 +107,7 @@ window.onload = function() {
     authForm.reset();
   };
 
-  const handleForgotPassword = async() => {
+  const handleForgotPassword = async () => {
     const email: string = (authForm.querySelector("input[name='email']") as HTMLInputElement)?.value;
 
     const auth = new ForgotPassword(email);
@@ -117,11 +116,10 @@ window.onload = function() {
     authForm.reset();
   };
 
-  const handleChangePassword = async() => {
+  const handleChangePassword = async () => {
     const password: string = (authForm.querySelector("input[name='password']") as HTMLInputElement)?.value;
-    const confirmPassword: string = (
-      authForm.querySelector("input[name='confirmPassword']") as HTMLInputElement
-    )?.value;
+    const confirmPassword: string = (authForm.querySelector("input[name='confirmPassword']") as HTMLInputElement)
+      ?.value;
     // TODO: Utilize function
     const queryParamsString = String(window.location.href).split('?')[1];
     const queryParams = qs.parse(queryParamsString);

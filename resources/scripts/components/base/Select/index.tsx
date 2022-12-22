@@ -1,10 +1,11 @@
 import { grey } from '@mui/material/colors';
 import { useTheme } from '@mui/material';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 import React, { RefObject } from 'react';
 import Select from 'react-select';
 
 const BaseSelect = React.forwardRef((props: any, ref: RefObject<any>) => {
-  const { disabled, styles = {}, ...restProps } = props;
+  const { disabled, styles = {}, creatable = false, ...restProps } = props;
   const theme = useTheme();
   const customStyles = {
     container: (provided: any) => ({
@@ -58,13 +59,22 @@ const BaseSelect = React.forwardRef((props: any, ref: RefObject<any>) => {
       ...styles?.input
     })
   };
+
   return (
-    <Select
-      {...restProps}
-      isDisabled={disabled}
-      ref={ref}
-      styles={customStyles}
-    />
+    <>
+      {
+        creatable
+          ? (<AsyncCreatableSelect
+            {...restProps}
+            isDisabled={disabled}
+            ref={ref}
+            styles={customStyles}
+            cacheOptions
+            defaultOptions
+          />)
+          : (<Select {...restProps} isDisabled={disabled} ref={ref} styles={customStyles} />)
+      }
+    </>
   );
 });
 

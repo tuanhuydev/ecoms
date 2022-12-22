@@ -1,74 +1,97 @@
 import { AxiosResponse } from 'axios';
 import { LOADING_STATE } from '../../configs/enums';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import { taskActions } from '../slices/taskSlice';
 import TaskService from '../../services/TaskService';
 
 const taskService = new TaskService();
+const LOADING_IDLE = taskActions.setLoading(LOADING_STATE.IDLE);
+const LOADING_SUCCESS = taskActions.setLoading(LOADING_STATE.SUCCESS);
+const LOADING_FAIL = taskActions.setLoading(LOADING_STATE.SUCCESS);
+const LOADING = taskActions.setLoading(LOADING_STATE.LOADING);
 
 export function * getTasks(action: any) {
   try {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
+    yield put(LOADING);
     const { data }: AxiosResponse = yield call(taskService.getTasks, action.payload);
-    yield put({ type: taskActions.setTasks.type, payload: data.tasks });
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
+    yield put(taskActions.setTasks(data.tasks));
+    yield put(taskActions.setTaskParams({ paginator: data.pagination }));
+    yield put(LOADING_SUCCESS);
   } catch (error) {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.FAIL });
+    yield put(LOADING_FAIL);
+  } finally {
+    yield put(LOADING_IDLE);
   }
 }
 
 export function * createTask(action: any) {
   try {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
+    yield put(LOADING);
     const { data }: AxiosResponse = yield call(taskService.createTask, action.payload);
     if (data?.id) {
       const newTask = {
         ...action.payload,
         id: data?.id
       };
-      yield put({ type: taskActions.addTask.type, payload: newTask });
-      yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
+      yield put(taskActions.addTask(newTask));
+      yield put(LOADING_SUCCESS);
     }
   } catch (error) {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.FAIL });
+    yield put(LOADING_FAIL);
   } finally {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.IDLE });
+    yield put(LOADING_IDLE);
   }
 }
 
 export function * deleteTask(action: any) {
   try {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
+    yield put(LOADING);
     const { data }: AxiosResponse = yield call(taskService.deleteTask, action.payload);
     if (data.success) {
       yield put({ type: taskActions.removeTask.type, payload: action.payload });
-      yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
+      yield put(LOADING_SUCCESS);
     }
   } catch (error) {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.FAIL });
+    yield put(LOADING_FAIL);
   } finally {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.IDLE });
+    yield put(LOADING_IDLE);
   }
 }
 
-export function * saveTask(action: any) {
+export function * updateTask(action: any) {
   try {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.LOADING });
+    yield put(LOADING);
     const { data }: AxiosResponse = yield call(taskService.updateTask, action.payload);
     if (data.success) {
-      yield put({ type: taskActions.updateTask.type, payload: action.payload });
-      yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.SUCCESS });
+      const payload = action.payload;
+      yield put(taskActions.setTask(payload));
+      yield put(LOADING_SUCCESS);
     }
   } catch (error) {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.FAIL });
+    yield put(LOADING_FAIL);
   } finally {
-    yield put({ type: taskActions.setLoading.type, payload: LOADING_STATE.IDLE });
+    yield put(LOADING_IDLE);
+  }
+}
+
+export function * fetchTaskCategories() {
+  try {
+    yield put(LOADING);
+    const { data }: AxiosResponse = yield call(taskService.getTaskCategories);
+    if (data?.categories?.length) {
+      yield put(taskActions.setTaskCategories(data.categories));
+    }
+  } catch (error) {
+    yield put(LOADING_FAIL);
+  } finally {
+    yield put(LOADING_IDLE);
   }
 }
 
 export default function * taskSaga() {
-  yield takeEvery(taskActions.fetchTasks.type, getTasks);
-  yield takeEvery(taskActions.deleteTask.type, deleteTask);
-  yield takeEvery(taskActions.createTask.type, createTask);
-  yield takeEvery(taskActions.saveTask.type, saveTask);
+  yield takeLatest(taskActions.fetchTasks.type, getTasks);
+  yield takeLatest(taskActions.deleteTask.type, deleteTask);
+  yield takeLatest(taskActions.createTask.type, createTask);
+  yield takeLatest(taskActions.updateTask.type, updateTask);
+  yield takeLatest(taskActions.fetchTaskCategories.type, fetchTaskCategories);
 }

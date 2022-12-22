@@ -11,6 +11,12 @@ const getStyles = () => {
     overflow: 'hidden'
   };
 
+  const contentStyles: SxProps = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column'
+  };
+
   const titleStyles: SxProps = {
     fontWeight: 'bold',
     fontFamily: "'Open Sans',sans-serif",
@@ -37,7 +43,8 @@ const getStyles = () => {
     titleStyles,
     avatarStyles,
     spinnerStyles,
-    toolbarStyles
+    toolbarStyles,
+    contentStyles
   };
 };
 
