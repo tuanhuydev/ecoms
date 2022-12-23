@@ -1,8 +1,8 @@
 import { AxiosResponse } from 'axios';
 import { LOADING_STATE } from 'scripts/configs/enums';
-import { accountActions } from '@store/slices/accountSlice';
+import { accountActions } from 'scripts/store/slices/accountSlice';
 import { call, put, takeEvery } from 'redux-saga/effects';
-import AccountService from '@services/AccountService';
+import AccountService from 'scripts/services/AccountService';
 
 const accountService = new AccountService();
 

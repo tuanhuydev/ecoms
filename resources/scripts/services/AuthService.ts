@@ -1,7 +1,7 @@
-import { Account, DefaultObjectType } from '@utils/interfaces';
+import { Account, DefaultObjectType } from 'scripts/utils/interfaces';
 import { AxiosResponse } from 'axios';
 import Cookie from 'js-cookie';
-import httpClient from '@utils/httpClient';
+import httpClient from 'scripts/utils/httpClient';
 
 abstract class Auth {
   static getAuth() {

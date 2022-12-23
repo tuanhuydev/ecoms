@@ -1,15 +1,15 @@
 @extends('layouts.base')
 @section('title', "Sidehand - ".$title)
 @section('stylesheets')
-    <link rel="stylesheet" href="/css/pages/auth.css">
+    <link rel="stylesheet" href="{{ asset('/css/pages/auth.css') }}">
 @endsection
 @section('body')
     <div class="auth__container">
         <form class="auth__form" id="auth__form" data-type="{{$type}}">
             <h1 class="title">{{ $title }}</h1>
-            @csrf 
+            @csrf
             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-            
+
             @if ($type === 'verify-account')
                 <div class="control">
                     <input type="text" class="control__input" name="verifyToken" required placeholder="Verification token" />
@@ -26,7 +26,7 @@
                     </div>
                 </div>
             @endif
-            
+
             @if (in_array($type, array('sign-up', 'sign-in', 'forgot-password')))
                 <div class="control">
                     <input type="email" class="control__input" name="email" required placeholder="Email" />

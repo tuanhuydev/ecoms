@@ -1,9 +1,9 @@
-import { APP_URL } from '@configs/constants';
-import { DefaultObjectType } from '@utils/interfaces';
-import { SignIn } from '@services/AuthService';
-import { accountActions } from '@store/slices/accountSlice';
+import { APP_URL } from 'scripts/configs/constants';
+import { DefaultObjectType } from 'scripts/utils/interfaces';
+import { SignIn } from 'scripts/services/AuthService';
+import { accountActions } from 'scripts/store/slices/accountSlice';
 import { useDispatch } from 'react-redux';
-import { userActions } from '@store/slices/userSlice';
+import { userActions } from 'scripts/store/slices/userSlice';
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const dispatch = useDispatch();
