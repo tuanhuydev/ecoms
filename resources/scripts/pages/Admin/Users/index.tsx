@@ -1,27 +1,27 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { DefaultObjectType, User } from '@utils/interfaces';
+import { DefaultObjectType, User } from 'scripts/utils/interfaces';
 import { LOADING_STATE, USER_STATUS } from 'scripts/configs/enums';
-import { adminRoutes } from '@components/Router';
+import { adminRoutes } from 'scripts/components/Router';
 import {
   selectCurrentUser,
   selectFilteredUsers,
   selectLoadingUser,
   selectUserFilter,
   userActions
-} from '@store/slices/userSlice';
+} from 'scripts/store/slices/userSlice';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import BlockOutlinedIcon from '@mui/icons-material/BlockOutlined';
 import Box from '@mui/material/Box';
-import ConfirmBox from '@components/base/ConfirmBox';
+import ConfirmBox from 'scripts/components/base/ConfirmBox';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import IconButton from '@mui/material/IconButton';
-import Input from '@components/base/Input';
-import PageContainer from '@components/base/PageContainer';
+import Input from 'scripts/components/base/Input';
+import PageContainer from 'scripts/components/base/PageContainer';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import React, { ChangeEventHandler, useEffect, useMemo, useState } from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import UserForm from '@pages/admin/Users/components/UserForm';
+import UserForm from 'scripts/pages/admin/Users/components/UserForm';
 import getStyles from './styles';
 
 const Users = () => {

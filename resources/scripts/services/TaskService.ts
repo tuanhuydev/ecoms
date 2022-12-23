@@ -1,6 +1,6 @@
-import { Task } from '@utils/interfaces';
-import { TaskParams } from '@store/slices/taskSlice';
-import { httpClientWithAuth } from '@utils/httpClient';
+import { Task } from 'scripts/utils/interfaces';
+import { TaskParams } from 'scripts/store/slices/taskSlice';
+import { httpClientWithAuth } from 'scripts/utils/httpClient';
 
 class TaskService {
   public readonly path: string = '/tasks';

@@ -1,5 +1,5 @@
-import { AppDispatch, Category, DefaultObjectType, Task, User } from '@utils/interfaces';
-import { LOADING_STATE, SEVERITY, SORT_TYPE, TASK_STATUS } from '@configs/enums';
+import { AppDispatch, Category, DefaultObjectType, Task, User } from 'scripts/utils/interfaces';
+import { LOADING_STATE, SEVERITY, SORT_TYPE, TASK_STATUS } from 'scripts/configs/enums';
 import { TASK_SEVERITY_OPTIONS, TASK_STATUS_OPTIONS } from 'scripts/configs/constants';
 import {
   TaskFilter,
@@ -14,24 +14,24 @@ import {
   selectTaskParams,
   selectTaskSorter,
   taskActions
-} from '@store/slices/taskSlice';
+} from 'scripts/store/slices/taskSlice';
 import { adminRoutes } from '../../../components/Router';
 import { newTaskSchema } from './schemas';
-import { selectCurrentUser } from '@store/slices/userSlice';
+import { selectCurrentUser } from 'scripts/store/slices/userSlice';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { yupResolver } from '@hookform/resolvers/yup';
-import BaseSelect from '@components/base/Select';
+import BaseSelect from 'scripts/components/base/Select';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
-import FormInput from '@components/form/FormInput';
+import FormInput from 'scripts/components/form/FormInput';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import Input from '@components/base/Input';
+import Input from 'scripts/components/base/Input';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import KeyboardControlKeyOutlinedIcon from '@mui/icons-material/KeyboardControlKeyOutlined';
 import KeyboardDoubleArrowUpOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowUpOutlined';
@@ -42,7 +42,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NorthOutlinedIcon from '@mui/icons-material/NorthOutlined';
-import PageContainer from '@components/base/PageContainer';
+import PageContainer from 'scripts/components/base/PageContainer';
 import Radio from '@mui/material/Radio';
 import React, { ChangeEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';

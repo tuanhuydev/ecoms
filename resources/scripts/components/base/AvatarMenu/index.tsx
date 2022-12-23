@@ -1,9 +1,9 @@
-import { Account, User } from '@utils/interfaces';
-import { SignIn } from '@services/AuthService';
+import { Account, User } from 'scripts/utils/interfaces';
+import { SignIn } from 'scripts/services/AuthService';
 import { Typography } from '@mui/material';
 import { USER_AVAILABILITY_OPTIONS } from 'scripts/configs/constants';
-import { accountActions, selectCurrentAccount } from '@store/slices/accountSlice';
-import { selectCurrentUser } from '@store/slices/userSlice';
+import { accountActions, selectCurrentAccount } from 'scripts/store/slices/accountSlice';
+import { selectCurrentUser } from 'scripts/store/slices/userSlice';
 import { useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
 import Badge from '@mui/material/Badge';

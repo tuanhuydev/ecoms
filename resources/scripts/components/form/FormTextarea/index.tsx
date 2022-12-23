@@ -3,7 +3,7 @@ import { EMPTY_STRING } from '../../../configs/constants';
 import { SxProps } from '@mui/system';
 import Box from '@mui/material/Box';
 import React from 'react';
-import Textarea from '@components/base/Textarea';
+import Textarea from 'scripts/components/base/Textarea';
 import getStyles from './styles';
 
 export interface FormTextareaProps extends Partial<ControllerProps> {

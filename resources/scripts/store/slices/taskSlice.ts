@@ -1,4 +1,4 @@
-import { Category, DefaultObjectType, RootState, Task } from '@utils/interfaces';
+import { Category, DefaultObjectType, RootState, Task } from 'scripts/utils/interfaces';
 import { LOADING_STATE, SORT_TYPE } from '../../configs/enums';
 import { PayloadAction, createAction, createSlice, current } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';

@@ -16,7 +16,7 @@ const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const mode = isDevelopment ? 'development' : 'production';
-const devtool = isDevelopment ? 'source-map' : 'hidden-source-map';
+const devtool = isDevelopment ? 'inline-source-map' : 'hidden-source-map';
 const watchOptions = {
   ignored: /node_modules/,
   aggregateTimeout: 500
@@ -31,13 +31,10 @@ const cacheOptions = isDevelopment
 const plugins = [
   new WebpackBar(),
   new RemoveEmptyScriptsPlugin(),
+  new ForkTsCheckerWebpackPlugin(),
   new DotEnv({ path: '.env' }),
   new MiniCssExtractPlugin({ filename: '[name].css' })
 ];
-
-if (isDevelopment) {
-  plugins.push(new ForkTsCheckerWebpackPlugin());
-}
 const entry = makeEntry();
 
 const config = {
@@ -70,16 +67,20 @@ const config = {
             loader: 'css-loader',
             options: {
               modules: true,
-              sourceMap: true
+              sourceMap: isDevelopment
             }
           },
           {
-            loader: 'resolve-url-loader'
+            loader: 'resolve-url-loader',
+            options: {
+              sourceMap: true,
+              removeCR: true
+            }
           },
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: true
+              sourceMap: isDevelopment
             }
           }
         ]
@@ -95,16 +96,20 @@ const config = {
             loader: 'css-loader',
             options: {
               modules: false,
-              sourceMap: true
+              sourceMap: isDevelopment
             }
           },
           {
-            loader: 'resolve-url-loader'
+            loader: 'resolve-url-loader',
+            options: {
+              sourceMap: true,
+              removeCR: true
+            }
           },
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: true
+              sourceMap: isDevelopment
             }
           }
         ]
@@ -138,16 +143,19 @@ const config = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
-    mainFiles: ['index'],
+    // mainFiles: ['index'],
     // Map all alias from tsconfig.json to webpack alias
-    plugins: [new TsconfigPathsPlugin()],
+    plugins: [new TsconfigPathsPlugin({
+      configFile: 'tsconfig.json',
+      extensions: ['.tsx', '.ts', '.js'],
+      logLevel: 'error'
+    })],
     alias: {
       '@common-styles': path.resolve(__dirname, 'resources/stylesheets/commons')
     }
   },
   plugins,
   optimization: {
-    removeAvailableModules: !isDevelopment,
     removeEmptyChunks: !isDevelopment,
     usedExports: true
   },

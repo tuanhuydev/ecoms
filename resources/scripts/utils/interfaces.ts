@@ -1,5 +1,5 @@
-import { SEVERITY, TASK_STATUS } from '@configs/enums';
-import { store } from '@store/index';
+import { SEVERITY, TASK_STATUS } from 'scripts/configs/enums';
+import { store } from 'scripts/store/index';
 
 export interface DefaultObjectType {
   [key: string]: any;

@@ -1,5 +1,5 @@
 import { Controller, ControllerProps } from 'react-hook-form';
-import BaseDatePicker from '@components/base/DatePicker';
+import BaseDatePicker from 'scripts/components/base/DatePicker';
 import React from 'react';
 
 export interface FormSelectProps extends Partial<ControllerProps> {
