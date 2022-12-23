@@ -1,7 +1,7 @@
 import { PageContainerProps } from './interfaces';
-import { ROUTE_PATHS } from '@configs/constants';
+import { ROUTE_PATHS } from 'scripts/configs/constants';
 import { matchPath, useLocation } from 'react-router-dom';
-import { selectCurrentUser } from '@store/slices/userSlice';
+import { selectCurrentUser } from 'scripts/store/slices/userSlice';
 import AvatarMenu from '../AvatarMenu';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';

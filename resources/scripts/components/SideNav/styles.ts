@@ -1,5 +1,5 @@
 import { SxProps, useTheme } from '@mui/material';
-import { selectOpenSidebar } from '@store/slices/metaSlice';
+import { selectOpenSidebar } from 'scripts/store/slices/metaSlice';
 import grey from '@mui/material/colors/grey';
 
 export const navItemStyles = (): SxProps => {

@@ -1,4 +1,4 @@
-import Loading from '@components/Loading';
+import Loading from 'scripts/components/Loading';
 
 window.addEventListener('load', function () {
   const loading = Loading.getInstance();

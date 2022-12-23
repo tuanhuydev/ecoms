@@ -2,8 +2,8 @@ import { AxiosResponse } from 'axios';
 import { IS_DEV_ENV } from 'scripts/configs/constants';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
-import { userActions } from '@store/slices/userSlice';
-import UserService from '@services/UserService';
+import { userActions } from 'scripts/store/slices/userSlice';
+import UserService from 'scripts/services/UserService';
 
 const userService = new UserService();
 const LOADING_IDLE = userActions.setLoading(LOADING_STATE.IDLE);
