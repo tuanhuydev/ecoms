@@ -1,16 +1,16 @@
-import { DefaultObjectType } from '@utils/interfaces';
-import { EMPTY_STRING, PERMISSIONS, ROUTE_PATHS } from '@configs/constants';
+import { DefaultObjectType } from 'scripts/utils/interfaces';
+import { EMPTY_STRING, PERMISSIONS, ROUTE_PATHS } from 'scripts/configs/constants';
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
-import AdminLayout from '@components/layouts/AdminLayout';
-import BaseLayout from '@components/layouts/Base';
+import AdminLayout from 'scripts/components/layouts/AdminLayout';
+import BaseLayout from 'scripts/components/layouts/Base';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import Overview from '@pages/admin/Overview';
+import Overview from 'scripts/pages/admin/Overview';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
-import PrivateRoute from '@components/base/PrivateRoute';
+import PrivateRoute from 'scripts/components/base/PrivateRoute';
 import React, { FC } from 'react';
-import Tasks from '@pages/admin/Tasks';
-import Users from '@pages/admin/Users';
+import Tasks from 'scripts/pages/admin/Tasks';
+import Users from 'scripts/pages/admin/Users';
 
 export const adminRoutes = {
   overview: {

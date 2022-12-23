@@ -1,6 +1,6 @@
 import { Controller, ControllerProps } from 'react-hook-form';
-import { DefaultObjectType } from '@utils/interfaces';
-import BaseSelect from '@components/base/Select';
+import { DefaultObjectType } from 'scripts/utils/interfaces';
+import BaseSelect from 'scripts/components/base/Select';
 import Box from '@mui/material/Box';
 import React from 'react';
 import getStyles from './styles';

@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
       "outDir": "./public/js/",
-      "baseUrl": "./resources/",
+      "baseUrl": "./resources",
       "noImplicitAny": true,
       "sourceMap": true,
       "allowJs": false,
@@ -13,16 +13,6 @@
       "forceConsistentCasingInFileNames": false,
       "downlevelIteration": true,
       "skipLibCheck": true,
-      "paths": {
-        "@assets/*": ["./assets/*"],
-        "@components/*": ["./scripts/components/*"],
-        "@containers/*": ["./scripts/containers/*"],
-        "@pages/*": ["./scripts/pages/*"],
-        "@services/*": ["./scripts/services/*"],
-        "@configs/*": ["./scripts/configs/*"],
-        "@utils/*": ["./scripts/utils/*"],
-        "@store/*": ["./scripts/store/*"],
-      }
     },
     "exclude": [
       "node_modules"

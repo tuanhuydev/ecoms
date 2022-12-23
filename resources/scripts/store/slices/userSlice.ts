@@ -1,4 +1,4 @@
-import { DefaultObjectType, RootState, User } from '@utils/interfaces';
+import { DefaultObjectType, RootState, User } from 'scripts/utils/interfaces';
 import { EMPTY_ARRAY, EMPTY_USER } from 'scripts/configs/constants';
 import { LOADING_STATE } from 'scripts/configs/enums';
 import { PayloadAction, createAction, createSlice } from '@reduxjs/toolkit';
