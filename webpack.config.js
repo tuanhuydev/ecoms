@@ -143,7 +143,7 @@ const config = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
-    // mainFiles: ['index'],
+    mainFiles: ['index'],
     // Map all alias from tsconfig.json to webpack alias
     plugins: [new TsconfigPathsPlugin({
       configFile: 'tsconfig.json',
@@ -152,6 +152,11 @@ const config = {
     })],
     alias: {
       '@common-styles': path.resolve(__dirname, 'resources/stylesheets/commons')
+    },
+    fallback: {
+      fs: false,
+      os: false,
+      path: false
     }
   },
   plugins,

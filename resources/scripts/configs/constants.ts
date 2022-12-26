@@ -1,17 +1,9 @@
-import * as dotenv from 'dotenv';
-import { Account, User } from 'scripts/utils/interfaces';
+import { Account, DefaultObjectType, User } from 'scripts/utils/interfaces';
 import { SEVERITY, TASK_STATUS, USER_AVAILABILITY, USER_STATUS } from './enums';
-dotenv.config();
 
-export const IS_DEV_ENV = process.env.APP_ENV === 'local';
+export const IS_DEV_ENV = (window as DefaultObjectType)?.APP_ENV === 'local';
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 3cf630f70235f2815363b5ec9ea6ea8f912cb51b
-export const APP_URL = IS_DEV_ENV ? 'http://localhost' : process.env.APP_URL;
-
-console.log({ IS_DEV_ENV, APP_URL });
+export const APP_URL = (window as DefaultObjectType)?.APP_URL || 'http://localhost';
 
 export const API_URL = `${APP_URL}/api`;
 
