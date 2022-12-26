@@ -1,7 +1,10 @@
+import * as dotenv from 'dotenv';
 import { Account, User } from 'scripts/utils/interfaces';
 import { SEVERITY, TASK_STATUS, USER_AVAILABILITY, USER_STATUS } from './enums';
+dotenv.config();
 
 export const IS_DEV_ENV = process.env.APP_ENV === 'local';
+
 export const APP_URL = IS_DEV_ENV ? 'http://localhost' : process.env.APP_URL;
 
 export const API_URL = `${APP_URL}/api`;
