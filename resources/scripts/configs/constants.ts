@@ -1,8 +1,9 @@
-import { Account, User } from 'scripts/utils/interfaces';
+import { Account, DefaultObjectType, User } from 'scripts/utils/interfaces';
 import { SEVERITY, TASK_STATUS, USER_AVAILABILITY, USER_STATUS } from './enums';
 
-export const IS_DEV_ENV = process.env.APP_ENV === 'local';
-export const APP_URL = IS_DEV_ENV ? 'http://localhost' : process.env.APP_URL;
+export const IS_DEV_ENV = (window as DefaultObjectType)?.APP_ENV === 'local';
+
+export const APP_URL = (window as DefaultObjectType)?.APP_URL || 'http://localhost';
 
 export const API_URL = `${APP_URL}/api`;
 
