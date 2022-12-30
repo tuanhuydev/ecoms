@@ -1,20 +1,18 @@
 {
-    "compilerOptions": {
-      "outDir": "./public/js/",
-      "baseUrl": "./resources",
-      "noImplicitAny": true,
-      "sourceMap": true,
-      "allowJs": false,
-      "module": "es6",
-      "target": "es5",
-      "jsx": "react",
-      "moduleResolution": "node",
-      "allowSyntheticDefaultImports": true,
-      "forceConsistentCasingInFileNames": false,
-      "downlevelIteration": true,
-      "skipLibCheck": true,
-    },
-    "exclude": [
-      "node_modules"
-    ]
-  }
+  "compilerOptions": {
+    "outDir": "./public/js/",
+    "baseUrl": "./resources",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "allowJs": false,
+    "module": "es6",
+    "target": "es5",
+    "jsx": "react",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": false,
+    "downlevelIteration": true,
+    "skipLibCheck": true
+  },
+  "exclude": ["node_modules"]
+}
