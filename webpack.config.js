@@ -165,7 +165,7 @@ const config = {
     usedExports: true
   },
   stats: {
-    errorDetails: true
+    errorDetails: isDevelopment
   },
   output: {
     path: path.resolve(__dirname, 'public/'),
