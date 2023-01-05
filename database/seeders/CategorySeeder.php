@@ -33,8 +33,8 @@ class CategorySeeder extends Seeder
         ],
         [
           'id' => '3',
-          'type' => 'feature',
-          'value' => 'unassigned',
+          'type' => 'task',
+          'value' => 'feature',
           'created_at' => '2021-07-18 10:34:16',
           'updated_at' => '2021-07-18 10:53:30',
         ],
