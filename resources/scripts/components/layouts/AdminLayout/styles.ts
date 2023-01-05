@@ -1,5 +1,4 @@
-import { SxProps, useTheme } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { useTheme } from '@mui/material';
 
 export const containerStyles = {
   width: '100vw',

@@ -71,13 +71,18 @@ const getStyles = () => {
     ml: 'auto'
   };
 
-  const typographyStyles: SxProps = {
+  const typographyWrapperStyles: SxProps = {
     width: 600,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
     mr: 2
   };
 
   const categoryStyles: SxProps = {
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
+    minWidth: 80,
+    maxWidth: 80
   };
 
   const emptyRecordStyles: SxProps = {
@@ -109,7 +114,7 @@ const getStyles = () => {
     renewIconStyles,
     chipStyles,
     createButtonStyles,
-    typographyStyles,
+    typographyWrapperStyles,
     emptyRecordStyles,
     skeletonStyles,
     selectStyles,
