@@ -219,12 +219,13 @@ const Tasks = () => {
             disabled={isLoading}
           />
           <ListItemButton disableRipple disabled={isLoading} sx={styles.buttonStyles} onClick={handleOpenTask(task)}>
-            <Box sx={styles.typographyStyles} className="flex items-center">
+            <Box sx={styles.typographyWrapperStyles} className="flex items-center">
               {task?.categoryId && (
                 <Chip
                   size="small"
                   variant="outlined"
                   className="mr-2"
+                  sx={styles.categoryStyles}
                   label={categoryValue?.toLowerCase()}
                 />
               )}
