@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Exceptions\InvalidParamException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,11 +23,13 @@ class AccountController extends Controller
     {
         $this->accountService = $accountService;
     }
+
   /**
    * Update account
    *
    * @param Request $request
    * @return JsonResponse
+   * @throws InvalidParamException
    */
   public function updateAccount(Request $request): JsonResponse
   {
