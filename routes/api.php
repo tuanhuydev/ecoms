@@ -61,18 +61,13 @@ Route::group([
 
 /*
 |--------------------------------------------------------------------------
-| Commons API
+| File API
 |--------------------------------------------------------------------------
 */
+Route::group([
+  'prefix' => 'files'
+] ,function() {
+  Route::post('/upload/{type}', [FileController::class, 'uploadImage'])->name('file.uploadImage');
+  Route::get('/{type}/{path}', [FileController::class, 'showImage'])->name('file.showImage');
+});
 
-// Upload
-Route::post('/upload', [FileController::class, 'uploadImage'])->name('upload.image');
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| Testing API
-|--------------------------------------------------------------------------
-*/

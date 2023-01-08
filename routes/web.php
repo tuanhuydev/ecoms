@@ -22,9 +22,9 @@ Route::get('/', function () {
 
 Route::get('/auth/{type}', [AuthController::class, 'index'])->name('pages.auth');
 
-Route::get('/upload', function() {
-    return view('pages.upload');
-})->name('upload');
+//Route::get('/upload', function() {
+//    return view('pages.upload');
+//})->name('upload');
 
 Route::get('/admin/{path?}', function () {
     return view('pages.admin', ['title' => 'Sidehand - Admin']);
