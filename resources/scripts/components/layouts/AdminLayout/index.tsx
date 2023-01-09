@@ -11,15 +11,24 @@ import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import MenuIcon from '@mui/icons-material/Menu';
 import NavItem from 'scripts/components/SideNav/NavItem';
-import React from 'react';
+import React, { useEffect } from 'react';
 import SideNav from 'scripts/components/SideNav';
 import Typography from '@mui/material/Typography';
 
 const AdminLayout = ({ routes }: any) => {
-  const openSidebar = selectOpenSidebar();
+  // Hooks
   const dispatch: AppDispatch = useDispatch();
+
+  // Selectors
+  const open = selectOpenSidebar();
   const currentUser: User = selectCurrentUser();
+
   const userPerrmission = currentUser.permission.toUpperCase();
+
+  useEffect(() => {
+    const openSidebar = localStorage.getItem('openSidebar') === 'true';
+    dispatch(setOpenSidebar({ openSidebar }));
+  }, [dispatch]);
 
   // Filter sidebar links base on user's permissions
   const renderSideLinks = Object.keys(routes)
@@ -30,19 +39,23 @@ const AdminLayout = ({ routes }: any) => {
         <NavItem key={key} to={route.path} label={key} icon={route?.icon} />
       );
     });
-  const toggleSideNav = () => dispatch(setOpenSidebar({ openSidebar: !openSidebar }));
+  const toggleSidebar = () => {
+    const openSidebar = !open;
+    dispatch(setOpenSidebar({ openSidebar }));
+    localStorage.setItem('openSidebar', openSidebar.toString());
+  };
 
   return (
     <Grid container spacing={0} sx={containerStyles} wrap="nowrap">
-      <SideNav open={openSidebar}>
+      <SideNav open={open}>
         <Box sx={titleContainerStyles()}>
-          {openSidebar && (
+          {open && (
             <Typography variant="h5" component="h5" sx={titleStyles}>
               Sidehand
             </Typography>
           )}
-          <IconButton onClick={toggleSideNav} sx={{ mx: 0.5 }} aria-label="Toggle SideNav">
-            {openSidebar ? <ChevronLeftIcon /> : <MenuIcon />}
+          <IconButton onClick={toggleSidebar} sx={{ mx: 0.5 }} aria-label="Toggle Sidebar">
+            {open ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
         </Box>
         <List>{renderSideLinks}</List>
